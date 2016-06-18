@@ -2,13 +2,13 @@
     <h3 class="h3" ng-if="projects.length == 0">No project found</h3>
     <h3 class="h3" ng-if="projects.length > 0">Projects:</h3>
     <div class="col-sm-12" ng-if="projects.length > 0">
-        <div class="col-sm-12" ng-repeat="project in projects">
+        <div class="col-sm-12" ng-repeat="project in projects track by $index">
             <div class="col-sm-6">{{ project.projectName }}</div>
             <div class="col-sm-3 form-group">
                 <a class="form-control btn btn-default" ng-href="#/projects/{{ project._id }}">Open Project</a>
             </div>
             <div class="col-sm-3 form-group">
-                <a class="form-control btn btn-danger" ng-click="DeleteProject(project._id)">Delete Project</a>
+                <a class="form-control btn btn-danger" ng-click="deleteProject(project, $index)">Delete Project</a>
             </div>
         </div>
     </div>

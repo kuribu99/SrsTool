@@ -1,25 +1,28 @@
+var _ = require('underscore');
+
 var failCallBack = function (error) {
-    console.log('Error:');
-    console.log(error);
+    if (error) {
+        console.log('Error:');
+        console.log(error);
+    }
 };
 
 exports.HomeController = function ($scope, $http, $location) {
-    $scope.projectName = "untitled";
+    $scope.projectName = "";
 
     $scope.newProject = function () {
         $http.post('/api/v1/projects/new', {
             projectName: $scope.projectName
         }).then(function (json) {
-            if (json.data.result) {
-                $location.path('/projects/' + json.data.project._id);
-            }
+            if (json.data.result)
+                $location.path('/projects/' + json.data.id);
             else
                 console.log(json.data);
         }, failCallBack);
     }
 }
 
-exports.ProjectViewController = function ($scope, $routeParams, $http) {
+exports.ProjectViewController = function ($scope, $routeParams, $http, $location) {
     var encoded = encodeURIComponent($routeParams.id);
 
     $http.get('/api/v1/projects/' + encoded)
@@ -27,12 +30,14 @@ exports.ProjectViewController = function ($scope, $routeParams, $http) {
             if (json.data.result)
                 $scope.project = json.data.project;
             else
-                $scope.project = null;
+                $location.path('/');
+
         }, failCallBack);
 
     $http.get('/api/v1/domains/names/all')
         .then(function (json) {
             $scope.domainNames = json.data.domainNames;
+
         }, failCallBack())
 
     $scope.saveProject = function () {
@@ -40,9 +45,9 @@ exports.ProjectViewController = function ($scope, $routeParams, $http) {
             project: $scope.project
         }).then(function (json) {
             if (json.data.result)
-                console.log('Successfully saved');
+                $location.path('/');
             else
-                console.log(json);
+                alert('Something bad happened\nJSON:' + json.data);
         }, failCallBack);
     };
 
@@ -59,21 +64,23 @@ exports.SrsAppController = function ($scope, $routeParams, $http) {
 
 }
 
-
 exports.ProjectListController = function ($scope, $routeParams, $http) {
 
-    $scope.RefreshList = function () {
+    $scope.refreshList = function () {
         $http.get('/api/v1/projects/all').then(function (json) {
             $scope.projects = json.data.projects;
         }, failCallBack);
     };
 
-    $scope.DeleteProject = function(id) {
-        $http.delete
-    }
+    $scope.deleteProject = function (project, index) {
+        $http.delete('/api/v1/projects/' + project._id)
+            .then(function (json) {
+                if(json.data.result)
+                    $scope.projects.splice(index, 1);
+            }, failCallBack);
+    };
 
-
-    $scope.RefreshList();
+    $scope.refreshList();
     setTimeout(function () {
         $scope.$emit('ProjectController');
     }, 0);

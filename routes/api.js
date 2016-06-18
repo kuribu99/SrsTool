@@ -43,12 +43,12 @@ module.exports = function (wagner) {
         return function (req, res) {
             Project.remove({_id: req.params.id})
                 .then(function () {
-                    res.json({
+                    return res.json({
                         result: true
                     });
                 }, function (error) {
-                    res.json({
-                        result: true,
+                    return res.json({
+                        result: false,
                         error: error.toString()
                     });
                 });
@@ -68,9 +68,10 @@ module.exports = function (wagner) {
             else
                 project = new Project();
 
+            project.save();
             res.json({
                 result: true,
-                project: project
+                id: project._id
             });
         }
     }));
@@ -107,6 +108,7 @@ module.exports = function (wagner) {
         };
     }));
 
+    // GET all project names
     api.get('/domains/names/all', wagner.invoke(function (Domain) {
         return function (req, res) {
             Domain.find({}).select({_id: true}).exec(function (error, domainNames) {
