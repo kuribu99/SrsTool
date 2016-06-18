@@ -1,0 +1,27 @@
+<div style="margin-top: 20px;"></div>
+<div class="col-sm-12">
+    <div class="col-sm-3">
+        <label class="control-label">Project Name: </label>
+    </div>
+    <div class="form-group col-sm-6">
+        <input class=form-control" type="text" ng-model="project.projectName"/>
+    </div>
+</div>
+<div class="col-sm-12">
+    <div class="col-sm-3">
+        <label class="control-label">Domain Name: </label>
+    </div>
+    <div class="form-group col-sm-6">
+        <input type="text" ng-model="project.domainData.domainName" list="domains"/>
+        <datalist id="domains">
+            <option ng-repeat="domainName in domainNames" value="{{ domainName }}">{{ domainName }}</option>
+        </datalist>
+    </div>
+</div>
+<div class="form-group col-sm-3">
+    <a class="btn form-control" ng-href="/#/">Back</a>
+</div>
+<div class="form-group col-sm-3">
+    <a class="btn btn-success form-control" ng-Click="saveProject()">Save Project</a>
+</div>
+
