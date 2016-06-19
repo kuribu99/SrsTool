@@ -26,7 +26,7 @@
     <div class="form-group col-sm-6">
         <input class="form-control" type="text" ng-model="project.domainData.domainName" list="domains"/>
         <datalist id="domains">
-            <option ng-repeat="domainName in domainNames" value="{{ domainName }}">{{ domainName }}</option>
+            <option ng-repeat="domain in domains" value="{{ domain }}">{{ domain }}</option>
         </datalist>
     </div>
 </div>
@@ -42,29 +42,119 @@
 
         <!-- Module pil -->
         <div id="modules" class="tab-pane fade in active">
-            <div class="col-sm-2">
-                <label class="control-label" for="tbxModule">Module</label>
-            </div>
-            <div class="col-sm-7 form-group">
-                <input class="form-control" type="text" id="tbxModule" list="newModules" ng-model="tbxModule" />
+            <div class="col-sm-12 margin-top-10"></div>
+            <div class="col-sm-4 form-group">
+                <input class="form-control" type="text" list="newModules" ng-model="tbxModule"/>
                 <datalist id="newModules">
                     <option ng-repeat="module in newModules" value="{{ module }}">{{ module }}</option>
                 </datalist>
             </div>
-            <div class="col-sm-3 form-group">
-                <div class="btn btn-success form-control" ng-click="AddModule()">Add</div>
+            <div class="col-sm-2 form-group">
+                <div class="btn btn-success form-control" ng-click="addModule()">Add</div>
             </div>
-            <h3 class="h3" ng-if="project.domainData.modules.length == 0">No module found</h3>
+            <div class="col-sm-12 margin-top-10"></div>
+            <div class="col-sm-6">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr class="alert-info text-center">
+                        <td colspan="2">Module</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="module in project.domainData.modules track by $index">
+                        <td class="col-sm-8">{{ module }}</td>
+                        <td class="col-sm-4">
+                            <div class="btn btn-warning" ng-click="deleteModule(module, index)">
+                                <span class="glyphicon glyphicon-remove"></span>&nbsp;Delete
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="col-sm-12 text-center" ng-if="project.domainData.modules.length == 0">
+                            No module found
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <!-- Actor pil -->
         <div id="actors" class="tab-pane fade">
-            <h3 class="h3" ng-if="project.domainData.actors.length == 0">No actor found</h3>
+            <div class="col-sm-12 margin-top-10"></div>
+            <div class="col-sm-4 form-group">
+                <input class="form-control" type="text" list="newActors" ng-model="tbxActor"/>
+                <datalist id="newActors">
+                    <option ng-repeat="actor in newActors" value="{{ actor }}">{{ actor }}</option>
+                </datalist>
+            </div>
+            <div class="col-sm-2 form-group">
+                <div class="btn btn-success form-control" ng-click="addActor()">Add</div>
+            </div>
+            <div class="col-sm-12 margin-top-10"></div>
+            <div class="col-sm-6">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr class="alert-info text-center">
+                        <td colspan="2">Actor</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="actor in project.domainData.actors track by $index">
+                        <td class="col-sm-8">{{ actor }}</td>
+                        <td class="col-sm-4">
+                            <div class="btn btn-warning" ng-click="deleteActor(actor, index)">
+                                <span class="glyphicon glyphicon-remove"></span>&nbsp;Delete
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="col-sm-12 text-center" ng-if="project.domainData.actors.length == 0">
+                            No actor found
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <!-- Action pil -->
         <div id="actions" class="tab-pane fade">
-            <h3 class="h3" ng-if="project.domainData.actions.length == 0">No action found</h3>
+            <div class="col-sm-12 margin-top-10"></div>
+            <div class="col-sm-4 form-group">
+                <input class="form-control" type="text" list="newActions" ng-model="tbxAction"/>
+                <datalist id="newActions">
+                    <option ng-repeat="action in newActions" value="{{ action }}">{{ action }}</option>
+                </datalist>
+            </div>
+            <div class="col-sm-2 form-group">
+                <div class="btn btn-success form-control" ng-click="addAction()">Add</div>
+            </div>
+            <div class="col-sm-12 margin-top-10"></div>
+            <div class="col-sm-6">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr class="alert-info text-center">
+                        <td colspan="2">Action</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="action in project.domainData.actions track by $index">
+                        <td class="col-sm-8">{{ action }}</td>
+                        <td class="col-sm-4">
+                            <div class="btn btn-warning" ng-click="deleteAction(action, index)">
+                                <span class="glyphicon glyphicon-remove"></span>&nbsp;Delete
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="col-sm-12 text-center" ng-if="project.domainData.actions.length == 0">
+                            No action found
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

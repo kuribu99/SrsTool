@@ -3,16 +3,19 @@ var mongoose = require('mongoose');
 var domainSchema = {
     _id: {
         type: String,
-        required: true
+        default: 'untitled'
     },
     actors: [{
-        type: String
+        type: String,
+        default: []
     }],
     modules: [{
-        type: String
+        type: String,
+        default: []
     }],
     actions: [{
-        type: String
+        type: String,
+        default: []
     }]
 };
 

@@ -1,4 +1,5 @@
 var express = require('express');
+var _ = require('underscore');
 
 module.exports = function (wagner) {
     var api = express.Router();
@@ -9,7 +10,9 @@ module.exports = function (wagner) {
                 .then(function (actions) {
                     return res.json({
                         result: true,
-                        actions: actions
+                        actions: _.map(actions, function (val) {
+                            return val._id;
+                        })
                     });
                 }, function (error) {
                     if (error) {

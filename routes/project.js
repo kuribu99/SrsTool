@@ -31,21 +31,22 @@ module.exports = function (wagner) {
 
     api.get('/:id', wagner.invoke(function (Project) {
         return function (req, res) {
-            Project.findOne({_id: req.params.id})
-                .then(function (project) {
-                    return res.json({
-                        result: true,
-                        project: project
-                    });
-                }, function (error) {
-                    if (error) {
-                        return res.status(status.INTERNAL_SERVER_ERROR).json({
-                            result: false,
-                            projects: null,
-                            error: error.toString()
-                        });
-                    }
+            Project.findOne({
+                _id: req.params.id
+            }).then(function (project) {
+                return res.json({
+                    result: true,
+                    project: project
                 });
+            }, function (error) {
+                if (error) {
+                    return res.status(status.INTERNAL_SERVER_ERROR).json({
+                        result: false,
+                        projects: null,
+                        error: error.toString()
+                    });
+                }
+            });
         };
     }));
 
@@ -96,7 +97,7 @@ module.exports = function (wagner) {
         };
     }));
 
-    api.put('/:id', wagner.invoke(function (Project) {
+    api.put('/:id', wagner.invoke(function (Project, Domain, Module, Actor, Action) {
         return function (req, res) {
             try {
                 var newProject = req.body.project;
@@ -110,16 +111,66 @@ module.exports = function (wagner) {
                     .then(function (project) {
                         project.projectName = projectName;
                         project.domainData.domainName = domainName;
-                        project.modules = modules;
-                        project.actors = actors;
-                        project.actions = actions;
-
+                        project.domainData.modules = modules;
+                        project.domainData.actors = actors;
+                        project.domainData.actions = actions;
                         project.save()
                             .then(function () {
+                                var domain = null;
+
+                                Domain.findOne({
+                                    _id: domainName
+                                }).then(function (d) {
+                                    domain = d;
+                                });
+
+                                if (domain == null) {
+                                    domain = new Domain({
+                                        _id: domainName
+                                    });
+                                }
+
+                                domain.modules = _.union(domain.modules, modules);
+                                domain.actors = _.union(domain.actors, actors);
+                                domain.actions = _.union(domain.actions, actions);
+                                domain.save();
+
+                                _.each(modules, function (m) {
+                                    Module.update({
+                                        _id: m
+                                    }, {
+                                        _id: m
+                                    }, {
+                                        upsert: true
+                                    });
+                                });
+
+                                _.each(actors, function (a) {
+                                    Actor.update({
+                                        _id: a
+                                    }, {
+                                        _id: a
+                                    }, {
+                                        upsert: true
+                                    });
+                                });
+
+                                _.each(actions, function (a) {
+                                    Action.update({
+                                        _id: a
+                                    }, {
+                                        _id: a
+                                    }, {
+                                        upsert: true
+                                    });
+                                });
+
                                 return res.json({
                                     result: true
                                 });
+
                             }, function (error) {
+                                console.log(error);
                                 if (error) {
                                     return res.status(status.INTERNAL_SERVER_ERROR).json({
                                         result: false,

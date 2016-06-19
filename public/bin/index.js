@@ -29,7 +29,7 @@ exports.ProjectViewController = function ($scope, $routeParams, $http, $location
     $scope.tbxModule = "";
     $scope.tbxActor = "";
     $scope.tbxAction = "";
-    
+
     $http.get('/api/v1/projects/' + encoded)
         .then(function (json) {
             if (json.data.result)
@@ -42,25 +42,24 @@ exports.ProjectViewController = function ($scope, $routeParams, $http, $location
     $http.get('/api/v1/domains/all')
         .then(function (json) {
             $scope.domains = json.data.domains;
-            $scope.newDomains = _.without($scope.domains, $scope.project.domainData.domainName);
         }, failCallBack());
 
     $http.get('/api/v1/modules/all')
         .then(function (json) {
             $scope.modules = json.data.modules;
-            $scope.newModules = _.without($scope.modules, $scope.project.domainData.modules);
+            $scope.newModules = _.difference($scope.modules, $scope.project.domainData.modules);
         }, failCallBack());
 
     $http.get('/api/v1/actors/all')
         .then(function (json) {
             $scope.actors = json.data.actors;
-            $scope.newActors = _.without($scope.actors, $scope.project.domainData.actors);
+            $scope.newActors = _.difference($scope.actors, $scope.project.domainData.actors);
         }, failCallBack());
 
     $http.get('/api/v1/actions/all')
         .then(function (json) {
             $scope.actions = json.data.actions;
-            $scope.newActions = _.without($scope.actions, $scope.project.domainData.actions);
+            $scope.newActions = _.difference($scope.actions, $scope.project.domainData.actions);
         }, failCallBack());
 
     $scope.saveProject = function () {
@@ -74,8 +73,58 @@ exports.ProjectViewController = function ($scope, $routeParams, $http, $location
         }, failCallBack);
     };
 
-    $scope.getNewModuleNames = function () {
-        return _.without($scope.modules, $scope.project.domainData.modules);
+    $scope.addModule = function () {
+        if ($scope.tbxModule.length > 0 && $scope.project.domainData.modules.indexOf($scope.tbxModule) < 0) {
+            $scope.project.domainData.modules.push($scope.tbxModule);
+
+            var index = $scope.newModules.indexOf($scope.tbxModule);
+            if (index >= 0)
+                $scope.newModules.splice(index, 1);
+
+            $scope.tbxModule = '';
+        }
+    };
+
+    $scope.deleteModule = function (module, index) {
+        $scope.project.domainData.modules.splice(index, 1);
+        if ($scope.newModules.indexOf(module) < 0)
+            $scope.newModules.push(module);
+    };
+
+    $scope.addActor = function () {
+        if ($scope.tbxActor.length > 0 && $scope.project.domainData.actors.indexOf($scope.tbxActor) < 0) {
+            $scope.project.domainData.actors.push($scope.tbxActor);
+
+            var index = $scope.newActors.indexOf($scope.tbxActor);
+            if (index >= 0)
+                $scope.newActors.splice(index, 1);
+
+            $scope.tbxActor = '';
+        }
+    };
+
+    $scope.deleteActor = function (actor, index) {
+        $scope.project.domainData.actors.splice(index, 1);
+        if ($scope.newActors.indexOf(actor) < 0)
+            $scope.newActors.push(actor);
+    };
+
+    $scope.addAction = function () {
+        if ($scope.tbxAction.length > 0 && $scope.project.domainData.actions.indexOf($scope.tbxAction) < 0) {
+            $scope.project.domainData.actions.push($scope.tbxAction);
+
+            var index = $scope.newActions.indexOf($scope.tbxAction);
+            if (index >= 0)
+                $scope.newActions.splice(index, 1);
+
+            $scope.tbxAction = '';
+        }
+    };
+
+    $scope.deleteAction = function (action, index) {
+        $scope.project.domainData.actions.splice(index, 1);
+        if ($scope.newActions.indexOf(action) < 0)
+            $scope.newActions.push(action);
     };
 
     setTimeout(function () {

@@ -6,7 +6,6 @@ var path = require('path');
 
 module.exports = function (wagner) {
     var api = express.Router();
-
     api.use(bodyparser.json());
 
     api.use('/projects/', require('./project')(wagner));

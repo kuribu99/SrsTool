@@ -2,6 +2,7 @@ var express = require('express');
 
 module.exports = function (wagner) {
     var api = express.Router();
+    var _ = require('underscore');
 
     api.get('/all', wagner.invoke(function (Domain) {
         return function (req, res) {
@@ -9,7 +10,9 @@ module.exports = function (wagner) {
                 .then(function (domains) {
                     return res.json({
                         result: true,
-                        domains: domains
+                        domains: _.map(domains, function (val) {
+                            return val._id;
+                        })
                     });
                 }, function (error) {
                     if (error) {

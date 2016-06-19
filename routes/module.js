@@ -1,7 +1,10 @@
+var bodyparser = require('body-parser');
 var express = require('express');
+var _ = require('underscore');
 
 module.exports = function (wagner) {
     var api = express.Router();
+    api.use(bodyparser.json());
 
     api.get('/all', wagner.invoke(function (Module) {
         return function (req, res) {
@@ -9,7 +12,9 @@ module.exports = function (wagner) {
                 .then(function (modules) {
                     return res.json({
                         result: true,
-                        modules: modules
+                        modules: _.map(modules, function (val) {
+                            return val._id;
+                        })
                     });
                 }, function (error) {
                     if (error) {
