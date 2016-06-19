@@ -1,0 +1,27 @@
+.scrollable-x {
+    overflow-x: auto;
+}
+
+.scrollable-y {
+    overflow-y: auto;
+}
+
+.margin-top-10 {
+    margin-top: 10px;
+}
+
+.margin-bottom-10 {
+    margin-bottom: 10px;
+}
+
+.padding-top-5 {
+    padding-top: 5px;
+}
+
+.padding-bot-5 {
+    padding-bottom: 5px;
+}
+
+.darkgrey {
+    background-color: darkgrey;
+}

@@ -3,7 +3,7 @@ var _ = require('underscore');
 
 var failCallBack = function (error) {
     if (error) {
-        console.log('Error:');
+        console.log('Error from: ' + failCallBack.caller);
         console.log(error);
     }
 };
@@ -26,6 +26,10 @@ exports.HomeController = function ($scope, $http, $location) {
 exports.ProjectViewController = function ($scope, $routeParams, $http, $location) {
     var encoded = encodeURIComponent($routeParams.id);
 
+    $scope.tbxModule = "";
+    $scope.tbxActor = "";
+    $scope.tbxAction = "";
+    
     $http.get('/api/v1/projects/' + encoded)
         .then(function (json) {
             if (json.data.result)
@@ -35,11 +39,29 @@ exports.ProjectViewController = function ($scope, $routeParams, $http, $location
 
         }, failCallBack);
 
-    $http.get('/api/v1/domains/names/all')
+    $http.get('/api/v1/domains/all')
         .then(function (json) {
-            $scope.domainNames = json.data.domainNames;
+            $scope.domains = json.data.domains;
+            $scope.newDomains = _.without($scope.domains, $scope.project.domainData.domainName);
+        }, failCallBack());
 
-        }, failCallBack())
+    $http.get('/api/v1/modules/all')
+        .then(function (json) {
+            $scope.modules = json.data.modules;
+            $scope.newModules = _.without($scope.modules, $scope.project.domainData.modules);
+        }, failCallBack());
+
+    $http.get('/api/v1/actors/all')
+        .then(function (json) {
+            $scope.actors = json.data.actors;
+            $scope.newActors = _.without($scope.actors, $scope.project.domainData.actors);
+        }, failCallBack());
+
+    $http.get('/api/v1/actions/all')
+        .then(function (json) {
+            $scope.actions = json.data.actions;
+            $scope.newActions = _.without($scope.actions, $scope.project.domainData.actions);
+        }, failCallBack());
 
     $scope.saveProject = function () {
         $http.put('/api/v1/projects/' + encoded, {
@@ -50,6 +72,10 @@ exports.ProjectViewController = function ($scope, $routeParams, $http, $location
             else
                 alert('Something bad happened\nJSON:' + json.data);
         }, failCallBack);
+    };
+
+    $scope.getNewModuleNames = function () {
+        return _.without($scope.modules, $scope.project.domainData.modules);
     };
 
     setTimeout(function () {
@@ -76,7 +102,7 @@ exports.ProjectListController = function ($scope, $routeParams, $http) {
     $scope.deleteProject = function (project, index) {
         $http.delete('/api/v1/projects/' + project._id)
             .then(function (json) {
-                if(json.data.result)
+                if (json.data.result)
                     $scope.projects.splice(index, 1);
             }, failCallBack);
     };

@@ -11,7 +11,10 @@ module.exports = function (wagner) {
     var models = {
         Project: mongoose.model('Project', require('./models/project.js'), 'projects'),
         Domain: mongoose.model('Domain', require('./models/domain.js'), 'domains'),
-        User: mongoose.model('User', require('./models/user.js'), 'users')
+        User: mongoose.model('User', require('./models/user.js'), 'users'),
+        Module: mongoose.model('Module', require('./models/module.js'), 'modules'),
+        Actor: mongoose.model('Actor', require('./models/actor.js'), 'actors'),
+        Action: mongoose.model('Action', require('./models/action.js'), 'actions')
     };
 
     _.each(models, function (value, key) {
