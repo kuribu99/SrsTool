@@ -101,36 +101,30 @@ module.exports = function (wagner) {
         };
     }));
 
-    api.put('/:id', wagner.invoke(function (Project, Domain, Module, Actor, Action) {
+    api.put('/:id', wagner.invoke(function (Project, Domain) {
         return function (req, res) {
             try {
                 var newProject = req.body.project;
                 var projectName = req.body.project.projectName;
-                var domainName = req.body.project.domainData.domainName;
-                var modules = req.body.project.domainData.modules;
-                var actors = req.body.project.domainData.actors;
-                var actions = req.body.project.domainData.actions;
+                var domainData = req.body.project.domainData;
 
                 Project.findOne({_id: req.params.id})
                     .then(function (project) {
                         project.projectName = projectName;
-                        project.domainData.domainName = domainName;
-                        project.domainData.modules = modules;
-                        project.domainData.actors = actors;
-                        project.domainData.actions = actions;
+                        project.domainData = domainData;
                         project.save()
                             .then(function () {
                                 Domain.findOne({
-                                    _id: domainName
+                                    _id: domainData.domainName
                                 }).then(function (domain) {
                                     if (domain == null)
                                         domain = new Domain({
-                                            _id: domainName
+                                            _id: domainData.domainName
                                         });
 
-                                    domain.modules = _.union(domain.modules, modules);
-                                    domain.actors = _.union(domain.actors, actors);
-                                    domain.actions = _.union(domain.actions, actions);
+                                    domain.modules = _.union(domain.modules, domainData.modules);
+                                    domain.actors = _.union(domain.actors, domainData.actors);
+                                    domain.actions = _.union(domain.actions, domainData.actions);
 
                                     domain.save();
                                 });

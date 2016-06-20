@@ -12,18 +12,62 @@ exports.HomeController = function ($scope, $http, $location) {
     $scope.projectName = "";
 
     $scope.newProject = function () {
-        $http.post('/api/v1/projects/new', {
-            projectName: $scope.projectName
-        }).then(function (json) {
-            if (json.data.result)
-                $location.path('/projects/' + json.data.id + '/edit');
-            else
-                console.log(json.data);
-        }, failCallBack);
+        if ($scope.projectName.length > 0) {
+            $http.post('/api/v1/projects/new', {
+                projectName: $scope.projectName
+            }).then(function (json) {
+                if (json.data.result)
+                    $location.path('/projects/' + json.data.id + '/edit');
+                else
+                    console.log(json.data);
+            }, failCallBack);
+        }
     }
 }
 
-exports.EditProjectViewController = function ($scope, $routeParams, $http, $location, $window) {
+exports.ProjectListController = function ($scope, $routeParams, $http) {
+
+    $scope.refreshList = function () {
+        $http.get('/api/v1/projects/all').then(function (json) {
+            $scope.projects = json.data.projects;
+        }, failCallBack);
+    };
+
+    $scope.deleteProject = function (project, index) {
+        $http.delete('/api/v1/projects/' + project._id)
+            .then(function (json) {
+                if (json.data.result)
+                    $scope.projects.splice(index, 1);
+                else
+                    console.log(json.data);
+            }, failCallBack);
+    };
+
+    $scope.refreshList();
+    setTimeout(function () {
+        $scope.$emit('ProjectController');
+    }, 0);
+
+}
+
+exports.ProjectViewController = function ($scope, $routeParams, $http, $location) {
+    var projectID = encodeURIComponent($routeParams.id);
+
+    $http.get('/api/v1/projects/' + projectID)
+        .then(function (json) {
+            if (json.data.result)
+                $scope.project = json.data.project;
+            else
+                $location.path('/#/');
+        }, failCallBack);
+
+    setTimeout(function () {
+        $scope.$emit('ProjectViewController');
+    }, 0);
+
+};
+
+exports.EditProjectViewController = function ($scope, $routeParams, $http, $location) {
     var projectID = encodeURIComponent($routeParams.id);
 
     $scope.tbxModule = "";
@@ -54,15 +98,14 @@ exports.EditProjectViewController = function ($scope, $routeParams, $http, $loca
             $scope.domains = json.data.domains;
         }, failCallBack());
 
-
     $scope.saveProject = function () {
         $http.put('/api/v1/projects/' + projectID, {
             project: $scope.project
         }).then(function (json) {
             if (json.data.result)
-                $window.history.back();
+                $location.path('/projects/' + $scope.project._id);
             else
-                alert('Something bad happened\nJSON:' + json.data);
+                console.log(json.data);
         }, failCallBack);
     };
 
@@ -125,63 +168,23 @@ exports.EditProjectViewController = function ($scope, $routeParams, $http, $loca
     }, 0);
 };
 
-exports.ProjectViewController = function ($scope, $routeParams, $http, $window) {
+exports.AccessControlController = function ($scope, $routeParams, $http, $location) {
     var projectID = encodeURIComponent($routeParams.id);
 
     $http.get('/api/v1/projects/' + projectID)
         .then(function (json) {
-            if (json.data.result) {
+            if (json.data.result)
                 $scope.project = json.data.project;
-                console.log($scope.project);
-            }
             else
-                $window.history.back();
+                $location.path('/#/projects/' + $scope.project._id);
 
         }, failCallBack);
 
     setTimeout(function () {
-        $scope.$emit('ProjectViewController');
+        $scope.$emit('AccessControlController');
     }, 0);
-
-};
-
-exports.ProjectListController = function ($scope, $routeParams, $http) {
-
-    $scope.refreshList = function () {
-        $http.get('/api/v1/projects/all').then(function (json) {
-            $scope.projects = json.data.projects;
-        }, failCallBack);
-    };
-
-    $scope.deleteProject = function (project, index) {
-        $http.delete('/api/v1/projects/' + project._id)
-            .then(function (json) {
-                if (json.data.result)
-                    $scope.projects.splice(index, 1);
-            }, failCallBack);
-    };
-
-    $scope.refreshList();
-    setTimeout(function () {
-        $scope.$emit('ProjectController');
-    }, 0);
-
 }
 },{"underscore":5}],2:[function(require,module,exports){
-exports.editProjectView = function () {
-    return {
-        controller: 'EditProjectViewController',
-        templateUrl: 'templates/edit_project_view.html'
-    };
-};
-
-exports.projectView = function () {
-    return {
-        controller: 'ProjectViewController',
-        templateUrl: 'templates/project_view.html'
-    };
-};
-
 exports.home = function () {
     return {
         controller: 'HomeController',
@@ -193,6 +196,27 @@ exports.projectList = function () {
     return {
         controller: 'ProjectListController',
         templateUrl: 'templates/project_list.html'
+    };
+};
+
+exports.projectView = function () {
+    return {
+        controller: 'ProjectViewController',
+        templateUrl: 'templates/project_view.html'
+    };
+};
+
+exports.editProjectView = function () {
+    return {
+        controller: 'EditProjectViewController',
+        templateUrl: 'templates/edit_project_view.html'
+    };
+};
+
+exports.accessControl = function () {
+    return {
+        controller: 'AccessControlController',
+        templateUrl: 'templates/access_control.html'
     };
 };
 },{}],3:[function(require,module,exports){
@@ -229,6 +253,10 @@ app.config(function ($routeProvider) {
 
         .when('/projects/:id/edit', {
             template: '<edit-project-view></edit-project-view>'
+        })
+
+        .when('/projects/:id/access-control', {
+            template: '<access-control></access-control>'
         });
 });
 

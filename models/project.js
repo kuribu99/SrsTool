@@ -27,6 +27,10 @@ var projectSchema = {
             type: String,
             default: []
         }]
+    },
+    accessControlData: {
+        type: mongoose.Schema.Types.Mixed,
+        default: []
     }
 };
 

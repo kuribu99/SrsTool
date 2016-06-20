@@ -31,5 +31,9 @@ app.config(function ($routeProvider) {
 
         .when('/projects/:id/edit', {
             template: '<edit-project-view></edit-project-view>'
+        })
+
+        .when('/projects/:id/access-control', {
+            template: '<access-control></access-control>'
         });
 });

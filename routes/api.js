@@ -9,9 +9,6 @@ module.exports = function (wagner) {
     api.use(bodyparser.json());
 
     api.use('/projects/', require('./project')(wagner));
-    api.use('/actions/', require('./action')(wagner));
-    api.use('/actors/', require('./actor')(wagner));
-    api.use('/modules/', require('./module')(wagner));
     api.use('/domains/', require('./domain')(wagner));
 
     /*
