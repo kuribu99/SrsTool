@@ -25,15 +25,11 @@ app.config(function ($routeProvider) {
             template: '<home></home>'
         })
 
-        .when('/app', {
-            template: '<srs-app></srs-app>'
-        })
-
-        .when('/project/sample', {
-            template: '<project-view></project-view>'
-        })
-
         .when('/projects/:id', {
             template: '<project-view></project-view>'
+        })
+
+        .when('/projects/:id/edit', {
+            template: '<edit-project-view></edit-project-view>'
         });
 });

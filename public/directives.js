@@ -1,14 +1,14 @@
+exports.editProjectView = function () {
+    return {
+        controller: 'EditProjectViewController',
+        templateUrl: 'templates/edit_project_view.html'
+    };
+};
+
 exports.projectView = function () {
     return {
         controller: 'ProjectViewController',
         templateUrl: 'templates/project_view.html'
-    };
-};
-
-exports.srsApp = function () {
-    return {
-        controller: 'SrsAppController',
-        templateUrl: 'templates/main.html'
     };
 };
 

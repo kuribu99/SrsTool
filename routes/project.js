@@ -12,6 +12,10 @@ module.exports = function (wagner) {
     api.get('/all', wagner.invoke(function (Project) {
         return function (req, res) {
             Project.find()
+                .select({
+                    _id: true,
+                    projectName: true,
+                })
                 .then(function (projects) {
                     return res.json({
                         result: true,
@@ -35,7 +39,7 @@ module.exports = function (wagner) {
                 _id: req.params.id
             }).then(function (project) {
                 return res.json({
-                    result: true,
+                    result: project != null,
                     project: project
                 });
             }, function (error) {
@@ -116,53 +120,19 @@ module.exports = function (wagner) {
                         project.domainData.actions = actions;
                         project.save()
                             .then(function () {
-                                var domain = null;
-
                                 Domain.findOne({
                                     _id: domainName
-                                }).then(function (d) {
-                                    domain = d;
-                                });
+                                }).then(function (domain) {
+                                    if (domain == null)
+                                        domain = new Domain({
+                                            _id: domainName
+                                        });
 
-                                if (domain == null) {
-                                    domain = new Domain({
-                                        _id: domainName
-                                    });
-                                }
+                                    domain.modules = _.union(domain.modules, modules);
+                                    domain.actors = _.union(domain.actors, actors);
+                                    domain.actions = _.union(domain.actions, actions);
 
-                                domain.modules = _.union(domain.modules, modules);
-                                domain.actors = _.union(domain.actors, actors);
-                                domain.actions = _.union(domain.actions, actions);
-                                domain.save();
-
-                                _.each(modules, function (m) {
-                                    Module.update({
-                                        _id: m
-                                    }, {
-                                        _id: m
-                                    }, {
-                                        upsert: true
-                                    });
-                                });
-
-                                _.each(actors, function (a) {
-                                    Actor.update({
-                                        _id: a
-                                    }, {
-                                        _id: a
-                                    }, {
-                                        upsert: true
-                                    });
-                                });
-
-                                _.each(actions, function (a) {
-                                    Action.update({
-                                        _id: a
-                                    }, {
-                                        _id: a
-                                    }, {
-                                        upsert: true
-                                    });
+                                    domain.save();
                                 });
 
                                 return res.json({
