@@ -30,7 +30,7 @@ var projectSchema = {
     },
     accessControlData: {
         type: mongoose.Schema.Types.Mixed,
-        default: []
+        default: {}
     }
 };
 

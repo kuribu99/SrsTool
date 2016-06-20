@@ -107,11 +107,15 @@ module.exports = function (wagner) {
                 var newProject = req.body.project;
                 var projectName = req.body.project.projectName;
                 var domainData = req.body.project.domainData;
+                var accessControlData = req.body.project.accessControlData;
 
                 Project.findOne({_id: req.params.id})
                     .then(function (project) {
                         project.projectName = projectName;
                         project.domainData = domainData;
+                        project.accessControlData = accessControlData;
+
+                        console.log(accessControlData);
                         project.save()
                             .then(function () {
                                 Domain.findOne({

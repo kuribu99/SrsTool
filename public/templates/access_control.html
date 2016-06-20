@@ -1,4 +1,25 @@
-<div>
-
-
+<div class="col-sm-12 padding-top-5 padding-bot-5 darkgrey">
+    <div class="form-group col-sm-3">
+        <a class="btn form-control" ng-href="/#/projects/{{ project._id }}">Back</a>
+    </div>
+    <div class="form-group col-sm-offset-6 col-sm-3">
+        <a class="btn btn-success form-control" ng-Click="saveProject()">Save Project</a>
+    </div>
+</div>
+<div class="col-sm-12">
+    <div class="col-sm-12 scrollable-x">
+        <ul class="nav nav-pills">
+            <li ng-repeat="(module, actions) in project.accessControlData">
+                <a data-toggle="pill" href="!#{{ module }}">{{ module }}</a>
+            </li>
+        </ul>
+        <div class="tab-content margin-top-10">
+            <div ng-repeat="(module, actions) in project.accessControlData" id="{{ module }}" class="tab-pane fade in">
+                <div ng-repeat="(action, value) in actions">
+                    <input id="{{ module }}.{{ action }}" type="checkbox" ng-model="value.isChecked">
+                    <label for="{{ module }}.{{ action }}">{{ action }} => {{ value }}</label>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
