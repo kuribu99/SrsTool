@@ -12,17 +12,17 @@
     </ul>
     <div class="col-sm-10 scrollable-x">
         <ul class="nav nav-pills">
-            <li ng-repeat="(module, actions) in project.accessControlData">
-                <a data-toggle="pill" href="!#{{ module }}">{{ module }}</a>
+            <li ng-repeat="(module, actors) in project.accessControlData">
+                <a data-toggle="pill" href="!#{{ module.replace(' ', '_') }}">{{ module }}</a>
             </li>
         </ul>
     </div>
 </div>
 <div class="col-sm-12 tab-content margin-top-10">
-    <div ng-repeat="(module, actions) in project.accessControlData" id="{{ module }}" class="tab-pane fade in">
-        <div ng-repeat="(action, value) in actions">
-            <input id="{{ module }}.{{ action }}" type="checkbox" ng-model="actions[action]">
-            <label for="{{ module }}.{{ action }}">{{ action }}</label>
+    <div ng-repeat="(module, actors) in project.accessControlData" id="{{ module.replace(' ', '_') }}" class="tab-pane fade in">
+        <div ng-repeat="actor in project.domainData.actors">
+            <input id="{{ module.replace(' ', '_') }}.{{ actor.replace(' ', '_') }}" type="checkbox" ng-model="actors[actor]">
+            <label for="{{ module.replace(' ', '_') }}.{{ actor.replace(' ', '_') }}">{{ actor }}</label>
         </div>
     </div>
 </div>

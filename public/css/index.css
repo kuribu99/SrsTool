@@ -25,3 +25,7 @@
 .darkgrey {
     background-color: darkgrey;
 }
+
+.center-vertical {
+    vertical-align: middle;
+}

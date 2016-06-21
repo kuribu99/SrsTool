@@ -12,7 +12,7 @@ exports.HomeController = function ($scope, $http, $location) {
 
     $scope.newProject = function () {
         if ($scope.projectName.length > 0) {
-            $http.post('/api/v1/projects/new', {
+            $http.post('/api/v1/projects/', {
                 projectName: $scope.projectName
             }).then(function (json) {
                 if (json.data.result)
@@ -27,19 +27,21 @@ exports.HomeController = function ($scope, $http, $location) {
 exports.ProjectListController = function ($scope, $routeParams, $http) {
 
     $scope.refreshList = function () {
-        $http.get('/api/v1/projects/all').then(function (json) {
+        $http.get('/api/v1/projects/list').then(function (json) {
             $scope.projects = json.data.projects;
         }, failCallBack);
     };
 
     $scope.deleteProject = function (project, index) {
-        $http.delete('/api/v1/projects/' + project._id)
-            .then(function (json) {
-                if (json.data.result)
-                    $scope.projects.splice(index, 1);
-                else
-                    console.log(json.data);
-            }, failCallBack);
+        if (confirm('Are you sure to delete this project?')) {
+            $http.delete('/api/v1/projects/' + project._id)
+                .then(function (json) {
+                    if (json.data.result)
+                        $scope.projects.splice(index, 1);
+                    else
+                        console.log(json.data);
+                }, failCallBack);
+        }
     };
 
     $scope.refreshList();
@@ -52,12 +54,12 @@ exports.ProjectListController = function ($scope, $routeParams, $http) {
 exports.ProjectViewController = function ($scope, $routeParams, $http, $location) {
     var projectID = encodeURIComponent($routeParams.id);
 
-    $http.get('/api/v1/projects/' + projectID)
+    $http.get('/api/v1/projects/' + projectID + '/view')
         .then(function (json) {
             if (json.data.result)
                 $scope.project = json.data.project;
             else
-                $location.path('/#/');
+                $location.path('/');
         }, failCallBack);
 
     setTimeout(function () {
@@ -73,7 +75,7 @@ exports.EditProjectViewController = function ($scope, $routeParams, $http, $loca
     $scope.tbxActor = "";
     $scope.tbxAction = "";
 
-    $http.get('/api/v1/projects/' + projectID)
+    $http.get('/api/v1/projects/' + projectID + '/domain-data/')
         .then(function (json) {
             if (json.data.result) {
                 $scope.project = json.data.project;
@@ -92,13 +94,13 @@ exports.EditProjectViewController = function ($scope, $routeParams, $http, $loca
 
         }, failCallBack);
 
-    $http.get('/api/v1/domains/names/all')
+    $http.get('/api/v1/domains/names/')
         .then(function (json) {
             $scope.domains = json.data.domains;
         }, failCallBack());
 
     $scope.saveProject = function () {
-        $http.put('/api/v1/projects/' + projectID, {
+        $http.patch('/api/v1/projects/' + projectID + '/domain-data/', {
             project: $scope.project
         }).then(function (json) {
             if (json.data.result)
@@ -167,10 +169,38 @@ exports.EditProjectViewController = function ($scope, $routeParams, $http, $loca
     }, 0);
 };
 
-exports.AccessControlController = function ($scope, $routeParams, $http, $location) {
+exports.GenerateRequirementController = function ($scope, $routeParams, $http, $location) {
     var projectID = encodeURIComponent($routeParams.id);
 
     $http.get('/api/v1/projects/' + projectID)
+        .then(function (json) {
+            if (json.data.result)
+                $scope.project = json.data.project;
+            else
+                $location.path('/');
+        }, failCallBack);
+
+    $scope.saveProject = function () {
+        $http.patch('/api/v1/projects/' + projectID + '/generated-requirements', {
+            generatedRequirements: $scope.project.generatedRequirements
+        }).then(function (json) {
+            if (json.data.result)
+                $location.path('/projects/' + $scope.project._id);
+            else
+                console.log(json.data);
+        }, failCallBack);
+    };
+
+    setTimeout(function () {
+        $scope.$emit('ProjectViewController');
+    }, 0);
+
+};
+
+exports.AccessControlController = function ($scope, $routeParams, $http, $location) {
+    var projectID = encodeURIComponent($routeParams.id);
+
+    $http.get('/api/v1/projects/' + projectID + '/access-control-data')
         .then(function (json) {
             if (json.data.result) {
                 $scope.project = json.data.project;
@@ -186,15 +216,27 @@ exports.AccessControlController = function ($scope, $routeParams, $http, $locati
                         if (!$scope.project.accessControlData[module].hasOwnProperty(actor))
                             $scope.project.accessControlData[module][actor] = false;
                     });
+
+                    _.each(
+                        _.difference(Object.keys($scope.project.accessControlData[module]), $scope.project.domainData.actors),
+                        function (key) {
+                            delete $scope.project.accessControlData[module][key];
+                        });
                 });
+                _.each(
+                    _.difference(Object.keys($scope.project.accessControlData), $scope.project.domainData.modules),
+                    function (key) {
+                        delete $scope.project.accessControlData[key];
+                    });
+
             } else
-                $location.path('/#/projects/' + $scope.project._id);
+                $location.path('/projects/' + $scope.project._id);
 
         }, failCallBack);
 
     $scope.saveProject = function () {
-        $http.put('/api/v1/projects/' + projectID, {
-            project: $scope.project
+        $http.patch('/api/v1/projects/' + projectID + '/access-control-data', {
+            accessControlData: $scope.project.accessControlData
         }).then(function (json) {
             if (json.data.result)
                 $location.path('/projects/' + $scope.project._id);
@@ -208,10 +250,10 @@ exports.AccessControlController = function ($scope, $routeParams, $http, $locati
     }, 0);
 }
 
-exports.AccessControlController = function ($scope, $routeParams, $http, $location) {
+exports.ActionControlController = function ($scope, $routeParams, $http, $location) {
     var projectID = encodeURIComponent($routeParams.id);
 
-    $http.get('/api/v1/projects/' + projectID)
+    $http.get('/api/v1/projects/' + projectID + '/action-control-data')
         .then(function (json) {
             if (json.data.result) {
                 $scope.project = json.data.project;
@@ -224,18 +266,32 @@ exports.AccessControlController = function ($scope, $routeParams, $http, $locati
                         $scope.project.actionControlData[actor] = {};
 
                     _.each($scope.project.domainData.actions, function (action) {
-                        if (!$scope.project.actionControlData[action].hasOwnProperty(action))
-                            $scope.project.actionControlData[action][action] = false;
+                        if (!$scope.project.actionControlData[actor].hasOwnProperty(action))
+                            $scope.project.actionControlData[actor][action] = false;
                     });
+
+                    // Delete existing removed action data
+                    _.each(
+                        _.difference(Object.keys($scope.project.actionControlData[actor]), $scope.project.domainData.actions),
+                        function (key) {
+                            delete $scope.project.actionControlData[actor][key];
+                        });
                 });
+
+                // Delete existing removed actor data
+                _.each(
+                    _.difference(Object.keys($scope.project.actionControlData), $scope.project.domainData.actors),
+                    function (key) {
+                        delete $scope.project.actionControlData[key];
+                    });
             } else
-                $location.path('/#/projects/' + $scope.project._id);
+                $location.path('/projects/' + $scope.project._id);
 
         }, failCallBack);
 
     $scope.saveProject = function () {
-        $http.put('/api/v1/projects/' + projectID, {
-            project: $scope.project
+        $http.patch('/api/v1/projects/' + projectID + '/action-control-data', {
+            actionControlData: $scope.project.actionControlData
         }).then(function (json) {
             if (json.data.result)
                 $location.path('/projects/' + $scope.project._id);

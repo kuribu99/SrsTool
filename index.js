@@ -6,7 +6,7 @@ require('./dependencies')(wagner);
 
 var app = express();
 
-//app.use(require('morgan')());
+app.use(require('morgan')('[:method] :url'));
 
 //wagner.invoke(require('./auth'), { app: app });
 

@@ -12,7 +12,7 @@ exports.projectList = function () {
     };
 };
 
-exports.projectView = function () {
+exports.projectView = function ($routeParams) {
     return {
         controller: 'ProjectViewController',
         templateUrl: './templates/project_view.html'
@@ -23,6 +23,13 @@ exports.editProjectView = function () {
     return {
         controller: 'EditProjectViewController',
         templateUrl: './templates/edit_project_view.html'
+    };
+};
+
+exports.generateRequirement = function () {
+    return {
+        controller: 'GenerateRequirementController',
+        templateUrl: './templates/generate_requirement.html'
     };
 };
 

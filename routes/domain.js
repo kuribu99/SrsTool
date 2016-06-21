@@ -4,7 +4,7 @@ module.exports = function (wagner) {
     var api = express.Router();
     var _ = require('underscore');
 
-    api.get('/names/all', wagner.invoke(function (Domain) {
+    api.get('/names/', wagner.invoke(function (Domain) {
         return function (req, res) {
             Domain.find()
                 .select({_id: true})

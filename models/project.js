@@ -35,7 +35,11 @@ var projectSchema = {
     actionControlData: {
         type: mongoose.Schema.Types.Mixed,
         default: {}
-    }
+    },
+    generatedRequirements: [{
+        type: mongoose.Schema.Types.Mixed,
+        default: []
+    }]
 };
 
 module.exports = new mongoose.Schema(projectSchema);
