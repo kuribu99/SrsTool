@@ -1,21 +1,25 @@
 <nav class="navbar navbar-default">
     <div class="container-fluid">
-        <div class="navbar-header col-sm-9">
+        <div class="navbar-header col-sm-12">
             <h3 class="h3">Software Requirement Specification Tool - {{ project.projectName }}</h3>
         </div>
-        <div class="col-sm-3 center-vertical">
-            <div class="col-sm-12 form-group">
+        <div class="col-sm-12 right padding-bot-5">
+            <div class="col-sm-3">
+                <a class="btn btn-success" ng-click="saveProject()">Save Changes</a>
+            </div>
+            <div class="col-sm-3">
                 <a class="btn btn-default form-control" ng-href="/#/">Back</a>
             </div>
         </div>
     </div>
 </nav>
-<div class="col-sm-12 scrollable-x">
+<div class="col-sm-12">
     <div class="form-group col-sm-3">
         <a class="form-control btn btn-default" ng-href="/#/projects/{{ project._id }}/edit">Edit Project</a>
     </div>
     <div class="form-group col-sm-3">
-        <a ng-if="project.domainData.modules.length > 0 && project.domainData.actors.length > 0" class="form-control btn btn-default"
+        <a ng-if="project.domainData.modules.length > 0 && project.domainData.actors.length > 0"
+           class="form-control btn btn-default"
            ng-href="/#/projects/{{ project._id }}/access-control">Configure Access Control</a>
         <button ng-if="project.domainData.modules.length == 0 || project.domainData.actors.length == 0"
                 class="form-control btn btn-default disabled" disabled>
@@ -23,7 +27,8 @@
         </button>
     </div>
     <div class="form-group col-sm-3">
-        <a ng-if="project.domainData.actions.length > 0 && project.domainData.actors.length > 0" class="form-control btn btn-default"
+        <a ng-if="project.domainData.actions.length > 0 && project.domainData.actors.length > 0"
+           class="form-control btn btn-default"
            ng-href="/#/projects/{{ project._id }}/action-control">Configure Action Control</a>
         <button ng-if="project.domainData.actions.length == 0 || project.domainData.actors.length == 0"
                 class="form-control btn btn-default disabled" disabled>
@@ -31,7 +36,9 @@
         </button>
     </div>
     <div class="form-group col-sm-3">
-        <a class="form-control btn btn-default" ng-href="/#/projects/{{ project._id }}/generate">Generate Requirements</a>
+        <a class="form-control btn btn-default" ng-href="/#/projects/{{ project._id }}/generate">
+            Generate Requirements
+        </a>
     </div>
 </div>
 <div class="col-sm-12">
@@ -39,8 +46,25 @@
         <h3 class="h3">No requirement found</h3>
     </div>
     <div class="col-sm-12" ng-if="project.generatedRequirements.length > 0">
-        <div ng-repeat="requirement in project.generatedRequirements" class="col-sm-push-1 col-sm-pull-1 col-sm-12">
-            {{ requirement }}
-        </div>
+        <table class="table table-bordered">
+            <thead>
+            <tr class="alert-success text-center">
+                <td>#</td>
+                <td>Requirement</td>
+                <td>Actions</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="requirement in project.generatedRequirements track by $index">
+                <td>{{ $index + 1 }}</td>
+                <td>{{ $formatter.requirementToString(requirement) }}</td>
+                <td>
+                    <a class="btn btn-warning" ng-click="removeRequirement(index)">
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 </div>

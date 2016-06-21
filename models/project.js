@@ -39,7 +39,11 @@ var projectSchema = {
     generatedRequirements: [{
         type: mongoose.Schema.Types.Mixed,
         default: []
-    }]
+    }],
+    boilerplates: {
+        type: mongoose.Schema.Types.Mixed,
+        default: {}
+    }
 };
 
 module.exports = new mongoose.Schema(projectSchema);

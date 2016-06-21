@@ -22,7 +22,7 @@ exports.HomeController = function ($scope, $http, $location) {
             }, failCallBack);
         }
     }
-}
+};
 
 exports.ProjectListController = function ($scope, $routeParams, $http) {
 
@@ -49,10 +49,12 @@ exports.ProjectListController = function ($scope, $routeParams, $http) {
         $scope.$emit('ProjectController');
     }, 0);
 
-}
+};
 
-exports.ProjectViewController = function ($scope, $routeParams, $http, $location) {
+exports.ProjectViewController = function ($scope, $routeParams, $http, $location, $formatter) {
     var projectID = encodeURIComponent($routeParams.id);
+
+    $scope.$formatter = $formatter;
 
     $http.get('/api/v1/projects/' + projectID + '/view')
         .then(function (json) {
@@ -61,6 +63,21 @@ exports.ProjectViewController = function ($scope, $routeParams, $http, $location
             else
                 $location.path('/');
         }, failCallBack);
+
+    $scope.saveProject = function () {
+        $http.patch('/api/v1/projects/' + projectID + '/generated-requirements', {
+            generatedRequirements: $scope.project.generatedRequirements
+        }).then(function (json) {
+            if (json.data.result)
+                $location.path('/projects/' + $scope.project._id);
+            else
+                console.log(json.data);
+        }, failCallBack);
+    };
+
+    $scope.removeRequirement = function (index) {
+        $scope.project.generatedRequirements.splice(index, 1);
+    };
 
     setTimeout(function () {
         $scope.$emit('ProjectViewController');
@@ -169,16 +186,88 @@ exports.EditProjectViewController = function ($scope, $routeParams, $http, $loca
     }, 0);
 };
 
-exports.GenerateRequirementController = function ($scope, $routeParams, $http, $location) {
+exports.GenerateRequirementController = function ($scope, $routeParams, $http, $location, $formatter) {
     var projectID = encodeURIComponent($routeParams.id);
+
+    $scope.$formatter = $formatter;
+    $scope.generatedRequirements = [];
+    $scope.accessControlBoilerplates = {
+        true: "<actor> shall be able to access to <module> module",
+        false: "<actor> shall not be able to access to <module> module"
+    };
 
     $http.get('/api/v1/projects/' + projectID)
         .then(function (json) {
-            if (json.data.result)
+            if (json.data.result) {
                 $scope.project = json.data.project;
+                if ($scope.project.boilerplates == null) {
+                    $scope.project.boilerplates = {};
+                    $scope.project.boilerplates.accessControlBoilerplates = $scope.accessControlBoilerplates;
+                }
+
+                $scope.generateRequirements();
+            }
             else
                 $location.path('/');
         }, failCallBack);
+
+    $scope.generateRequirements = function () {
+        while ($scope.generatedRequirements.length > 0)
+            $scope.generatedRequirements.pop();
+
+        for (var module in $scope.project.accessControlData) {
+            for (var actor in $scope.project.accessControlData[module]) {
+                var boilerplate = $scope.project.boilerplates.accessControlBoilerplates[
+                    $scope.project.accessControlData[module][actor]
+                    ];
+                var values = {
+                    '<module>': module,
+                    '<actor>': actor
+                };
+
+                if (!$scope.hasRequirement(module, values))
+                    $scope.generatedRequirements.push($scope.newRequirement(module, boilerplate, values));
+            }
+        }
+    };
+
+    $scope.hasRequirement = function (module, values) {
+        for (var i in $scope.project.generatedRequirements) {
+            var requirement = $scope.project.generatedRequirements[i];
+
+            if (requirement.module != module)
+                continue;
+            for (var index in requirement.values) {
+                if (requirement.values[index] != values[index])
+                    continue;
+            }
+            return true;
+        }
+        return false;
+    };
+
+    $scope.addCheckedRequirements = function () {
+        var addedRequirements = [];
+
+        _.each($scope.generatedRequirements, function (requirement) {
+            if (requirement.checked) {
+                delete requirement.checked;
+                $scope.project.generatedRequirements.push(requirement);
+                addedRequirements.push(requirement);
+            }
+        });
+
+        $scope.generatedRequirements = _.difference($scope.generatedRequirements, addedRequirements);
+    };
+
+    $scope.newRequirement = function (module, boilerplate, values) {
+        return {
+            module: module,
+            boilerplate: boilerplate,
+            values: values,
+            checked: false
+        };
+    };
 
     $scope.saveProject = function () {
         $http.patch('/api/v1/projects/' + projectID + '/generated-requirements', {

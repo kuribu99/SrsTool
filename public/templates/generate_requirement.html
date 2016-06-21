@@ -6,6 +6,20 @@
         <a class="btn btn-success form-control" ng-Click="saveProject()">Save Project</a>
     </div>
 </div>
-<div class="col-sm-12">
-    <h3>Generate Requirement</h3>
+<h3 class="h3">Generated Requirement</h3>
+<div class="col-sm-12" ng-if="generatedRequirements.length > 0">
+    <div class="col-sm-12">
+        <ol>
+            <li ng-repeat="requirement in generatedRequirements">
+                <input type="checkbox" ng-model="requirement.checked"/>
+                <span ng-bind="$formatter.requirementToString(requirement)"></span>
+            </li>
+        </ol>
+    </div>
+    <div class="col-sm-12">
+        <button class="btn btn-success" ng-click="addCheckedRequirements()">Add Requirements</button>
+    </div>
+</div>
+<div class="col-sm-12" ng-if="generatedRequirements.length == 0">
+    <h4>No more requirements can be generated</h4>
 </div>

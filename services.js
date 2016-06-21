@@ -52,3 +52,22 @@ exports.$projectService = function ($http) {
 
     return this;
 };
+
+exports.$formatter = function () {
+    this.asSentence = function (str) {
+        str = str[0].toUpperCase() + str.substring(1);
+        if (!str.endsWith('.'))
+            str += '.';
+        return str;
+    };
+
+    this.requirementToString = function (requirement) {
+        var str = requirement.boilerplate;
+        for (var placeholder in requirement.values) {
+            str = str.replace(placeholder, requirement.values[placeholder]);
+        }
+        return this.asSentence(str);
+    };
+
+    return this;
+};
