@@ -115,7 +115,6 @@ module.exports = function (wagner) {
                         project.domainData = domainData;
                         project.accessControlData = accessControlData;
 
-                        console.log(accessControlData);
                         project.save()
                             .then(function () {
                                 Domain.findOne({

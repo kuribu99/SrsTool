@@ -35,5 +35,9 @@ app.config(function ($routeProvider) {
 
         .when('/projects/:id/access-control', {
             template: '<access-control></access-control>'
+        })
+
+        .when('/projects/:id/action-control', {
+            template: '<action-control></action-control>'
         });
 });

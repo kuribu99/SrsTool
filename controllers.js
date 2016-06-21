@@ -174,17 +174,17 @@ exports.AccessControlController = function ($scope, $routeParams, $http, $locati
         .then(function (json) {
             if (json.data.result) {
                 $scope.project = json.data.project;
-                $scope.accessControlData ={};
+
+                if (!$scope.project.accessControlData)
+                    $scope.project.accessControlData = {};
 
                 _.each($scope.project.domainData.modules, function (module) {
-                    $scope.accessControlData[module] = {};
+                    if (!$scope.project.accessControlData.hasOwnProperty(module))
+                        $scope.project.accessControlData[module] = {};
 
-                    var hasModule = $scope.project.accessControlData.hasOwnProperty(module);
                     _.each($scope.project.domainData.actors, function (actor) {
-                        if (hasModule && $scope.project.accessControlData[module].hasOwnProperty(actor))
-                            $scope.accessControlData[module][actor] = $scope.project.accessControlData[module][actor];
-                        else
-                            $scope.accessControlData[module][actor] = false;
+                        if (!$scope.project.accessControlData[module].hasOwnProperty(actor))
+                            $scope.project.accessControlData[module][actor] = false;
                     });
                 });
             } else
@@ -193,7 +193,6 @@ exports.AccessControlController = function ($scope, $routeParams, $http, $locati
         }, failCallBack);
 
     $scope.saveProject = function () {
-        console.log($scope.project.accessControlData);
         $http.put('/api/v1/projects/' + projectID, {
             project: $scope.project
         }).then(function (json) {
@@ -206,5 +205,46 @@ exports.AccessControlController = function ($scope, $routeParams, $http, $locati
 
     setTimeout(function () {
         $scope.$emit('AccessControlController');
+    }, 0);
+}
+
+exports.AccessControlController = function ($scope, $routeParams, $http, $location) {
+    var projectID = encodeURIComponent($routeParams.id);
+
+    $http.get('/api/v1/projects/' + projectID)
+        .then(function (json) {
+            if (json.data.result) {
+                $scope.project = json.data.project;
+
+                if (!$scope.project.actionControlData)
+                    $scope.project.actionControlData = {};
+
+                _.each($scope.project.domainData.actors, function (actor) {
+                    if (!$scope.project.actionControlData.hasOwnProperty(actor))
+                        $scope.project.actionControlData[actor] = {};
+
+                    _.each($scope.project.domainData.actions, function (action) {
+                        if (!$scope.project.actionControlData[action].hasOwnProperty(action))
+                            $scope.project.actionControlData[action][action] = false;
+                    });
+                });
+            } else
+                $location.path('/#/projects/' + $scope.project._id);
+
+        }, failCallBack);
+
+    $scope.saveProject = function () {
+        $http.put('/api/v1/projects/' + projectID, {
+            project: $scope.project
+        }).then(function (json) {
+            if (json.data.result)
+                $location.path('/projects/' + $scope.project._id);
+            else
+                console.log(json.data);
+        }, failCallBack);
+    };
+
+    setTimeout(function () {
+        $scope.$emit('ActionControlController');
     }, 0);
 }

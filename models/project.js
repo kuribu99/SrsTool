@@ -31,6 +31,10 @@ var projectSchema = {
     accessControlData: {
         type: mongoose.Schema.Types.Mixed,
         default: {}
+    },
+    actionControlData: {
+        type: mongoose.Schema.Types.Mixed,
+        default: {}
     }
 };
 
