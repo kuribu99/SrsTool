@@ -4,19 +4,15 @@
     <link rel="stylesheet" href="./css/index.css"/>
     <link rel="stylesheet" href="./vendor/css/icon.css">
     <link type="text/css" rel="stylesheet" href="./vendor/css/materialize.min.css" media="screen,projection"/>
+    <script type="text/javascript" src="./vendor/js/jquery.min.js"></script>
     <script type="text/javascript" src="./vendor/js/angular.js"></script>
     <script type="text/javascript" src="./vendor/js/angular-route.js"></script>
-    <script type="text/javascript" src="./vendor/js/jquery.min.js"></script>
     <script type="text/javascript" src="./vendor/js/materialize.min.js"></script>
     <script type="text/javascript" src="./bin/angular.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 </head>
 <body class="fullscreen">
-<nav class="waves-effect waves-light row">
-    <div class="nav-wrapper">
-        <a ng-href="/#/" class="brand-logo">Software Requirement Specification Tool</a>
-    </div>
-</nav>
+<nav-bar></nav-bar>
 <loading ng-if="loading"></loading>
 <div ng-hide="loading" ng-view>
 </div>

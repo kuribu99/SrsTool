@@ -1,28 +1,41 @@
-<div class="col-sm-12 padding-top-5 padding-bot-5 darkgrey">
-    <div class="form-group col-sm-3">
-        <a class="btn form-control" ng-href="/#/projects/{{ project._id }}">Back</a>
-    </div>
-    <div class="form-group col-sm-offset-6 col-sm-3">
-        <a class="btn btn-success form-control" ng-Click="saveProject()">Save Project</a>
-    </div>
-</div>
-<div class="col-sm-12">
-    <ul class="col-sm-2 nav nav-pills">
-        <li class="disabled"><a>Select Actor:</a></li>
-    </ul>
-    <div class="col-sm-10 scrollable-x">
-        <ul class="nav nav-pills">
-            <li ng-repeat="(actor, actions) in project.actionControlData">
-                <a data-toggle="pill" href="!#{{ actor.replace(' ', '_') }}">{{ actor }}</a>
-            </li>
-        </ul>
-    </div>
-</div>
-<div class="col-sm-12 tab-content margin-top-10">
-    <div ng-repeat="(actor, actions) in project.actionControlData" id="{{ actor.replace(' ', '_') }}" class="tab-pane fade in">
-        <div ng-repeat="(action, value) in project.domainData.actions">
-            <input id="{{ actor.replace(' ', '_') }}.{{ action.replace(' ', '_') }} " type="checkbox" ng-model="actions[action]">
-            <label for="{{ actor.replace(' ', '_') }}.{{ action.replace(' ', '_') }} ">{{ action }}</label>
+<div class="row valign-wrapper">
+    <div class="valign col s8 m4">
+        <div class="col s12 m6 input-field">
+            <a class="btn waves-effect waves-light green col s12 m12" ng-click="saveProject()">
+                <i class="material-icons left">done</i>Save
+            </a>
+        </div>
+        <div class="col s12 m6 input-field">
+            <a class="btn waves-effect waves-light red col s12 m12" ng-href="/#/projects/{{ project._id }}">
+                <i class="material-icons left">power_settings_new</i>Back
+            </a>
         </div>
     </div>
 </div>
+<div class="row">
+    <div class="row">
+        <ul class="tabs">
+            <li class="col tab active">
+                <a href="#SELECT_ACTOR">Select Actor</a>
+            </li>
+            <li class="col tab" ng-repeat="(actor, actions) in project.actionControlData">
+                <a href="{{ $formatter.asHtmlID(actor) }}" ng-bind="actor"></a>
+            </li>
+        </ul>
+    </div>
+    <div id="SELECT_ACTOR" class="row active">
+        <h4>Select an actor to configure whether that particular actor can perform every actions configured in this domain</h4>
+    </div>
+    <div ng-repeat="(actor, actions) in project.actionControlData" id="{{ actor.replace(' ', '_') }}" class="row">
+        <div class="input-field" ng-repeat="action in project.domainData.actions">
+            <input id="{{ actor.replace(' ', '_') }}.{{ action.replace(' ', '_') }}" type="checkbox"
+                   ng-model="actions[action]">
+            <label for="{{ actor.replace(' ', '_') }}.{{ action.replace(' ', '_') }}" ng-bind="action"></label>
+        </div>
+    </div>
+</div>
+<script>
+    setTimeout(function () {
+        $('ul.tabs').tabs();
+    }, 500);
+</script>

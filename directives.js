@@ -5,6 +5,19 @@ exports.home = function () {
     };
 };
 
+exports.navBar = function () {
+    return {
+        templateUrl: './templates/nav_bar.html'
+    };
+};
+
+exports.breadcrumbs = function () {
+    return {
+        controller: 'BreadcrumbsController',
+        templateUrl: './templates/breadcrumbs.html'
+    };
+};
+
 exports.loading = function () {
     return {
         templateUrl: './templates/loading.html'

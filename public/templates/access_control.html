@@ -1,28 +1,38 @@
-<div class="col-sm-12 padding-top-5 padding-bot-5 darkgrey">
-    <div class="form-group col-sm-3">
-        <a class="btn form-control" ng-href="/#/projects/{{ project._id }}">Back</a>
-    </div>
-    <div class="form-group col-sm-offset-6 col-sm-3">
-        <a class="btn btn-success form-control" ng-Click="saveProject()">Save Project</a>
-    </div>
-</div>
-<div class="col-sm-12">
-    <ul class="col-sm-2 nav nav-pills">
-        <li class="disabled"><a>Select Module:</a></li>
-    </ul>
-    <div class="col-sm-10 scrollable-x">
-        <ul class="nav nav-pills">
-            <li ng-repeat="(module, actors) in project.accessControlData">
-                <a data-toggle="pill" href="!#{{ module.replace(' ', '_') }}">{{ module }}</a>
-            </li>
-        </ul>
-    </div>
-</div>
-<div class="col-sm-12 tab-content margin-top-10">
-    <div ng-repeat="(module, actors) in project.accessControlData" id="{{ module.replace(' ', '_') }}" class="tab-pane fade in">
-        <div ng-repeat="actor in project.domainData.actors">
-            <input id="{{ module.replace(' ', '_') }}.{{ actor.replace(' ', '_') }}" type="checkbox" ng-model="actors[actor]">
-            <label for="{{ module.replace(' ', '_') }}.{{ actor.replace(' ', '_') }}">{{ actor }}</label>
+<div class="row valign-wrapper">
+    <div class="valign col s8 m4">
+        <div class="col s12 m6 input-field">
+            <a class="btn waves-effect waves-light green col s12 m12" ng-click="saveProject()">
+                <i class="material-icons left">done</i>Save
+            </a>
+        </div>
+        <div class="col s12 m6 input-field">
+            <a class="btn waves-effect waves-light red col s12 m12" ng-href="/#/projects/{{ project._id }}">
+                <i class="material-icons left">power_settings_new</i>Back
+            </a>
         </div>
     </div>
 </div>
+<div class="row">
+    <div class="row">
+        <ul class="tabs">
+            <li class="col tab active">
+                <a href="#SELECT_MODULE">Select Module</a>
+            </li>
+            <li class="col tab" ng-repeat="(module, actors) in project.accessControlData track by $index">
+                <a href="{{ $formatter.asHtmlID(module) }}" ng-bind="module"></a>
+            </li>
+        </ul>
+    </div>
+    <div id="SELECT_MODULE" class="row active">
+        <h4>Select a module to configure access control of each actor for that particular module</h4>
+    </div>
+    <div ng-repeat="(module, actors) in project.accessControlData" id="{{ module.replace(' ', '_') }}" class="row">
+        <div class="input-field" ng-repeat="actor in project.domainData.actors">
+            <input id="{{ module.replace(' ', '_') }}.{{ actor.replace(' ', '_') }}" type="checkbox"
+                   ng-model="actors[actor]">
+            <label for="{{ module.replace(' ', '_') }}.{{ actor.replace(' ', '_') }}" ng-bind="actor"></label>
+        </div>
+    </div>
+</div>
+<script>
+</script>

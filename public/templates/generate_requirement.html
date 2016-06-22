@@ -1,25 +1,35 @@
-<div class="col-sm-12 padding-top-5 padding-bot-5 darkgrey">
-    <div class="form-group col-sm-3">
-        <a class="btn form-control" ng-href="/#/projects/{{ project._id }}">Back</a>
-    </div>
-    <div class="form-group col-sm-offset-6 col-sm-3">
-        <a class="btn btn-success form-control" ng-Click="saveProject()">Save Project</a>
+<div class="row valign-wrapper">
+    <div class="valign col s8 m4">
+        <div class="col s12 m6 input-field">
+            <a class="btn waves-effect waves-light green col s12 m12" ng-click="saveProject()">
+                <i class="material-icons left">done</i>Save
+            </a>
+        </div>
+        <div class="col s12 m6 input-field">
+            <a class="btn waves-effect waves-light red col s12 m12" ng-href="/#/projects/{{ project._id }}">
+                <i class="material-icons left">power_settings_new</i>Back
+            </a>
+        </div>
     </div>
 </div>
-<h3 class="h3">Generated Requirement</h3>
-<div class="col-sm-12" ng-if="generatedRequirements.length > 0">
-    <div class="col-sm-12">
-        <ol>
-            <li ng-repeat="requirement in generatedRequirements">
-                <input type="checkbox" ng-model="requirement.checked"/>
-                <span ng-bind="$formatter.requirementToString(requirement)"></span>
+<div class="row" ng-if="generatedRequirements.length > 0">
+    <h4 class="header">Generated Requirements</h4>
+    <div class="row">
+        <ul>
+            <li ng-repeat="requirement in generatedRequirements track by $index">
+                <div class="input-field">
+                    <input type="checkbox" ng-model="requirement.checked" id="requirement.{{ $index }}"/>
+                    <label for="requirement.{{ $index }}" ng-bind="$formatter.requirementToString(requirement)"></label>
+                </div>
             </li>
-        </ol>
+        </ul>
     </div>
-    <div class="col-sm-12">
-        <button class="btn btn-success" ng-click="addCheckedRequirements()">Add Requirements</button>
+    <div class="col s4 m3 push-s8 push-m9">
+        <button class="btn waves-effect waves-light col s12 m12" ng-click="addCheckedRequirements()">Add Requirements</button>
     </div>
 </div>
-<div class="col-sm-12" ng-if="generatedRequirements.length == 0">
-    <h4>No more requirements can be generated</h4>
+<div class="row" ng-if="generatedRequirements.length == 0">
+    <div class="col s12 m12 card card-panel waves-light waves-effect center-align green">
+        <h5 class="header">No requirement can be generated</h5>
+    </div>
 </div>

@@ -1,161 +1,156 @@
-<!-- Navigation bar actions -->
-<div class="col-sm-12 padding-top-5 padding-bot-5 darkgrey">
-    <div class="form-group col-sm-3">
-        <a class="btn form-control" ng-href="/#/projects/{{ project._id }}">Back</a>
-    </div>
-    <div class="form-group col-sm-offset-6 col-sm-3">
-        <a class="btn btn-success form-control" ng-Click="saveProject()">Save Project</a>
-    </div>
-</div>
-
-<!-- Project name -->
-<div class="col-sm-12 margin-top-10">
-    <div class="col-sm-3">
-        <label class="control-label">Project Name: </label>
-    </div>
-    <div class="form-group col-sm-6">
-        <input class="form-control" type="text" ng-model="project.projectName"/>
+<div class="row valign-wrapper">
+    <div class="valign col s8 m4">
+        <div class="col s12 m6 input-field">
+            <a class="btn waves-effect waves-light green col s12 m12" ng-click="saveProject()">
+                <i class="material-icons left">done</i>Save
+            </a>
+        </div>
+        <div class="col s12 m6 input-field">
+            <a class="btn waves-effect waves-light red col s12 m12" ng-href="/#/projects/{{ project._id }}">
+                <i class="material-icons left">power_settings_new</i>Back
+            </a>
+        </div>
     </div>
 </div>
-
-<!-- Domain Name -->
-<div class="col-sm-12">
-    <div class="col-sm-3">
-        <label class="control-label">Domain Name: </label>
+<div class="row">
+    <div class="col s6 m6 input-field">
+        <label for="tbxProjectName" class="active">Project Name</label>
+        <input id="tbxProjectName" type="text" list="domains" ng-model="project.projectName"/>
     </div>
-    <div class="form-group col-sm-6">
-        <input class="form-control" type="text" ng-model="project.domainData.domainName" list="domains"/>
+    <div class="col s6 m6 input-field">
+        <label for="tbxDomainName" class="active">Domain Name</label>
+        <input id="tbxDomainName" type="text" list="domains" ng-model="project.domainData.domainName"/>
         <datalist id="domains">
-            <option ng-repeat="domain in domains" value="{{ domain }}">{{ domain }}</option>
+            <option ng-repeat="domain in domains" value="{{ domain }}" ng-bind="domain"></option>
         </datalist>
     </div>
 </div>
-
-<!-- Navigation pills -->
-<div class="col-sm-12 scrollable-x">
-    <ul class="nav nav-pills">
-        <li class="active"><a data-toggle="pill" href="!#modules">Modules</a></li>
-        <li><a data-toggle="pill" href="!#actors">Actors</a></li>
-        <li><a data-toggle="pill" href="!#actions">Actions</a></li>
-    </ul>
-    <div class="tab-content">
-
-        <!-- Module pil -->
-        <div id="modules" class="tab-pane fade in active">
-            <div class="col-sm-12 margin-top-10"></div>
-            <div class="col-sm-4 form-group">
-                <input class="form-control" type="text" list="newModules" ng-model="tbxModule"/>
+<div class="row">
+    <div class="row">
+        <ul class="tabs">
+            <li class="tab col s4 m4"><a class="active" href="#modules">Modules</a></li>
+            <li class="tab col s4 m4"><a href="#actors">Actors</a></li>
+            <li class="tab col s4 m4"><a href="#actions">Actions</a></li>
+        </ul>
+    </div>
+    <div id="modules" class="row active">
+        <div class="row valign-wrapper">
+            <div class="col s8 m9 input-field">
+                <label for="tbxModule">Module Name</label>
+                <input id="tbxModule" type="text" list="newModules" ng-model="tbxModule"/>
                 <datalist id="newModules">
                     <option ng-repeat="module in newModules" value="{{ module }}">{{ module }}</option>
                 </datalist>
             </div>
-            <div class="col-sm-2 form-group">
-                <div class="btn btn-success form-control" ng-click="addModule()">Add</div>
-            </div>
-            <div class="col-sm-12 margin-top-10"></div>
-            <div class="col-sm-6">
-                <table class="table table-bordered">
-                    <thead>
-                    <tr class="alert-info text-center">
-                        <td colspan="2">Module</td>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr ng-repeat="module in project.domainData.modules track by $index">
-                        <td class="col-sm-8">{{ module }}</td>
-                        <td class="col-sm-4">
-                            <div class="btn btn-warning" ng-click="deleteModule(module, index)">
-                                <span class="glyphicon glyphicon-remove"></span>&nbsp;Delete
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" class="col-sm-12 text-center" ng-if="project.domainData.modules.length == 0">
-                            No module found
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+            <div class="col s4 m3 valign">
+                <button class="btn waves-effect waves-light col s12 m12" ng-click="addModule()">Add</button>
             </div>
         </div>
-
-        <!-- Actor pil -->
-        <div id="actors" class="tab-pane fade">
-            <div class="col-sm-12 margin-top-10"></div>
-            <div class="col-sm-4 form-group">
-                <input class="form-control" type="text" list="newActors" ng-model="tbxActor"/>
+        <div class="row">
+            <table class="highlight">
+                <thead>
+                <tr>
+                    <td colspan="2">Module</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="module in project.domainData.modules track by $index">
+                    <td ng-bind="module"></td>
+                    <td>
+                        <a class="waves-effect waves-light btn red" ng-click="deleteModule(module, index)">
+                            <i class="material-icons left">delete</i>Delete
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" ng-if="project.domainData.modules.length == 0">
+                        No module found
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div id="actors" class="row">
+        <div class="row valign-wrapper">
+            <div class="col s8 m9 input-field">
+                <label for="tbxActor">Actor Name</label>
+                <input id="tbxActor" type="text" list="newActors" ng-model="tbxActor"/>
                 <datalist id="newActors">
-                    <option ng-repeat="actor in newActors" value="{{ actor }}">{{ actor }}</option>
+                    <option ng-repeat="actor in newActors" value="{{ actor }}" ng-bind="actor"></option>
                 </datalist>
             </div>
-            <div class="col-sm-2 form-group">
-                <div class="btn btn-success form-control" ng-click="addActor()">Add</div>
-            </div>
-            <div class="col-sm-12 margin-top-10"></div>
-            <div class="col-sm-6">
-                <table class="table table-bordered">
-                    <thead>
-                    <tr class="alert-info text-center">
-                        <td colspan="2">Actor</td>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr ng-repeat="actor in project.domainData.actors track by $index">
-                        <td class="col-sm-8">{{ actor }}</td>
-                        <td class="col-sm-4">
-                            <div class="btn btn-warning" ng-click="deleteActor(actor, index)">
-                                <span class="glyphicon glyphicon-remove"></span>&nbsp;Delete
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" class="col-sm-12 text-center" ng-if="project.domainData.actors.length == 0">
-                            No actor found
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+            <div class="col s4 m3 valign">
+                <button class="btn waves-effect waves-light col s12 m12" ng-click="addActor()">Add</button>
             </div>
         </div>
-
-        <!-- Action pil -->
-        <div id="actions" class="tab-pane fade">
-            <div class="col-sm-12 margin-top-10"></div>
-            <div class="col-sm-4 form-group">
-                <input class="form-control" type="text" list="newActions" ng-model="tbxAction"/>
+        <div class="row">
+            <table class="highlight">
+                <thead>
+                <tr>
+                    <td colspan="2">Actor</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="actor in project.domainData.actors track by $index">
+                    <td ng-bind="actor"></td>
+                    <td>
+                        <a class="waves-effect waves-light btn red" ng-click="deleteActor(actor, index)">
+                            <i class="material-icons left">delete</i>Delete
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" ng-if="project.domainData.actors.length == 0">
+                        No actor found
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div id="actions" class="row">
+        <div class="row valign-wrapper">
+            <div class="col s8 m9 input-field">
+                <label for="tbxAction">Action Name</label>
+                <input id="tbxAction" type="text" list="newActions" ng-model="tbxAction"/>
                 <datalist id="newActions">
-                    <option ng-repeat="action in newActions" value="{{ action }}">{{ action }}</option>
+                    <option ng-repeat="action in newActions" value="{{ action }}" ng-bind="action"></option>
                 </datalist>
             </div>
-            <div class="col-sm-2 form-group">
-                <div class="btn btn-success form-control" ng-click="addAction()">Add</div>
+            <div class="col s4 m3 valign">
+                <button class="btn waves-effect waves-light col s12 m12" ng-click="addAction()">Add</button>
             </div>
-            <div class="col-sm-12 margin-top-10"></div>
-            <div class="col-sm-6">
-                <table class="table table-bordered">
-                    <thead>
-                    <tr class="alert-info text-center">
-                        <td colspan="2">Action</td>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr ng-repeat="action in project.domainData.actions track by $index">
-                        <td class="col-sm-8">{{ action }}</td>
-                        <td class="col-sm-4">
-                            <div class="btn btn-warning" ng-click="deleteAction(action, index)">
-                                <span class="glyphicon glyphicon-remove"></span>&nbsp;Delete
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" class="col-sm-12 text-center" ng-if="project.domainData.actions.length == 0">
-                            No action found
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
+        </div>
+        <div class="row">
+            <table class="highlight">
+                <thead>
+                <tr>
+                    <td colspan="2">Action</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="action in project.domainData.actions track by $index">
+                    <td ng-bind="action"></td>
+                    <td>
+                        <a class="waves-effect waves-light btn red" ng-click="deleteAction(action, index)">
+                            <i class="material-icons left">delete</i>Delete
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" ng-if="project.domainData.actions.length == 0">
+                        No action found
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
-
+<script>
+    setTimeout(function () {
+        $('ul.tabs').tabs();
+        Materialize.updateTextFields();
+    }, 500);
+</script>

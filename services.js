@@ -69,5 +69,9 @@ exports.$formatter = function () {
         return this.asSentence(str);
     };
 
+    this.asHtmlID = function (str) {
+        return '#' + str.replace(' ', '_');
+    }
+
     return this;
 };
