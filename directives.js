@@ -5,6 +5,12 @@ exports.home = function () {
     };
 };
 
+exports.loading = function () {
+    return {
+        templateUrl: './templates/loading.html'
+    };
+};
+
 exports.projectList = function () {
     return {
         controller: 'ProjectListController',

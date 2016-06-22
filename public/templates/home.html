@@ -1,13 +1,11 @@
-<div style="margin-top: 20px;"></div>
-<div class="col-sm-12">
-    <div class="col-sm-3">
-        <label class="control-label">New Project Name: </label>
+
+<div class="row valign-wrapper">
+    <div class="input-field col s8 m9">
+        <label for="projectName">Project Name</label>
+        <input id="projectName" class="form-control" type="text" ng-model="projectName"/>
     </div>
-    <div class="form-group col-sm-6">
-        <input class="form-control" type="text" ng-model="projectName"/>
-    </div>
-    <div class="col-sm-3 form-group">
-        <a class="form-control btn btn-default" ng-click="newProject()">Create Project</a>
+    <div class="col s4 m3 valign">
+        <a class="waves-effect waves-light btn" ng-click="newProject()"><i class="material-icons left">add</i>Create Project</a>
     </div>
 </div>
 <project-list></project-list>

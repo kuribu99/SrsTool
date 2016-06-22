@@ -1,18 +1,14 @@
-<nav class="navbar navbar-default">
-    <div class="container-fluid">
-        <div class="navbar-header col-sm-12">
-            <h3 class="h3">Software Requirement Specification Tool - {{ project.projectName }}</h3>
-        </div>
-        <div class="col-sm-12 right padding-bot-5">
-            <div class="col-sm-3">
-                <a class="btn btn-success" ng-click="saveProject()">Save Changes</a>
-            </div>
-            <div class="col-sm-3">
-                <a class="btn btn-default form-control" ng-href="/#/">Back</a>
-            </div>
-        </div>
+<div class="header">
+    <h3 class="h3" ng-bind="project.projectName"></h3>
+</div>
+<div class="col-sm-12 right padding-bot-5">
+    <div class="col-sm-3">
+        <a class="btn btn-success" ng-click="saveProject()">Save Changes</a>
     </div>
-</nav>
+    <div class="col-sm-3">
+        <a class="btn btn-default form-control" ng-href="/#/">Back</a>
+    </div>
+</div>
 <div class="col-sm-12">
     <div class="form-group col-sm-3">
         <a class="form-control btn btn-default" ng-href="/#/projects/{{ project._id }}/edit">Edit Project</a>

@@ -24,11 +24,12 @@ exports.HomeController = function ($scope, $http, $location) {
     }
 };
 
-exports.ProjectListController = function ($scope, $routeParams, $http) {
+exports.ProjectListController = function ($scope, $routeParams, $http, $rootScope) {
 
     $scope.refreshList = function () {
         $http.get('/api/v1/projects/list').then(function (json) {
             $scope.projects = json.data.projects;
+            $rootScope.loading = false;
         }, failCallBack);
     };
 
@@ -51,15 +52,17 @@ exports.ProjectListController = function ($scope, $routeParams, $http) {
 
 };
 
-exports.ProjectViewController = function ($scope, $routeParams, $http, $location, $formatter) {
+exports.ProjectViewController = function ($scope, $routeParams, $http, $location, $formatter, $rootScope) {
     var projectID = encodeURIComponent($routeParams.id);
 
     $scope.$formatter = $formatter;
 
     $http.get('/api/v1/projects/' + projectID + '/view')
         .then(function (json) {
-            if (json.data.result)
+            if (json.data.result) {
                 $scope.project = json.data.project;
+                $rootScope.loading = false;
+            }
             else
                 $location.path('/');
         }, failCallBack);
@@ -85,7 +88,7 @@ exports.ProjectViewController = function ($scope, $routeParams, $http, $location
 
 };
 
-exports.EditProjectViewController = function ($scope, $routeParams, $http, $location) {
+exports.EditProjectViewController = function ($scope, $routeParams, $http, $location, $rootScope) {
     var projectID = encodeURIComponent($routeParams.id);
 
     $scope.tbxModule = "";
@@ -104,6 +107,7 @@ exports.EditProjectViewController = function ($scope, $routeParams, $http, $loca
                             $scope.newActors = _.difference(json.data.domain.actors, $scope.project.domainData.actors);
                             $scope.newActions = _.difference(json.data.domain.actions, $scope.project.domainData.actions);
                         }
+                        $rootScope.loading = false;
                     }, failCallBack());
             }
             else
@@ -186,7 +190,7 @@ exports.EditProjectViewController = function ($scope, $routeParams, $http, $loca
     }, 0);
 };
 
-exports.GenerateRequirementController = function ($scope, $routeParams, $http, $location, $formatter) {
+exports.GenerateRequirementController = function ($scope, $routeParams, $http, $location, $formatter, $rootScope) {
     var projectID = encodeURIComponent($routeParams.id);
 
     $scope.$formatter = $formatter;
@@ -206,6 +210,7 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
                 }
 
                 $scope.generateRequirements();
+                $rootScope.loading = false;
             }
             else
                 $location.path('/');
@@ -286,7 +291,7 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
 
 };
 
-exports.AccessControlController = function ($scope, $routeParams, $http, $location) {
+exports.AccessControlController = function ($scope, $routeParams, $http, $location, $rootScope) {
     var projectID = encodeURIComponent($routeParams.id);
 
     $http.get('/api/v1/projects/' + projectID + '/access-control-data')
@@ -318,6 +323,7 @@ exports.AccessControlController = function ($scope, $routeParams, $http, $locati
                         delete $scope.project.accessControlData[key];
                     });
 
+                $rootScope.loading = false;
             } else
                 $location.path('/projects/' + $scope.project._id);
 
@@ -339,7 +345,7 @@ exports.AccessControlController = function ($scope, $routeParams, $http, $locati
     }, 0);
 }
 
-exports.ActionControlController = function ($scope, $routeParams, $http, $location) {
+exports.ActionControlController = function ($scope, $routeParams, $http, $location, $rootScope) {
     var projectID = encodeURIComponent($routeParams.id);
 
     $http.get('/api/v1/projects/' + projectID + '/action-control-data')
@@ -373,6 +379,8 @@ exports.ActionControlController = function ($scope, $routeParams, $http, $locati
                     function (key) {
                         delete $scope.project.actionControlData[key];
                     });
+
+                $rootScope.loading = false;
             } else
                 $location.path('/projects/' + $scope.project._id);
 
