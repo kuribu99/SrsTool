@@ -1,5 +1,5 @@
 <div class="row valign-wrapper">
-    <h4 class="col s12 m8 valign">Selected Domain: <span ng-bind="project.domainData.domainName"></span></h4>
+    <h4 class=" col s12 m8 valign">Configure Boilerplate</h4>
     <div class="valign col s8 m4">
         <div class="col s12 m6 input-field">
             <a class="btn waves-effect waves-light green col s12 m12" ng-click="saveProject()">
@@ -16,24 +16,29 @@
 <div class="row">
     <div class="row">
         <ul class="tabs blue lighten-2">
-            <li class="tab col s3 m3"><a class="active" href="#INSTRUCTIONS">
+            <li class="tab col s4 m4"><a class="active" href="#INSTRUCTIONS">
                 <i class="material-icons right">announcement</i>Instructions</a>
             </li>
-            <li class="tab col s3 m3"><a href="#modules">Modules</a></li>
-            <li class="tab col s3 m3"><a href="#actors">Actors</a></li>
-            <li class="tab col s3 m3"><a href="#actions">Actions</a></li>
+            <li class="tab col s4 m4"><a href="#boilerplate_list">Configure Boilerplate List</a></li>
+            <li class="tab col s4 m4"><a href="#module_boilerplate">Configure Module Boilerplate</a></li>
         </ul>
     </div>
     <div id="INSTRUCTIONS" class="row active">
         <div class="card blue-grey darken-1 hoverable">
             <div class="card-content white-text">
-                <h4 class="card-title">Configure Domain Attributes</h4>
-                <p>Add or remove domain attributes of this project</p>
-                <p>Keywords will be suggested based on selected domain</p>
+                <h4 class="card-title">Configure Boilerplate List</h4>
+                <p>Add or remove frequently used boilerplate in this project</p>
+                <p>Boilerplate which are not added will still be able to be used, but stored at lower priority</p>
+            </div>
+        </div>
+        <div class="card blue-grey darken-1 hoverable">
+            <div class="card-content white-text">
+                <h4 class="card-title">Configure Module Boilerplate</h4>
+                <p>Select boilerplate that will be used to generate requirements</p>
             </div>
         </div>
     </div>
-    <div id="modules" class="row">
+    <div id="boilerplate_list" class="row">
         <div class="row valign-wrapper">
             <div class="col s8 m9 input-field">
                 <label for="tbxModule">Module Name</label>
@@ -71,7 +76,7 @@
             </table>
         </div>
     </div>
-    <div id="actors" class="row">
+    <div id="module_boilerplate" class="row">
         <div class="row valign-wrapper">
             <div class="col s8 m9 input-field">
                 <label for="tbxActor">Actor Name</label>
@@ -103,44 +108,6 @@
                 <tr>
                     <td colspan="2" ng-if="project.domainData.actors.length == 0">
                         No actor found
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <div id="actions" class="row">
-        <div class="row valign-wrapper">
-            <div class="col s8 m9 input-field">
-                <label for="tbxAction">Action Name</label>
-                <input id="tbxAction" type="text" list="newActions" ng-model="tbxAction"/>
-                <datalist id="newActions">
-                    <option ng-repeat="action in newActions" value="{{ action }}" ng-bind="action"></option>
-                </datalist>
-            </div>
-            <div class="col s4 m3 valign">
-                <button class="btn waves-effect waves-light col s12 m12" ng-click="addAction()">Add</button>
-            </div>
-        </div>
-        <div class="row">
-            <table class="highlight">
-                <thead>
-                <tr>
-                    <td colspan="2">Action</td>
-                </tr>
-                </thead>
-                <tbody>
-                <tr ng-repeat="action in project.domainData.actions track by $index">
-                    <td ng-bind="action"></td>
-                    <td>
-                        <a class="waves-effect waves-light btn red" ng-click="deleteAction(action, index)">
-                            <i class="material-icons left">delete</i>Delete
-                        </a>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2" ng-if="project.domainData.actions.length == 0">
-                        No action found
                     </td>
                 </tr>
                 </tbody>

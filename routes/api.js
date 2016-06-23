@@ -10,6 +10,7 @@ module.exports = function (wagner) {
 
     api.use('/projects/', require('./project')(wagner));
     api.use('/domains/', require('./domain')(wagner));
+    api.use('/boilerplate/', require('./boilerplate')(wagner));
 
     /*
      api.get('/category/parent/:id', wagner.invoke(function (Category) {

@@ -230,7 +230,7 @@ exports.EditDomainController = function ($scope, $routeParams, $http, $location)
     };
 
     setTimeout(function () {
-        $scope.$emit('ProjectController');
+        $scope.$emit('EditDomainController');
     }, 0);
 };
 
@@ -329,7 +329,7 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
     };
 
     setTimeout(function () {
-        $scope.$emit('ProjectViewController');
+        $scope.$emit('GenerateRequirementController');
     }, 0);
 
 };
@@ -386,7 +386,7 @@ exports.AccessControlController = function ($scope, $routeParams, $http, $locati
     setTimeout(function () {
         $scope.$emit('AccessControlController');
     }, 0);
-}
+};
 
 exports.ActionControlController = function ($scope, $routeParams, $http, $location, $formatter) {
     var projectID = encodeURIComponent($routeParams.id);
@@ -443,4 +443,34 @@ exports.ActionControlController = function ($scope, $routeParams, $http, $locati
     setTimeout(function () {
         $scope.$emit('ActionControlController');
     }, 0);
-}
+};
+
+exports.ConfigureBoilerplateController = function ($scope, $routeParams, $http, $location, $formatter) {
+    var projectID = encodeURIComponent($routeParams.id);
+
+    $scope.$formatter = $formatter;
+
+    $http.get('/api/v1/projects/' + projectID + '/boilerplate-data')
+        .then(function (json) {
+            if (json.data.result) {
+                $scope.project = json.data.project;
+            } else
+                $location.path('/projects/' + $scope.project._id);
+
+        }, failCallBack);
+
+    $scope.saveProject = function () {
+        $http.patch('/api/v1/projects/' + projectID + '/boilerplate-data', {
+            boilerplateData: $scope.project.boilerplateData
+        }).then(function (json) {
+            if (json.data.result)
+                $location.path('/projects/' + $scope.project._id);
+            else
+                console.log(json.data);
+        }, failCallBack);
+    };
+
+    setTimeout(function () {
+        $scope.$emit('ConfigureBoilerplateController');
+    }, 0);
+};

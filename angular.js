@@ -46,6 +46,11 @@ app.config(function ($routeProvider) {
             template: '<generate-requirement></generate-requirement>'
         })
 
+        .when('/projects/:id/boilerplate', {
+            title: 'Configure Boilerplate',
+            template: '<configure-boilerplate></configure-boilerplate>'
+        })
+
         .when('/projects/:id/access-control', {
             title: 'Configure Access Control',
             template: '<access-control></access-control>'

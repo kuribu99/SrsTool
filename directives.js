@@ -65,3 +65,10 @@ exports.actionControl = function () {
         templateUrl: './templates/action_control.html'
     };
 };
+
+exports.configureBoilerplate = function () {
+    return {
+        controller: 'ConfigureBoilerplateController',
+        templateUrl: './templates/configure_boilerplate.html'
+    };
+};

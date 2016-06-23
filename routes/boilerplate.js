@@ -1,19 +1,18 @@
+var bodyparser = require('body-parser');
 var express = require('express');
 var _ = require('underscore');
 
 module.exports = function (wagner) {
     var api = express.Router();
+    api.use(bodyparser.json());
 
-    api.get('/names/', wagner.invoke(function (Domain) {
+    api.get('/', wagner.invoke(function (Boilerplate) {
         return function (req, res) {
-            Domain.find()
-                .select({_id: true})
-                .then(function (domains) {
+            Boilerplate.find()
+                .then(function (boilerplates) {
                     return res.json({
                         result: true,
-                        domains: _.map(domains, function (val) {
-                            return val._id;
-                        })
+                        boilerplates: boilerplates
                     });
                 }, function (error) {
                     if (error) {
@@ -27,15 +26,16 @@ module.exports = function (wagner) {
         }
     }));
 
-    api.get('/:id', wagner.invoke(function (Domain) {
+    api.get('/attributes/:attributes', wagner.invoke(function (Boilerplate) {
         return function (req, res) {
-            var id = req.params.id;
-            Domain.findOne({
-                _id: id
-            }).then(function (domain) {
+            var id = req.params.attributes;
+
+            Boilerplate.find({
+                attributes: attributes
+            }).then(function (boilerplates) {
                     return res.json({
-                        result: domain != null,
-                        domain: domain
+                        result: boilerplates != null,
+                        boilerplates: boilerplates
                     });
                 }, function (error) {
                     if (error) {

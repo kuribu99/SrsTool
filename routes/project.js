@@ -2,7 +2,6 @@ var bodyparser = require('body-parser');
 var express = require('express');
 var status = require('http-status');
 var _ = require('underscore');
-var path = require('path');
 
 module.exports = function (wagner) {
     var api = express.Router();
@@ -424,6 +423,72 @@ module.exports = function (wagner) {
                 Project.findOne({_id: req.params.id})
                     .then(function (project) {
                         project.generatedRequirements = generatedRequirements;
+
+                        project.save()
+                            .then(function () {
+                                return res.json({
+                                    result: true
+                                });
+
+                            }, function (error) {
+                                console.log(error);
+                                if (error) {
+                                    return res.status(status.INTERNAL_SERVER_ERROR).json({
+                                        result: false,
+                                        error: error.toString()
+                                    });
+                                }
+                            });
+                    }, function (error) {
+                        if (error) {
+                            return res.status(status.INTERNAL_SERVER_ERROR).json({
+                                result: false,
+                                error: error.toString()
+                            });
+                        }
+                    });
+
+            } catch (e) {
+                return res.status(status.BAD_REQUEST).json({
+                    result: false,
+                    error: e.toString()
+                });
+            }
+        };
+    }));
+
+    api.get('/:id/boilerplate-data', wagner.invoke(function (Project) {
+        return function (req, res) {
+            Project.findOne({
+                _id: req.params.id
+            }).select({
+                _id: true,
+                boilerplateData: true
+            }).then(function (project) {
+                return res.json({
+                    result: project != null,
+                    project: project
+                });
+            }, function (error) {
+                if (error) {
+                    return res.status(status.INTERNAL_SERVER_ERROR).json({
+                        result: false,
+                        projects: null,
+                        error: error.toString()
+                    });
+                }
+            });
+        };
+    }));
+
+    api.patch('/:id/boilerplate-data', wagner.invoke(function (Project) {
+        return function (req, res) {
+            try {
+                var boilerplateData = req.body.boilerplateData;
+
+                Project.findOne({_id: req.params.id})
+                    .then(function (project) {
+                        project.boilerplateData = boilerplateData;
 
                         project.save()
                             .then(function () {

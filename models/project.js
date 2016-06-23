@@ -40,7 +40,7 @@ var projectSchema = {
         type: mongoose.Schema.Types.Mixed,
         default: []
     }],
-    boilerplates: {
+    boilerplateData: {
         type: mongoose.Schema.Types.Mixed,
         default: {}
     }
