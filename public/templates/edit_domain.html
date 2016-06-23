@@ -1,4 +1,5 @@
 <div class="row valign-wrapper">
+    <h4 class="col s12 m8 valign">Selected Domain: <span ng-bind="project.domainData.domainName"></span></h4>
     <div class="valign col s8 m4">
         <div class="col s12 m6 input-field">
             <a class="btn waves-effect waves-light green col s12 m12" ng-click="saveProject()">
@@ -10,19 +11,6 @@
                 <i class="material-icons left">power_settings_new</i>Back
             </a>
         </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col s6 m6 input-field">
-        <label for="tbxProjectName" class="active">Project Name</label>
-        <input id="tbxProjectName" type="text" list="domains" ng-model="project.projectName"/>
-    </div>
-    <div class="col s6 m6 input-field">
-        <label for="tbxDomainName" class="active">Domain Name</label>
-        <input id="tbxDomainName" type="text" list="domains" ng-model="project.domainData.domainName"/>
-        <datalist id="domains">
-            <option ng-repeat="domain in domains" value="{{ domain }}" ng-bind="domain"></option>
-        </datalist>
     </div>
 </div>
 <div class="row">

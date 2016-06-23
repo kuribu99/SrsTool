@@ -19,16 +19,23 @@
             <i class="material-icons left">mode_edit</i>Edit Project
         </a>
     </div>
-    <div class="col s6 m4 input-field">
-        <a class="col s12 m12 dropdown-button btn blue" data-activates="module-dropdown">
-            <i class="material-icons left">view_module</i>Modules
+    <div class="col input-field">
+        <a class="btn waves-effect waves-light blue" ng-href="/#/projects/{{ project._id }}/domain">
+            <i class="material-icons left">code</i>Edit Domain
         </a>
-        <ul id="module-dropdown" class="dropdown-content">
-            <li ng-if="project.domainData.modules.length > 0 && project.domainData.actors.length > 0">
-                <a class="waves-effect waves-light" ng-href="/#/projects/{{ project._id }}/access-control">
-                    Configure Access Control
-                </a>
-            </li>
+    </div>
+    <div class="col input-field">
+        <a class="btn waves-effect waves-light blue" ng-href="/#/projects/{{ project._id }}/generate">
+            <i class="material-icons left">note_add</i>Generate Requirements
+        </a>
+    </div>
+</div>
+<div class="row">
+    <div class="col s6 m4 input-field">
+        <a class="col s12 m12 dropdown-button btn blue" data-activates="fr-dropdown">
+            <i class="material-icons left">view_module</i>Specify Functional Requirements
+        </a>
+        <ul id="fr-dropdown" class="dropdown-content">
             <li ng-if="project.domainData.actions.length > 0 && project.domainData.actors.length > 0">
                 <a class="waves-effect waves-light" ng-href="/#/projects/{{ project._id }}/action-control">
                     Configure Action Control
@@ -36,10 +43,17 @@
             </li>
         </ul>
     </div>
-    <div class="col input-field">
-        <a class="btn waves-effect waves-light blue" ng-href="/#/projects/{{ project._id }}/generate">
-            <i class="material-icons left">note_add</i>Generate Requirements
+    <div class="col s6 m4 input-field">
+        <a class="col s12 m12 dropdown-button btn blue" data-activates="nfr-dropdown">
+            <i class="material-icons left">view_module</i>Specify Non-Functional Requirements
         </a>
+        <ul id="nfr-dropdown" class="dropdown-content">
+            <li ng-if="project.domainData.modules.length > 0 && project.domainData.actors.length > 0">
+                <a class="waves-effect waves-light" ng-href="/#/projects/{{ project._id }}/access-control">
+                    Configure Access Control
+                </a>
+            </li>
+        </ul>
     </div>
 </div>
 <div class="row">

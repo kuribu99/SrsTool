@@ -11,13 +11,6 @@ exports.navBar = function () {
     };
 };
 
-exports.breadcrumbs = function () {
-    return {
-        controller: 'BreadcrumbsController',
-        templateUrl: './templates/breadcrumbs.html'
-    };
-};
-
 exports.loading = function () {
     return {
         templateUrl: './templates/loading.html'
@@ -31,17 +24,24 @@ exports.projectList = function () {
     };
 };
 
-exports.projectView = function ($routeParams) {
+exports.projectView = function () {
     return {
         controller: 'ProjectViewController',
         templateUrl: './templates/project_view.html'
     };
 };
 
-exports.editProjectView = function () {
+exports.editProject = function () {
     return {
-        controller: 'EditProjectViewController',
-        templateUrl: './templates/edit_project_view.html'
+        controller: 'EditProjectController',
+        templateUrl: './templates/edit_project.html'
+    };
+};
+
+exports.editDomain = function () {
+    return {
+        controller: 'EditDomainController',
+        templateUrl: './templates/edit_domain.html'
     };
 };
 

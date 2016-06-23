@@ -9,11 +9,18 @@ var failCallBack = function (error) {
 
 exports.HomeController = function ($scope, $http, $location) {
     $scope.projectName = "";
+    $scope.domainName = "default";
+
+    $http.get('/api/v1/domains/names/')
+        .then(function (json) {
+            $scope.domains = json.data.domains;
+        }, failCallBack());
 
     $scope.newProject = function () {
-        if ($scope.projectName.length > 0) {
+        if ($scope.projectName.length > 0 && $scope.domainName.length > 0) {
             $http.post('/api/v1/projects/', {
-                projectName: $scope.projectName
+                projectName: $scope.projectName,
+                domainName: $scope.domainName
             }).then(function (json) {
                 if (json.data.result)
                     $location.path('/projects/' + json.data.id + '/edit');
@@ -21,7 +28,9 @@ exports.HomeController = function ($scope, $http, $location) {
                     console.log(json.data);
             }, failCallBack);
         }
-    }
+        else
+            alert('Project name and domain name must not be empty');
+    };
 
     setTimeout(function () {
         $scope.$emit('HomeController');
@@ -90,7 +99,46 @@ exports.ProjectViewController = function ($scope, $routeParams, $http, $location
     }, 0);
 };
 
-exports.EditProjectViewController = function ($scope, $routeParams, $http, $location) {
+exports.EditProjectController = function ($scope, $routeParams, $http, $location) {
+    var projectID = encodeURIComponent($routeParams.id);
+
+    $http.get('/api/v1/projects/' + projectID + '/project-data/')
+        .then(function (json) {
+            if (json.data.result) {
+                $scope.project = json.data.project;
+            }
+            else
+                $location.path('/');
+
+        }, failCallBack);
+
+    $http.get('/api/v1/domains/names/')
+        .then(function (json) {
+            $scope.domains = json.data.domains;
+        }, failCallBack());
+
+    $scope.saveProject = function () {
+        if ($scope.project.projectName.length > 0 && $scope.project.domainData.domainName.length > 0) {
+            $http.patch('/api/v1/projects/' + projectID + '/project-data/', {
+                projectName: $scope.project.projectName,
+                domainName: $scope.project.domainData.domainName
+            }).then(function (json) {
+                if (json.data.result)
+                    $location.path('/projects/' + $scope.project._id);
+                else
+                    console.log(json.data);
+            }, failCallBack);
+        }
+        else
+            alert('Project name and domain name must not be empty');
+    };
+
+    setTimeout(function () {
+        $scope.$emit('EditProjectController');
+    }, 0);
+};
+
+exports.EditDomainController = function ($scope, $routeParams, $http, $location) {
     var projectID = encodeURIComponent($routeParams.id);
 
     $scope.tbxModule = "";
@@ -115,11 +163,6 @@ exports.EditProjectViewController = function ($scope, $routeParams, $http, $loca
                 $location.path('/');
 
         }, failCallBack);
-
-    $http.get('/api/v1/domains/names/')
-        .then(function (json) {
-            $scope.domains = json.data.domains;
-        }, failCallBack());
 
     $scope.saveProject = function () {
         $http.patch('/api/v1/projects/' + projectID + '/domain-data/', {

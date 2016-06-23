@@ -33,7 +33,12 @@ app.config(function ($routeProvider) {
 
         .when('/projects/:id/edit', {
             title: 'Edit Project',
-            template: '<edit-project-view></edit-project-view>'
+            template: '<edit-project></edit-project>'
+        })
+
+        .when('/projects/:id/domain', {
+            title: 'Edit Domain',
+            template: '<edit-domain></edit-domain>'
         })
 
         .when('/projects/:id/generate', {

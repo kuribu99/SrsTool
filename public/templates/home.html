@@ -1,7 +1,14 @@
 <div class="row valign-wrapper">
-    <div class="input-field col s8 m9">
+    <div class="input-field col s4 m4">
         <label for="projectName">Project Name</label>
         <input id="projectName" type="text" ng-model="projectName"/>
+    </div>
+    <div class="col s4 m4 input-field">
+        <label for="tbxDomainName" class="active">Domain Name</label>
+        <input id="tbxDomainName" type="text" list="domains" ng-model="domainName"/>
+        <datalist id="domains">
+            <option ng-repeat="domain in domains" value="{{ domain }}" ng-bind="domain"></option>
+        </datalist>
     </div>
     <div class="col s4 m3 valign">
         <a class="waves-effect waves-light btn" ng-click="newProject()"><i class="material-icons left">add</i>Create Project</a>
