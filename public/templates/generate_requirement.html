@@ -12,8 +12,13 @@
         </div>
     </div>
 </div>
-<div class="row" ng-if="generatedRequirements.length > 0">
-    <h4 class="header">Generated Requirements</h4>
+<div class="row collection" ng-if="generatedRequirements.length > 0">
+    <div class="row valign-wrapper collection-header">
+        <h4 class="col s6 m9 header">Generated Requirements</h4>
+        <div class="col s4 m3 valign">
+            <button class="btn waves-effect waves-light col s12 m12" ng-click="addCheckedRequirements()">Add Requirements</button>
+        </div>
+    </div>
     <div class="row">
         <ul>
             <li ng-repeat="requirement in generatedRequirements track by $index">
@@ -23,9 +28,6 @@
                 </div>
             </li>
         </ul>
-    </div>
-    <div class="col s4 m3 push-s8 push-m9">
-        <button class="btn waves-effect waves-light col s12 m12" ng-click="addCheckedRequirements()">Add Requirements</button>
     </div>
 </div>
 <div class="row" ng-if="generatedRequirements.length == 0">

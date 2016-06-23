@@ -19,23 +19,9 @@
             <i class="material-icons left">mode_edit</i>Edit Project
         </a>
     </div>
-    <script>
-        $(document).ready(function () {
-            $('.dropdown-button').dropdown({
-                        inDuration: 300,
-                        outDuration: 225,
-                        constrain_width: true, // Does not change width of dropdown to that of the activator
-                        hover: true,
-                        gutter: 0, // Spacing from edge
-                        belowOrigin: false, // Displays dropdown below the button
-                        alignment: 'left' // Displays dropdown with edge aligned to the left of button
-                    }
-            );
-        });
-    </script>
     <div class="col s6 m4 input-field">
         <a class="col s12 m12 dropdown-button btn blue" data-activates="module-dropdown">
-            <i class="material-icons left">mode_edit</i>Modules
+            <i class="material-icons left">view_module</i>Modules
         </a>
         <ul id="module-dropdown" class="dropdown-content">
             <li ng-if="project.domainData.modules.length > 0 && project.domainData.actors.length > 0">
@@ -87,3 +73,18 @@
         </table>
     </div>
 </div>
+
+<script>
+    setTimeout(function () {
+        $('.dropdown-button').dropdown({
+                    inDuration: 300,
+                    outDuration: 225,
+                    constrain_width: true, // Does not change width of dropdown to that of the activator
+                    hover: true,
+                    gutter: 0, // Spacing from edge
+                    belowOrigin: false, // Displays dropdown below the button
+                    alignment: 'left' // Displays dropdown with edge aligned to the left of button
+                }
+        );
+    }, 100);
+</script>

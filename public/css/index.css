@@ -22,10 +22,19 @@
     padding-bottom: 5px;
 }
 
-.darkgrey {
-    background-color: darkgrey;
-}
-
 .center-vertical {
     vertical-align: middle;
+}
+
+.blue.tabs .tab a {
+    color: white;
+}
+
+.blue.tabs .tab a:hover {
+    color: lightgrey;
+}
+
+.blue.tabs .indicator {
+    background-color: white;
+    bottom: 2px;
 }

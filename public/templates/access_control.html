@@ -14,17 +14,24 @@
 </div>
 <div class="row">
     <div class="row">
-        <ul class="tabs">
-            <li class="col tab active">
-                <a href="#SELECT_MODULE">Select Module</a>
+        <ul class="tabs blue lighten-2">
+            <li class="tab col"><a class="active" href="#INSTRUCTIONS">
+                <i class="material-icons right">announcement</i>Instructions</a>
             </li>
             <li class="col tab" ng-repeat="(module, actors) in project.accessControlData track by $index">
                 <a href="{{ $formatter.asHtmlID(module) }}" ng-bind="module"></a>
             </li>
         </ul>
     </div>
-    <div id="SELECT_MODULE" class="row active">
-        <h4>Select a module to configure access control of each actor for that particular module</h4>
+    <div id="INSTRUCTIONS" class="row active">
+        <div class="card blue-grey darken-1 hoverable">
+            <div class="card-content white-text">
+                <h4 class="card-title">Configure Access Control</h4>
+                <p>For each module in this domain, the actor that the can access to the module can be controlled</p>
+                <p>Check to allow actor to access to the selected module</p>
+                <p>Uncheck to restrict the actor from accessing the selected module</p>
+            </div>
+        </div>
     </div>
     <div ng-repeat="(module, actors) in project.accessControlData" id="{{ module.replace(' ', '_') }}" class="row">
         <div class="input-field" ng-repeat="actor in project.domainData.actors">

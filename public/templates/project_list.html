@@ -6,7 +6,7 @@
                 <h4 ng-if="projects.length > 0">Projects:</h4>
             </li>
             <li class="collection-item">
-                <div class="row card card-panel" ng-repeat="project in projects track by $index">
+                <div class="row card card-panel hoverable" ng-repeat="project in projects track by $index">
                     <div class="col s12 m8 margin-bottom-10">{{ project.projectName }}</div>
                     <div class="col s12 m4">
                         <div class="col s6 m6">

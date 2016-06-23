@@ -72,8 +72,10 @@ exports.ProjectViewController = function ($scope, $routeParams, $http, $location
         $http.patch('/api/v1/projects/' + projectID + '/generated-requirements', {
             generatedRequirements: $scope.project.generatedRequirements
         }).then(function (json) {
-            if (json.data.result)
+            if (json.data.result) {
                 $location.path('/projects/' + $scope.project._id);
+                Materialize.toast('Saved succesfully', 3000);
+            }
             else
                 console.log(json.data);
         }, failCallBack);
