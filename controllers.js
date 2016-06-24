@@ -23,7 +23,7 @@ exports.HomeController = function ($scope, $http, $location) {
                 domainName: $scope.domainName
             }).then(function (json) {
                 if (json.data.result)
-                    $location.path('/projects/' + json.data.id + '/edit');
+                    $location.path('/projects/' + json.data.id);
                 else
                     console.log(json.data);
             }, failCallBack);
@@ -318,7 +318,6 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
             if (v2[key] == null || v1[key] != v2[key])
                 return false;
         }
-        //console.log(v1, v2);
         return true;
     };
 
@@ -364,9 +363,7 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
     setTimeout(function () {
         $scope.$emit('GenerateRequirementController');
     }, 0);
-
-}
-;
+};
 
 exports.AccessControlController = function ($scope, $routeParams, $http, $location, $formatter) {
     var projectID = encodeURIComponent($routeParams.id);
