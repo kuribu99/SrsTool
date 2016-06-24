@@ -319,7 +319,6 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
             if (v2[key] == null || v1[key] != v2[key])
                 return false;
         }
-        //console.log(v1, v2);
         return true;
     };
 
