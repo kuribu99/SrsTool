@@ -12,26 +12,44 @@
         </div>
     </div>
 </div>
-<div class="row collection" ng-if="generatedRequirements.length > 0">
-    <div class="row valign-wrapper collection-header">
-        <h4 class="col s6 m9 header">Generated Requirements</h4>
-        <div class="col s4 m3 valign">
-            <button class="btn waves-effect waves-light col s12 m12" ng-click="addCheckedRequirements()">Add Requirements</button>
-        </div>
+<div class="row valign-wrapper">
+    <h4 class="col s12 m9 valign">Generated Requirements</h4>
+    <div class="col s4 m3 valign">
+        <button class="btn waves-effect waves-light col s12 m12" ng-click="addCheckedRequirements()">
+            Add Requirements
+        </button>
     </div>
-    <div class="row">
-        <ul>
-            <li ng-repeat="requirement in generatedRequirements track by $index">
-                <div class="input-field">
-                    <input type="checkbox" ng-model="requirement.checked" id="requirement.{{ $index }}"/>
-                    <label for="requirement.{{ $index }}" ng-bind="$formatter.requirementToString(requirement)"></label>
+</div>
+<div class="row">
+    <ul class="collapsible collapsible-accordion" data-collapsible="accordion">
+        <li ng-repeat="(moduleName, requirements) in generatedRequirements">
+            <div class="collapsible-header active"><h5 ng-bind="moduleName"></h5></div>
+            <div class="collapsible-body">
+                <div class="row" ng-if="requirements.length > 0">
+                    <ul>
+                        <li ng-repeat="requirement in requirements track by $index">
+                            <div class="input-field">
+                                <input type="checkbox" ng-model="requirement.checked"
+                                       id="{{ moduleName }}.{{ $index }}"/>
+                                <label for="{{ moduleName }}.{{ $index }}"
+                                       ng-bind="$formatter.requirementToString(requirement)"></label>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
-            </li>
-        </ul>
-    </div>
+                <div class="row" ng-if="requirements.length == 0">
+                    <div class="center-align">
+                        <h5 class="header">No requirement generated</h5>
+                    </div>
+                </div>
+            </div>
+        </li>
+    </ul>
 </div>
-<div class="row" ng-if="generatedRequirements.length == 0">
-    <div class="col s12 m12 card card-panel waves-light waves-effect center-align green">
-        <h5 class="header">No requirement can be generated</h5>
-    </div>
-</div>
+<script>
+    setTimeout(function () {
+        $('.collapsible').collapsible({
+            accordion: false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
+        });
+    }, 500);
+</script>

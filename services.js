@@ -75,3 +75,16 @@ exports.$formatter = function () {
 
     return this;
 };
+
+exports.$boilerplateTemplate = function () {
+    return {
+        accessControl: {
+            true: "<actor> shall be able to access to <module> module",
+            false: "<actor> shall not be able to access to <module> module"
+        },
+        actionControl: {
+            true: "<actor> shall be able to <action>",
+            false: "<actor> shall not be able to <action>"
+        }
+    };
+};

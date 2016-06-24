@@ -39,85 +39,77 @@
         </div>
     </div>
     <div id="boilerplate_list" class="row">
-        <div class="row valign-wrapper">
-            <div class="col s8 m9 input-field">
-                <label for="tbxModule">Module Name</label>
-                <input id="tbxModule" type="text" list="newModules" ng-model="tbxModule"/>
-                <datalist id="newModules">
-                    <option ng-repeat="module in newModules" value="{{ module }}">{{ module }}</option>
-                </datalist>
-            </div>
-            <div class="col s4 m3 valign">
-                <button class="btn waves-effect waves-light col s12 m12" ng-click="addModule()">Add</button>
-            </div>
-        </div>
-        <div class="row">
-            <table class="highlight">
-                <thead>
-                <tr>
-                    <td colspan="2">Module</td>
-                </tr>
-                </thead>
-                <tbody>
-                <tr ng-repeat="module in project.domainData.modules track by $index">
-                    <td ng-bind="module"></td>
-                    <td>
-                        <a class="waves-effect waves-light btn red" ng-click="deleteModule(module, index)">
-                            <i class="material-icons left">delete</i>Delete
-                        </a>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2" ng-if="project.domainData.modules.length == 0">
-                        No module found
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
+        <h4>Not supported yet</h4>
     </div>
     <div id="module_boilerplate" class="row">
-        <div class="row valign-wrapper">
-            <div class="col s8 m9 input-field">
-                <label for="tbxActor">Actor Name</label>
-                <input id="tbxActor" type="text" list="newActors" ng-model="tbxActor"/>
-                <datalist id="newActors">
-                    <option ng-repeat="actor in newActors" value="{{ actor }}" ng-bind="actor"></option>
-                </datalist>
-            </div>
-            <div class="col s4 m3 valign">
-                <button class="btn waves-effect waves-light col s12 m12" ng-click="addActor()">Add</button>
-            </div>
-        </div>
-        <div class="row">
-            <table class="highlight">
-                <thead>
-                <tr>
-                    <td colspan="2">Actor</td>
-                </tr>
-                </thead>
-                <tbody>
-                <tr ng-repeat="actor in project.domainData.actors track by $index">
-                    <td ng-bind="actor"></td>
-                    <td>
-                        <a class="waves-effect waves-light btn red" ng-click="deleteActor(actor, index)">
-                            <i class="material-icons left">delete</i>Delete
-                        </a>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2" ng-if="project.domainData.actors.length == 0">
-                        No actor found
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
+        <ul class="collapsible collapsible-accordion" data-collapsible="accordion">
+            <li>
+                <div class="collapsible-header active"><h5>Access Control Module</h5></div>
+                <div class="collapsible-body">
+                    <div class="row margin-top-10">
+                        <div class="row">
+                            <div class="col s12 m6">
+                                <label for="accessControl.true">For allowed actors</label>
+                                <input id="accessControl.true" ng-model="project.boilerplateData.accessControl.true"/>
+                            </div>
+                            <div class="col s12 m6">
+                                <label for="accessControl.true.example">Example</label>
+                                <input id="accessControl.true.example" readonly
+                                       value="{{ requirementToString(project.boilerplateData.accessControl.true) }}"/>
+                            </div>
+                        </div>
+                        <div clas="row">
+                            <div class="col s12 m6">
+                                <label for="accessControl.false">For restricted actors</label>
+                                <input id="accessControl.false" ng-model="project.boilerplateData.accessControl.false"/>
+                            </div>
+                            <div class="col s12 m6">
+                                <label for="accessControl.true.example">Example</label>
+                                <input id="accessControl.false.example" readonly
+                                       value="{{ requirementToString(project.boilerplateData.accessControl.false) }}"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="collapsible-header active"><h5>Action Control Module</h5></div>
+                <div class="collapsible-body">
+                    <div class="row margin-top-10">
+                        <div class="row">
+                            <div class="col s12 m6">
+                                <label for="actionControl.true">For allowed actions</label>
+                                <input id="actionControl.true" ng-model="project.boilerplateData.actionControl.true"/>
+                            </div>
+                            <div class="col s12 m6">
+                                <label for="actionControl.true.example">Example</label>
+                                <input id="actionControl.true.example" readonly
+                                       value="{{ requirementToString(project.boilerplateData.actionControl.true) }}"/>
+                            </div>
+                        </div>
+                        <div clas="row">
+                            <div class="col s12 m6">
+                                <label for="actionControl.false">For restricted actions</label>
+                                <input id="actionControl.false" ng-model="project.boilerplateData.actionControl.false"/>
+                            </div>
+                            <div class="col s12 m6">
+                                <label for="actionControl.true.example">Example</label>
+                                <input id="actionControl.false.example" readonly
+                                       value="{{ requirementToString(project.boilerplateData.actionControl.false) }}"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
     </div>
 </div>
 <script>
     setTimeout(function () {
         $('ul.tabs').tabs();
         Materialize.updateTextFields();
+        $('.collapsible').collapsible({
+            accordion: false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
+        });
     }, 500);
 </script>

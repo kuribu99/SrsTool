@@ -72,6 +72,8 @@ exports.ProjectViewController = function ($scope, $routeParams, $http, $location
         .then(function (json) {
             if (json.data.result) {
                 $scope.project = json.data.project;
+                if ($scope.project.generatedRequirements == null)
+                    $scope.project.generatedRequirements = {};
             }
             else
                 $location.path('/');
@@ -90,8 +92,8 @@ exports.ProjectViewController = function ($scope, $routeParams, $http, $location
         }, failCallBack);
     };
 
-    $scope.removeRequirement = function (index) {
-        $scope.project.generatedRequirements.splice(index, 1);
+    $scope.removeRequirement = function (moduleName, index) {
+        $scope.project.generatedRequirements[moduleName].splice(index, 1);
     };
 
     setTimeout(function () {
@@ -234,24 +236,26 @@ exports.EditDomainController = function ($scope, $routeParams, $http, $location)
     }, 0);
 };
 
-exports.GenerateRequirementController = function ($scope, $routeParams, $http, $location, $formatter) {
+exports.GenerateRequirementController = function ($scope, $routeParams, $http, $location, $formatter, $boilerplateTemplate) {
     var projectID = encodeURIComponent($routeParams.id);
 
     $scope.$formatter = $formatter;
+    $scope.$boilerplate = $formatter;
     $scope.generatedRequirements = [];
-    $scope.accessControlBoilerplates = {
-        true: "<actor> shall be able to access to <module> module",
-        false: "<actor> shall not be able to access to <module> module"
-    };
 
     $http.get('/api/v1/projects/' + projectID)
         .then(function (json) {
             if (json.data.result) {
                 $scope.project = json.data.project;
-                if ($scope.project.boilerplates == null) {
-                    $scope.project.boilerplates = {};
-                    $scope.project.boilerplates.accessControlBoilerplates = $scope.accessControlBoilerplates;
-                }
+                if ($scope.project.boilerplateData == null)
+                    $scope.project.boilerplateData = {};
+
+                if ($scope.project.generatedRequirements == null)
+                    $scope.project.generatedRequirements = {};
+
+                for (var key in $boilerplateTemplate)
+                    if ($scope.project.boilerplateData[key] == null)
+                        $scope.project.boilerplateData[key] = $boilerplateTemplate[key];
 
                 $scope.generateRequirements();
             }
@@ -260,52 +264,81 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
         }, failCallBack);
 
     $scope.generateRequirements = function () {
-        while ($scope.generatedRequirements.length > 0)
-            $scope.generatedRequirements.pop();
+        $scope.generatedRequirements = {
+            'Access Control': [],
+            'Action Control': []
+        };
 
+        // Access Control
+        var moduleName = 'Access Control';
         for (var module in $scope.project.accessControlData) {
             for (var actor in $scope.project.accessControlData[module]) {
-                var boilerplate = $scope.project.boilerplates.accessControlBoilerplates[
-                    $scope.project.accessControlData[module][actor]
-                    ];
+                var allowed = $scope.project.accessControlData[module][actor];
+                var boilerplate = $scope.project.boilerplateData.accessControl[allowed];
                 var values = {
                     '<module>': module,
                     '<actor>': actor
                 };
 
-                if (!$scope.hasRequirement(module, values))
-                    $scope.generatedRequirements.push($scope.newRequirement(module, boilerplate, values));
+                if (!$scope.hasRequirement(moduleName, values))
+                    $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
+            }
+        }
+
+        // Action Control
+        moduleName = 'Action Control';
+        for (var actor in $scope.project.actionControlData) {
+            for (var action in $scope.project.actionControlData[actor]) {
+                var allowed = $scope.project.actionControlData[actor][action];
+                var boilerplate = $scope.project.boilerplateData.actionControl[allowed];
+                var values = {
+                    '<actor>': actor,
+                    '<action>': action
+                };
+
+                if (!$scope.hasRequirement(moduleName, values))
+                    $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
             }
         }
     };
 
-    $scope.hasRequirement = function (module, values) {
-        for (var i in $scope.project.generatedRequirements) {
-            var requirement = $scope.project.generatedRequirements[i];
-
-            if (requirement.module != module)
-                continue;
-            for (var index in requirement.values) {
-                if (requirement.values[index] != values[index])
-                    continue;
-            }
-            return true;
+    $scope.hasRequirement = function (moduleName, values) {
+        var requirements = $scope.project.generatedRequirements[moduleName];
+        if (requirements == null)
+            return false;
+        for (var index in requirements) {
+            if ($scope.isSameValue(requirements[index].values, values))
+                return true;
         }
         return false;
+    };
+
+    $scope.isSameValue = function (v1, v2) {
+        for (var key in v1) {
+            if (v2[key] == null || v1[key] != v2[key])
+                return false;
+        }
+        //console.log(v1, v2);
+        return true;
     };
 
     $scope.addCheckedRequirements = function () {
         var addedRequirements = [];
 
-        _.each($scope.generatedRequirements, function (requirement) {
-            if (requirement.checked) {
-                delete requirement.checked;
-                $scope.project.generatedRequirements.push(requirement);
-                addedRequirements.push(requirement);
-            }
-        });
+        for (var moduleName in $scope.generatedRequirements) {
+            if ($scope.project.generatedRequirements[moduleName] == null)
+                $scope.project.generatedRequirements[moduleName] = [];
 
-        $scope.generatedRequirements = _.difference($scope.generatedRequirements, addedRequirements);
+            _.each($scope.generatedRequirements[moduleName], function (requirement) {
+                if (requirement.checked) {
+                    $scope.project.generatedRequirements[moduleName].push(requirement);
+                    delete requirement.checked;
+                    addedRequirements.push(requirement);
+                }
+            });
+
+            $scope.generatedRequirements[moduleName] = _.difference($scope.generatedRequirements[moduleName], addedRequirements);
+        }
     };
 
     $scope.newRequirement = function (module, boilerplate, values) {
@@ -332,7 +365,8 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
         $scope.$emit('GenerateRequirementController');
     }, 0);
 
-};
+}
+;
 
 exports.AccessControlController = function ($scope, $routeParams, $http, $location, $formatter) {
     var projectID = encodeURIComponent($routeParams.id);
@@ -445,7 +479,7 @@ exports.ActionControlController = function ($scope, $routeParams, $http, $locati
     }, 0);
 };
 
-exports.ConfigureBoilerplateController = function ($scope, $routeParams, $http, $location, $formatter) {
+exports.ConfigureBoilerplateController = function ($scope, $routeParams, $http, $location, $formatter, $boilerplateTemplate) {
     var projectID = encodeURIComponent($routeParams.id);
 
     $scope.$formatter = $formatter;
@@ -454,10 +488,29 @@ exports.ConfigureBoilerplateController = function ($scope, $routeParams, $http, 
         .then(function (json) {
             if (json.data.result) {
                 $scope.project = json.data.project;
-            } else
-                $location.path('/projects/' + $scope.project._id);
+                if ($scope.project.boilerplateData == null)
+                    $scope.project.boilerplateData = {};
 
+                for (var key in $boilerplateTemplate)
+                    if ($scope.project.boilerplateData[key] == null)
+                        $scope.project.boilerplateData[key] = $boilerplateTemplate[key];
+            }
+            else
+                $location.path('/');
         }, failCallBack);
+
+    $scope.requirementToString = function (template) {
+        if (template == null || template == '')
+            return '';
+        return $formatter.requirementToString({
+            boilerplate: template,
+            values: {
+                '<actor>': 'lecturer',
+                '<module>': 'user authentication',
+                '<action>': 'login to the system'
+            }
+        });
+    }
 
     $scope.saveProject = function () {
         $http.patch('/api/v1/projects/' + projectID + '/boilerplate-data', {

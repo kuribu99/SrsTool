@@ -36,10 +36,10 @@ var projectSchema = {
         type: mongoose.Schema.Types.Mixed,
         default: {}
     },
-    generatedRequirements: [{
+    generatedRequirements: {
         type: mongoose.Schema.Types.Mixed,
-        default: []
-    }],
+        default: {}
+    },
     boilerplateData: {
         type: mongoose.Schema.Types.Mixed,
         default: {}
