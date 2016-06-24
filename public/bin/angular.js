@@ -24,7 +24,7 @@ exports.HomeController = function ($scope, $http, $location) {
                 domainName: $scope.domainName
             }).then(function (json) {
                 if (json.data.result)
-                    $location.path('/projects/' + json.data.id + '/edit');
+                    $location.path('/projects/' + json.data.id);
                 else
                     console.log(json.data);
             }, failCallBack);
