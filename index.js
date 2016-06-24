@@ -13,8 +13,5 @@ var app = express();
 app.use('/api/v1', require('./routes/api')(wagner));
 app.use(express.static('./public', { maxAge: 4 * 60 * 60 * 1000 }));
 
-app.listen(wagner.invoke(function (Config) {
-	var port = process.env.PORT || Config.port || 3000;
-    console.log('Listening on port ' + port + '!');
-    return Config.port;
-}));
+var port = process.env.PORT || 3000;
+app.listen(port);
