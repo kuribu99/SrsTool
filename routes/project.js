@@ -109,7 +109,6 @@ module.exports = function (wagner) {
             }).select({
                 _id: true,
                 projectName: true,
-                domainData: true,
                 generatedRequirements: true
             }).then(function (project) {
                 return res.json({

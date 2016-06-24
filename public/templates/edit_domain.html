@@ -57,7 +57,7 @@
                 <tr ng-repeat="module in project.domainData.modules track by $index">
                     <td ng-bind="module"></td>
                     <td>
-                        <a class="waves-effect waves-light btn red" ng-click="deleteModule(module, index)">
+                        <a class="waves-effect waves-light btn red" ng-click="deleteModule(module, $index)">
                             <i class="material-icons left">delete</i>Delete
                         </a>
                     </td>
@@ -95,7 +95,7 @@
                 <tr ng-repeat="actor in project.domainData.actors track by $index">
                     <td ng-bind="actor"></td>
                     <td>
-                        <a class="waves-effect waves-light btn red" ng-click="deleteActor(actor, index)">
+                        <a class="waves-effect waves-light btn red" ng-click="deleteActor(actor, $index)">
                             <i class="material-icons left">delete</i>Delete
                         </a>
                     </td>
@@ -133,7 +133,7 @@
                 <tr ng-repeat="action in project.domainData.actions track by $index">
                     <td ng-bind="action"></td>
                     <td>
-                        <a class="waves-effect waves-light btn red" ng-click="deleteAction(action, index)">
+                        <a class="waves-effect waves-light btn red" ng-click="deleteAction(action, $index)">
                             <i class="material-icons left">delete</i>Delete
                         </a>
                     </td>
