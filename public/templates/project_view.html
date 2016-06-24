@@ -62,7 +62,7 @@
     </div>
 </div>
 <div class="col s12 m12 card card-panel waves-light waves-effect center-align green"
-     ng-if="Object.keys($scope.project.generatedRequirements).length == 0">
+     ng-if="Object.keys(project.generatedRequirements).length == 0">
     <h5 class="header">No requirement found</h5>
 </div>
 <div class="row">
@@ -86,7 +86,8 @@
                                 <td>{{ $formatter.requirementToString(requirement) }}</td>
                                 <td>
                                     <div class="input-field">
-                                        <a class="btn waves-effect waves-light red" ng-click="removeRequirement(moduleName, $index)">
+                                        <a class="btn waves-effect waves-light red"
+                                           ng-click="removeRequirement(moduleName, $index)">
                                             <i class="material-icons left">delete</i>Delete
                                         </a>
                                     </div>
@@ -105,21 +106,19 @@
         </ul>
     </div>
 </div>
-
 <script>
     setTimeout(function () {
-        $('.dropdown-button').dropdown({
-                    inDuration: 300,
-                    outDuration: 225,
-                    constrain_width: true, // Does not change width of dropdown to that of the activator
-                    hover: true,
-                    gutter: 0, // Spacing from edge
-                    belowOrigin: false, // Displays dropdown below the button
-                    alignment: 'left' // Displays dropdown with edge aligned to the left of button
-                }
-        );
         $('.collapsible').collapsible({
             accordion: false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
         });
-    }, 100);
+        $('.dropdown-button').dropdown({
+            inDuration: 300,
+            outDuration: 225,
+            constrain_width: true, // Does not change width of dropdown to that of the activator
+            hover: true,
+            gutter: 0, // Spacing from edge
+            belowOrigin: false, // Displays dropdown below the button
+            alignment: 'left' // Displays dropdown with edge aligned to the left of button
+        });
+    }, 200);
 </script>
