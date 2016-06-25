@@ -46,6 +46,11 @@ app.config(function ($routeProvider) {
             template: '<generate-requirement></generate-requirement>'
         })
 
+        .when('/projects/:id/resource-constraint', {
+            title: 'Configure Resource Constraint',
+            template: '<resource-constraint></resource-constraint>'
+        })
+
         .when('/projects/:id/boilerplate', {
             title: 'Configure Boilerplate',
             template: '<configure-boilerplate></configure-boilerplate>'
@@ -62,13 +67,18 @@ app.config(function ($routeProvider) {
         });
 });
 
-app.run(['$rootScope', function($rootScope) {
+app.run(['$rootScope', function ($rootScope) {
     $rootScope.$on('$routeChangeSuccess', function (event, current, previous) {
-        $rootScope.title = current.$$route.title;
-        $rootScope.loading = false;
+        try {
+            $rootScope.title = current.$$route.title;
+            $rootScope.loading = false;
+        }
+        catch (e) {
+            $rootScope.title = '';
+        }
     });
 
-    $rootScope.$on('$routeChangeStart', function(){
+    $rootScope.$on('$routeChangeStart', function () {
         $rootScope.loading = true;
     });
 }]);

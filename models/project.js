@@ -43,6 +43,10 @@ var projectSchema = {
     boilerplateData: {
         type: mongoose.Schema.Types.Mixed,
         default: {}
+    },
+    resourceConstraintData: {
+        type: mongoose.Schema.Types.Mixed,
+        default: {}
     }
 };
 

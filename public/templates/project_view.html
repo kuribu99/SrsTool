@@ -46,6 +46,12 @@
                     Configure Action Control
                 </a>
             </li>
+            <li ng-if="project.domainData.actions.length == 0 || project.domainData.actors.length == 0">
+                <a class="waves-effect waves-light"
+                   ng-click="toast('Please add at least one actor and one action to do so', 2000)">
+                    Configure Action Control
+                </a>
+            </li>
         </ul>
     </div>
     <div class="col s6 m4 input-field">
@@ -56,6 +62,23 @@
             <li ng-if="project.domainData.modules.length > 0 && project.domainData.actors.length > 0">
                 <a class="waves-effect waves-light" ng-href="/#/projects/{{ project._id }}/access-control">
                     Configure Access Control
+                </a>
+            </li>
+            <li ng-if="project.domainData.modules.length == 0 || project.domainData.actors.length == 0">
+                <a class="waves-effect waves-light"
+                   ng-click="toast('Please add at least one module and one actor to do so', 2000)">
+                    Configure Access Control
+                </a>
+            </li>
+            <li ng-if="project.domainData.actions.length > 0">
+                <a class="waves-effect waves-light" ng-href="/#/projects/{{ project._id }}/resource-constraint">
+                    Configure Resource Constraint
+                </a>
+            </li>
+            <li ng-if="project.domainData.actions.length == 0">
+                <a class="waves-effect waves-light"
+                   ng-click="toast('Please add at least one action to do so', 2000)">
+                    Configure Resource Constraint
                 </a>
             </li>
         </ul>

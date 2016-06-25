@@ -2,9 +2,13 @@ var _ = require('underscore');
 
 var failCallBack = function (error) {
     if (error) {
-        console.log('Error from: ' + failCallBack.caller);
         console.log(error);
+        toast(error.data, 2000);
     }
+};
+
+var toast = function (message, time) {
+    Materialize.toast(message, time);
 };
 
 exports.HomeController = function ($scope, $http, $location) {
@@ -34,6 +38,19 @@ exports.HomeController = function ($scope, $http, $location) {
 
     setTimeout(function () {
         $scope.$emit('HomeController');
+    }, 0);
+};
+
+exports.LoadingController = function ($scope, $rootScope, $window) {
+
+    $rootScope.title = 'Loading...';
+
+    $scope.back = function () {
+        $window.history.back();
+    };
+
+    setTimeout(function () {
+        $scope.$emit('LoadingController');
     }, 0);
 };
 
@@ -67,6 +84,7 @@ exports.ProjectViewController = function ($scope, $routeParams, $http, $location
     var projectID = encodeURIComponent($routeParams.id);
 
     $scope.$formatter = $formatter;
+    $scope.toast = toast;
 
     $http.get('/api/v1/projects/' + projectID + '/view')
         .then(function (json) {
@@ -85,7 +103,7 @@ exports.ProjectViewController = function ($scope, $routeParams, $http, $location
         }).then(function (json) {
             if (json.data.result) {
                 $location.path('/projects/' + $scope.project._id);
-                Materialize.toast('Saved succesfully', 3000);
+                $scope.toast('Saved successfully', 2000);
             }
             else
                 console.log(json.data);
@@ -522,5 +540,39 @@ exports.ConfigureBoilerplateController = function ($scope, $routeParams, $http, 
 
     setTimeout(function () {
         $scope.$emit('ConfigureBoilerplateController');
+    }, 0);
+};
+
+exports.ResourceConstraintController = function ($scope, $routeParams, $http, $location, $formatter) {
+    var projectID = encodeURIComponent($routeParams.id);
+
+    $scope.$formatter = $formatter;
+
+    $http.get('/api/v1/projects/' + projectID + '/resource-constraint-data')
+        .then(function (json) {
+            if (json.data.result) {
+                $scope.project = json.data.project;
+
+                if (!$scope.project.resourceConstraintData)
+                    $scope.project.resourceConstraintData = {};
+
+            } else
+                $location.path('/projects/' + $scope.project._id);
+
+        }, failCallBack);
+
+    $scope.saveProject = function () {
+        $http.patch('/api/v1/projects/' + projectID + '/resource-constraint-data', {
+            resourceConstraintData: $scope.project.resourceConstraintData
+        }).then(function (json) {
+            if (json.data.result)
+                $location.path('/projects/' + $scope.project._id);
+            else
+                console.log(json.data);
+        }, failCallBack);
+    };
+
+    setTimeout(function () {
+        $scope.$emit('AccessControlController');
     }, 0);
 };
