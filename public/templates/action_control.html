@@ -14,36 +14,42 @@
     </div>
 </div>
 <div class="row">
-    <div class="row">
-        <ul class="tabs blue lighten-2">
-            <li class="tab col"><a class="active" href="#INSTRUCTIONS">
-                <i class="material-icons right">announcement</i>Instructions</a>
-            </li>
-            <li class="col tab" ng-repeat="(actor, actions) in project.actionControlData">
-                <a href="{{ $formatter.asHtmlID(actor) }}" ng-bind="actor"></a>
-            </li>
-        </ul>
-    </div>
-    <div id="INSTRUCTIONS" class="row active">
-        <div class="card blue-grey darken-1 hoverable">
-            <div class="card-content white-text">
-                <h4 class="card-title">Configure Action Control</h4>
-                <p>For each actor in this domain, the action that the actor can perform can be controlled</p>
-                <p>Check to allow actor to performed selected action</p>
-                <p>Uncheck to restrict the actor from performing selected action</p>
+    <ul class="collapsible collapsible-accordion" data-collapsible="accordion">
+        <li>
+            <div class="collapsible-header active blue white-text">
+                Instructions<i class="material-icons right">announcement</i>
             </div>
-        </div>
-    </div>
-    <div ng-repeat="(actor, actions) in project.actionControlData" id="{{ actor.replace(' ', '_') }}" class="row">
-        <div class="input-field" ng-repeat="action in project.domainData.actions">
-            <input id="{{ actor.replace(' ', '_') }}.{{ action.replace(' ', '_') }}" type="checkbox"
-                   ng-model="actions[action]">
-            <label for="{{ actor.replace(' ', '_') }}.{{ action.replace(' ', '_') }}" ng-bind="action"></label>
-        </div>
-    </div>
+            <div class="collapsible-body">
+                <div class="row">
+                    <p>
+                        For each actor in this domain, the action that the actor can perform can be controlled
+                        <br/>
+                        Check to allow actor to performed selected action
+                        <br/>
+                        Uncheck to restrict the actor from performing selected action
+                    </p>
+                </div>
+            </div>
+        </li>
+        <li ng-repeat="(actor, actions) in project.actionControlData">
+            <div class="collapsible-header active"><h5 ng-bind="actor"></h5></div>
+            <div class="collapsible-body">
+                <div class="row">
+                    <div class="input-field" ng-repeat="action in project.domainData.actions">
+                        <input id="{{ actor.replace(' ', '_') }}.{{ action.replace(' ', '_') }}" type="checkbox"
+                               ng-model="actions[action]">
+                        <label for="{{ actor.replace(' ', '_') }}.{{ action.replace(' ', '_') }}"
+                               ng-bind="action"></label>
+                    </div>
+                </div>
+            </div>
+        </li>
+    </ul>
 </div>
 <script>
     setTimeout(function () {
-        $('ul.tabs').tabs();
+        $('.collapsible').collapsible({
+            accordion: false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
+        });
     }, 500);
 </script>
