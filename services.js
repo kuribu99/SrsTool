@@ -76,8 +76,8 @@ exports.$formatter = function () {
     return this;
 };
 
-exports.$boilerplateTemplate = function () {
-    return {
+exports.$template = function () {
+    this.boilerplateTemplates = {
         accessControl: {
             true: "<actor> shall be able to access to <module> module",
             false: "<actor> shall not be able to access to <module> module"
@@ -85,6 +85,20 @@ exports.$boilerplateTemplate = function () {
         actionControl: {
             true: "<actor> shall be able to <action>",
             false: "<actor> shall not be able to <action>"
+        },
+        resourceConstraint: {
+            'exactly': 'The <constraint> of <action> shall be exactly <value>',
+            'less than': 'The <constraint> of <action> shall be less than <value>',
+            'more than': 'The <constraint> of <action> shall be more than <value>',
+            'at least': 'The <constraint> of <action> shall be at least <value>',
+            'at most': 'The <constraint> of <action> shall be at most <value>',
+            'minimum': 'The minimum <constraint> of <action> shall be <value>',
+            'maximum': 'The maximum <constraint> of <action> shall be <value>',
+            'within': 'The <constraint> of <action> shall be within <value>'
         }
     };
+
+    this.resourceConstraintOptions = Object.keys(this.boilerplateTemplates.resourceConstraint);
+
+    return this;
 };

@@ -71,8 +71,7 @@
                 </a>
             </li>
             <li ng-if="project.domainData.actions.length > 0">
-                <a class="waves-effect waves-light"
-                   ng-click="toast('Not supported yet', 2000)">
+                <a class="waves-effect waves-light" ng-href="/#/projects/{{ project._id }}/resource-constraint">
                     Configure Resource Constraint
                 </a>
             </li>

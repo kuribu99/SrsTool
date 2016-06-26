@@ -1,5 +1,5 @@
 <div class="row valign-wrapper">
-    <h4 class=" col s12 m8 valign">Configure Access Control</h4>
+    <h4 class=" col s12 m8 valign">Configure Resource Constraint</h4>
     <div class="valign col s8 m4">
         <div class="col s12 m6 input-field">
             <a class="btn waves-effect waves-light green col s12 m12" ng-click="saveProject()">
@@ -18,7 +18,53 @@
         <li ng-repeat="action in project.domainData.actions">
             <div class="collapsible-header active"><h5 ng-bind="action"></h5></div>
             <div class="collapsible-body">
-                {{action}}
+                <div class="row valign-wrapper">
+                    <div class="col s4 m3 input-field">
+                        <label for="{{ action }}.constraint" class="active">Constraint Name</label>
+                        <input id="{{ action }}.constraint" type="text"
+                               ng-model="resourceConstraintData[action]['<constraint>']"/>
+                    </div>
+                    <div class="col s4 m3 input-field">
+                        <select id="{{ action }}.option" ng-model="resourceConstraintData[action]['<option>']"
+                            ng-options="option for option in $resourceConstraintOptions">
+                            <option value="" disabled>Choose an option</option>
+                        </select>
+                        <label>Value Option</label>
+                    </div>
+                    <div class="col s4 m3 input-field">
+                        <label for="{{ action }}.value" class="active">Value</label>
+                        <input id="{{ action }}.value" type="text"
+                               ng-model="resourceConstraintData[action]['<value>']"/>
+                    </div>
+                    <div class="col s4 m3 valign">
+                        <button class="btn waves-effect waves-light col s12 m12" ng-click="addConstraint(action)">Add
+                        </button>
+                    </div>
+                </div>
+                <div class="row" ng-if="project.resourceConstraintData[action].length > 0">
+                    <table class="highlight">
+                        <thead>
+                        <tr>
+                            <td>Constraint Name</td>
+                            <td>Option</td>
+                            <td>Value</td>
+                            <td></td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="data in project.resourceConstraintData[action] track by $index">
+                            <td ng-bind="data['<constraint>']"></td>
+                            <td ng-bind="data['<option>']"></td>
+                            <td ng-bind="data['<value>']"></td>
+                            <td>
+                                <a class="waves-effect waves-light btn red" ng-click="deleteConstraint(action, $index)">
+                                    <i class="material-icons left">delete</i>Delete
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </li>
     </ul>
@@ -28,5 +74,7 @@
         $('.collapsible').collapsible({
             accordion: false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
         });
+        $('select').material_select();
+        Materialize.updateTextFields();
     }, 500);
 </script>
