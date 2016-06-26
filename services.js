@@ -71,7 +71,7 @@ exports.$formatter = function () {
 
     this.asHtmlID = function (str) {
         return '#' + str.replace(' ', '_');
-    }
+    };
 
     return this;
 };

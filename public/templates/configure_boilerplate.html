@@ -123,7 +123,7 @@
                 <div class="collapsible-header active"><h5>Resource Constraint Module</h5></div>
                 <div class="collapsible-body">
                     <div class="row margin-top-10">
-                        <div class="row" ng-repeat="(option, boilerplate) in $boilerplateTemplates.resourceConstraint">
+                        <div class="row" ng-repeat="(option, boilerplate) in project.boilerplateData.resourceConstraint">
                             <div class="col s12 m6">
                                 <label for="resourceConstraint.{{ option }}">For "{{ option }}" option</label>
                                 <input id="resourceConstraint.{{ option }}"

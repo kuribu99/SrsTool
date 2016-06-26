@@ -284,7 +284,8 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
     $scope.generateRequirements = function () {
         $scope.generatedRequirements = {
             'Access Control': [],
-            'Action Control': []
+            'Action Control': [],
+            'Resource Constraint': []
         };
 
         // Access Control
@@ -312,6 +313,24 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
                 var values = {
                     '<actor>': actor,
                     '<action>': action
+                };
+
+                if (!$scope.hasRequirement(moduleName, values))
+                    $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
+            }
+        }
+
+        // Resource constraint
+        moduleName = 'Resource Constraint';
+        for (var action in $scope.project.resourceConstraintData) {
+            for (var index in $scope.project.resourceConstraintData[action]) {
+                var item = $scope.project.resourceConstraintData[action][index];
+                var boilerplate = $scope.project.boilerplateData.resourceConstraint[item.option];
+                var values = {
+                    '<action>': action,
+                    '<constraint>': item.constraint,
+                    '<option>': item.option,
+                    '<value>': item.value
                 };
 
                 if (!$scope.hasRequirement(moduleName, values))
@@ -583,25 +602,25 @@ exports.ResourceConstraintController = function ($scope, $routeParams, $http, $l
 
     $scope.emptyConstraint = function (action) {
         return {
-            '<action>': action,
-            '<constraint>': '',
-            '<option>': '',
-            '<value>': ''
+            action: action,
+            constraint: '',
+            option: '',
+            value: ''
         };
     };
 
     $scope.addConstraint = function (action) {
         var newData = $scope.resourceConstraintData[action];
-        if (newData['<constraint>'] == '')
+        if (newData.constraint == '')
             toast('Constraint name is required', 2000);
-        else if (newData['<option>'] == '')
+        else if (newData.option == '')
             toast('Please choose an option', 2000);
-        else if (newData['<value>'] == '')
+        else if (newData.value == '')
             toast('Value is required', 2000);
         else {
             $scope.project.resourceConstraintData[action].push(newData);
             $scope.resourceConstraintData[action] = $scope.emptyConstraint();
-            $scope.resourceConstraintData[action]['<option>'] = newData['<option>'];
+            $scope.resourceConstraintData[action].option = newData.option;
         }
     };
 
@@ -621,6 +640,6 @@ exports.ResourceConstraintController = function ($scope, $routeParams, $http, $l
     };
 
     setTimeout(function () {
-        $scope.$emit('AccessControlController');
+        $scope.$emit('ResourceConstraintController');
     }, 0);
 };

@@ -22,10 +22,10 @@
                     <div class="col s4 m3 input-field">
                         <label for="{{ action }}.constraint" class="active">Constraint Name</label>
                         <input id="{{ action }}.constraint" type="text"
-                               ng-model="resourceConstraintData[action]['<constraint>']"/>
+                               ng-model="resourceConstraintData[action].constraint"/>
                     </div>
                     <div class="col s4 m3 input-field">
-                        <select id="{{ action }}.option" ng-model="resourceConstraintData[action]['<option>']"
+                        <select id="{{ action }}.option" ng-model="resourceConstraintData[action].option"
                             ng-options="option for option in $resourceConstraintOptions">
                             <option value="" disabled>Choose an option</option>
                         </select>
@@ -34,7 +34,7 @@
                     <div class="col s4 m3 input-field">
                         <label for="{{ action }}.value" class="active">Value</label>
                         <input id="{{ action }}.value" type="text"
-                               ng-model="resourceConstraintData[action]['<value>']"/>
+                               ng-model="resourceConstraintData[action].value"/>
                     </div>
                     <div class="col s4 m3 valign">
                         <button class="btn waves-effect waves-light col s12 m12" ng-click="addConstraint(action)">Add
@@ -53,9 +53,9 @@
                         </thead>
                         <tbody>
                         <tr ng-repeat="data in project.resourceConstraintData[action] track by $index">
-                            <td ng-bind="data['<constraint>']"></td>
-                            <td ng-bind="data['<option>']"></td>
-                            <td ng-bind="data['<value>']"></td>
+                            <td ng-bind="data.constraint"></td>
+                            <td ng-bind="data.option"></td>
+                            <td ng-bind="data.value"></td>
                             <td>
                                 <a class="waves-effect waves-light btn red" ng-click="deleteConstraint(action, $index)">
                                     <i class="material-icons left">delete</i>Delete
