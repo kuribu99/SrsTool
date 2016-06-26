@@ -38,3 +38,9 @@
     background-color: white;
     bottom: 2px;
 }
+
+.collapsible-header.blue.white-text {
+    padding-top: 0.82rem;
+    padding-bottom: 0.656rem;
+    font-size: 1.64rem;
+}

@@ -28,6 +28,6 @@
   "scripts": {
     "test": "mocha test.js",
     "watch": "gulp watch",
-	"start": "node index.js"
+    "start": "node index.js"
   }
 }

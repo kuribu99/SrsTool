@@ -523,5 +523,72 @@ module.exports = function (wagner) {
         };
     }));
 
+    api.get('/:id/resource-constraint-data', wagner.invoke(function (Project) {
+        return function (req, res) {
+            Project.findOne({
+                _id: req.params.id
+            }).select({
+                _id: true,
+                domainData: true,
+                resourceConstraintData: true
+            }).then(function (project) {
+                return res.json({
+                    result: project != null,
+                    project: project
+                });
+            }, function (error) {
+                if (error) {
+                    return res.status(status.INTERNAL_SERVER_ERROR).json({
+                        result: false,
+                        projects: null,
+                        error: error.toString()
+                    });
+                }
+            });
+        };
+    }));
+
+    api.patch('/:id/resource-constraint-data', wagner.invoke(function (Project) {
+        return function (req, res) {
+            try {
+                var resourceConstraintData = req.body.resourceConstraintData;
+
+                Project.findOne({_id: req.params.id})
+                    .then(function (project) {
+                        project.resourceConstraintData = resourceConstraintData;
+
+                        project.save()
+                            .then(function () {
+                                return res.json({
+                                    result: true
+                                });
+
+                            }, function (error) {
+                                console.log(error);
+                                if (error) {
+                                    return res.status(status.INTERNAL_SERVER_ERROR).json({
+                                        result: false,
+                                        error: error.toString()
+                                    });
+                                }
+                            });
+                    }, function (error) {
+                        if (error) {
+                            return res.status(status.INTERNAL_SERVER_ERROR).json({
+                                result: false,
+                                error: error.toString()
+                            });
+                        }
+                    });
+
+            } catch (e) {
+                return res.status(status.BAD_REQUEST).json({
+                    result: false,
+                    error: e.toString()
+                });
+            }
+        };
+    }));
+
     return api;
 };

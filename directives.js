@@ -13,6 +13,7 @@ exports.navBar = function () {
 
 exports.loading = function () {
     return {
+        controller: 'LoadingController',
         templateUrl: './templates/loading.html'
     };
 };
@@ -70,5 +71,12 @@ exports.configureBoilerplate = function () {
     return {
         controller: 'ConfigureBoilerplateController',
         templateUrl: './templates/configure_boilerplate.html'
+    };
+};
+
+exports.resourceConstraint = function () {
+    return {
+        controller: 'ResourceConstraintController',
+        templateUrl: './templates/resource_constraint.html'
     };
 };

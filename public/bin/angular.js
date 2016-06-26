@@ -3,9 +3,13 @@ var _ = require('underscore');
 
 var failCallBack = function (error) {
     if (error) {
-        console.log('Error from: ' + failCallBack.caller);
         console.log(error);
+        toast(error.data, 2000);
     }
+};
+
+var toast = function (message, time) {
+    Materialize.toast(message, time);
 };
 
 exports.HomeController = function ($scope, $http, $location) {
@@ -35,6 +39,19 @@ exports.HomeController = function ($scope, $http, $location) {
 
     setTimeout(function () {
         $scope.$emit('HomeController');
+    }, 0);
+};
+
+exports.LoadingController = function ($scope, $rootScope, $window) {
+
+    $rootScope.title = 'Loading...';
+
+    $scope.back = function () {
+        $window.history.back();
+    };
+
+    setTimeout(function () {
+        $scope.$emit('LoadingController');
     }, 0);
 };
 
@@ -68,6 +85,7 @@ exports.ProjectViewController = function ($scope, $routeParams, $http, $location
     var projectID = encodeURIComponent($routeParams.id);
 
     $scope.$formatter = $formatter;
+    $scope.toast = toast;
 
     $http.get('/api/v1/projects/' + projectID + '/view')
         .then(function (json) {
@@ -86,7 +104,7 @@ exports.ProjectViewController = function ($scope, $routeParams, $http, $location
         }).then(function (json) {
             if (json.data.result) {
                 $location.path('/projects/' + $scope.project._id);
-                Materialize.toast('Saved succesfully', 3000);
+                $scope.toast('Saved successfully', 2000);
             }
             else
                 console.log(json.data);
@@ -301,6 +319,10 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
                     $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
             }
         }
+
+        $scope.numberRequirements = _.flatten($scope.generatedRequirements).length;
+        $scope.numberModules = Object.keys($scope.generatedRequirements).length;
+        $scope.numberNewRequirements = 0;
     };
 
     $scope.hasRequirement = function (moduleName, values) {
@@ -339,6 +361,8 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
 
             $scope.generatedRequirements[moduleName] = _.difference($scope.generatedRequirements[moduleName], addedRequirements);
         }
+
+        $scope.numberNewRequirements += addedRequirements.length;
     };
 
     $scope.newRequirement = function (module, boilerplate, values) {
@@ -364,9 +388,7 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
     setTimeout(function () {
         $scope.$emit('GenerateRequirementController');
     }, 0);
-
-}
-;
+};
 
 exports.AccessControlController = function ($scope, $routeParams, $http, $location, $formatter) {
     var projectID = encodeURIComponent($routeParams.id);
@@ -527,6 +549,41 @@ exports.ConfigureBoilerplateController = function ($scope, $routeParams, $http, 
         $scope.$emit('ConfigureBoilerplateController');
     }, 0);
 };
+
+exports.ResourceConstraintController = function ($scope, $routeParams, $http, $location, $formatter) {
+    var projectID = encodeURIComponent($routeParams.id);
+
+    $scope.$formatter = $formatter;
+
+    $http.get('/api/v1/projects/' + projectID + '/resource-constraint-data')
+        .then(function (json) {
+            if (json.data.result) {
+                $scope.project = json.data.project;
+
+                if (!$scope.project.resourceConstraintData)
+                    $scope.project.resourceConstraintData = {};
+
+            } else
+                $location.path('/projects/' + $scope.project._id);
+
+        }, failCallBack);
+
+    $scope.saveProject = function () {
+        $http.patch('/api/v1/projects/' + projectID + '/resource-constraint-data', {
+            resourceConstraintData: $scope.project.resourceConstraintData
+        }).then(function (json) {
+            if (json.data.result)
+                $location.path('/projects/' + $scope.project._id);
+            else
+                console.log(json.data);
+        }, failCallBack);
+    };
+
+    setTimeout(function () {
+        $scope.$emit('AccessControlController');
+    }, 0);
+};
+
 },{"underscore":5}],2:[function(require,module,exports){
 exports.home = function () {
     return {
@@ -543,6 +600,7 @@ exports.navBar = function () {
 
 exports.loading = function () {
     return {
+        controller: 'LoadingController',
         templateUrl: './templates/loading.html'
     };
 };
@@ -603,6 +661,13 @@ exports.configureBoilerplate = function () {
     };
 };
 
+exports.resourceConstraint = function () {
+    return {
+        controller: 'ResourceConstraintController',
+        templateUrl: './templates/resource_constraint.html'
+    };
+};
+
 },{}],3:[function(require,module,exports){
 var controllers = require('./controllers');
 var directives = require('./directives');
@@ -652,6 +717,11 @@ app.config(function ($routeProvider) {
             template: '<generate-requirement></generate-requirement>'
         })
 
+        .when('/projects/:id/resource-constraint', {
+            title: 'Configure Resource Constraint',
+            template: '<resource-constraint></resource-constraint>'
+        })
+
         .when('/projects/:id/boilerplate', {
             title: 'Configure Boilerplate',
             template: '<configure-boilerplate></configure-boilerplate>'
@@ -668,13 +738,18 @@ app.config(function ($routeProvider) {
         });
 });
 
-app.run(['$rootScope', function($rootScope) {
+app.run(['$rootScope', function ($rootScope) {
     $rootScope.$on('$routeChangeSuccess', function (event, current, previous) {
-        $rootScope.title = current.$$route.title;
-        $rootScope.loading = false;
+        try {
+            $rootScope.title = current.$$route.title;
+            $rootScope.loading = false;
+        }
+        catch (e) {
+            $rootScope.title = '';
+        }
     });
 
-    $rootScope.$on('$routeChangeStart', function(){
+    $rootScope.$on('$routeChangeStart', function () {
         $rootScope.loading = true;
     });
 }]);
