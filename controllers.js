@@ -318,6 +318,10 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
                     $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
             }
         }
+
+        $scope.numberRequirements = _.flatten($scope.generatedRequirements).length;
+        $scope.numberModules = Object.keys($scope.generatedRequirements).length;
+        $scope.numberNewRequirements = 0;
     };
 
     $scope.hasRequirement = function (moduleName, values) {
@@ -356,6 +360,8 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
 
             $scope.generatedRequirements[moduleName] = _.difference($scope.generatedRequirements[moduleName], addedRequirements);
         }
+
+        $scope.numberNewRequirements += addedRequirements.length;
     };
 
     $scope.newRequirement = function (module, boilerplate, values) {

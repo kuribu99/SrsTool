@@ -21,6 +21,12 @@
     </div>
 </div>
 <div class="row">
+    <h6 class="col">
+        <span ng-bind="numberRequirements || 0"></span> generated requirements from <span ng-bind="numberModules || 0"></span> modules.
+        <span ng-bind="numberNewRequirements || 0"></span> requirements added.
+    </h6>
+</div>
+<div class="row">
     <ul class="collapsible collapsible-accordion" data-collapsible="accordion">
         <li ng-repeat="(moduleName, requirements) in generatedRequirements">
             <div class="collapsible-header active"><h5 ng-bind="moduleName"></h5></div>
@@ -39,7 +45,7 @@
                 </div>
                 <div class="row" ng-if="requirements.length == 0">
                     <div class="center-align">
-                        <h5 class="header">No requirement generated</h5>
+                        <h5 class="header">No more requirements can be generated</h5>
                     </div>
                 </div>
             </div>
