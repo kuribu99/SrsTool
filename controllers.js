@@ -254,11 +254,11 @@ exports.EditDomainController = function ($scope, $routeParams, $http, $location)
     }, 0);
 };
 
-exports.GenerateRequirementController = function ($scope, $routeParams, $http, $location, $formatter, $boilerplateTemplate) {
+exports.GenerateRequirementController = function ($scope, $routeParams, $http, $location, $formatter, $template) {
     var projectID = encodeURIComponent($routeParams.id);
 
     $scope.$formatter = $formatter;
-    $scope.$boilerplate = $formatter;
+    $scope.$boilerplateTemplates = $template.boilerplateTemplates;
     $scope.generatedRequirements = [];
 
     $http.get('/api/v1/projects/' + projectID)
@@ -271,9 +271,9 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
                 if ($scope.project.generatedRequirements == null)
                     $scope.project.generatedRequirements = {};
 
-                for (var key in $boilerplateTemplate)
+                for (var key in $scope.$boilerplateTemplates)
                     if ($scope.project.boilerplateData[key] == null)
-                        $scope.project.boilerplateData[key] = $boilerplateTemplate[key];
+                        $scope.project.boilerplateData[key] = $scope.$boilerplateTemplates[key];
 
                 $scope.generateRequirements();
             }
@@ -284,7 +284,8 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
     $scope.generateRequirements = function () {
         $scope.generatedRequirements = {
             'Access Control': [],
-            'Action Control': []
+            'Action Control': [],
+            'Performance Constraint': []
         };
 
         // Access Control
@@ -312,6 +313,24 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
                 var values = {
                     '<actor>': actor,
                     '<action>': action
+                };
+
+                if (!$scope.hasRequirement(moduleName, values))
+                    $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
+            }
+        }
+
+        // Performance constraint
+        moduleName = 'Performance Constraint';
+        for (var action in $scope.project.performanceConstraintData) {
+            for (var index in $scope.project.performanceConstraintData[action]) {
+                var item = $scope.project.performanceConstraintData[action][index];
+                var boilerplate = $scope.project.boilerplateData.performanceConstraint[item.option];
+                var values = {
+                    '<action>': action,
+                    '<constraint>': item.constraint,
+                    '<option>': item.option,
+                    '<value>': item.value
                 };
 
                 if (!$scope.hasRequirement(moduleName, values))
@@ -500,10 +519,13 @@ exports.ActionControlController = function ($scope, $routeParams, $http, $locati
     }, 0);
 };
 
-exports.ConfigureBoilerplateController = function ($scope, $routeParams, $http, $location, $formatter, $boilerplateTemplate) {
+exports.ConfigureBoilerplateController = function ($scope, $routeParams, $http, $location, $formatter, $template) {
     var projectID = encodeURIComponent($routeParams.id);
 
     $scope.$formatter = $formatter;
+    $scope.$boilerplateTemplates = $template.boilerplateTemplates;
+    $scope._ = _;
+    $scope.toast = toast;
 
     $http.get('/api/v1/projects/' + projectID + '/boilerplate-data')
         .then(function (json) {
@@ -512,9 +534,9 @@ exports.ConfigureBoilerplateController = function ($scope, $routeParams, $http, 
                 if ($scope.project.boilerplateData == null)
                     $scope.project.boilerplateData = {};
 
-                for (var key in $boilerplateTemplate)
+                for (var key in $scope.$boilerplateTemplates)
                     if ($scope.project.boilerplateData[key] == null)
-                        $scope.project.boilerplateData[key] = $boilerplateTemplate[key];
+                        $scope.project.boilerplateData[key] = $scope.$boilerplateTemplates[key];
             }
             else
                 $location.path('/');
@@ -528,7 +550,9 @@ exports.ConfigureBoilerplateController = function ($scope, $routeParams, $http, 
             values: {
                 '<actor>': 'lecturer',
                 '<module>': 'user authentication',
-                '<action>': 'login to the system'
+                '<action>': 'register account',
+                '<constraint>': 'response time',
+                '<value>': '1 seconds',
             }
         });
     }
@@ -549,27 +573,64 @@ exports.ConfigureBoilerplateController = function ($scope, $routeParams, $http, 
     }, 0);
 };
 
-exports.ResourceConstraintController = function ($scope, $routeParams, $http, $location, $formatter) {
+exports.PerformanceConstraintController = function ($scope, $routeParams, $http, $location, $formatter, $template) {
     var projectID = encodeURIComponent($routeParams.id);
 
     $scope.$formatter = $formatter;
+    $scope.$performanceConstraintOptions = $template.performanceConstraintOptions;
+    $scope.performanceConstraintData = {};
 
-    $http.get('/api/v1/projects/' + projectID + '/resource-constraint-data')
+    $http.get('/api/v1/projects/' + projectID + '/performance-constraint-data')
         .then(function (json) {
             if (json.data.result) {
                 $scope.project = json.data.project;
 
-                if (!$scope.project.resourceConstraintData)
-                    $scope.project.resourceConstraintData = {};
+                if (!$scope.project.performanceConstraintData)
+                    $scope.project.performanceConstraintData = {};
+
+                _.each($scope.project.domainData.actions, function (action) {
+                    if (!$scope.project.performanceConstraintData.hasOwnProperty(action))
+                        $scope.project.performanceConstraintData[action] = [];
+
+                    $scope.performanceConstraintData[action] = $scope.emptyConstraint();
+                });
 
             } else
                 $location.path('/projects/' + $scope.project._id);
 
         }, failCallBack);
 
+    $scope.emptyConstraint = function (action) {
+        return {
+            action: action,
+            constraint: '',
+            option: '',
+            value: ''
+        };
+    };
+
+    $scope.addConstraint = function (action) {
+        var newData = $scope.performanceConstraintData[action];
+        if (newData.constraint == '')
+            toast('Constraint name is required', 2000);
+        else if (newData.option == '')
+            toast('Please choose an option', 2000);
+        else if (newData.value == '')
+            toast('Value is required', 2000);
+        else {
+            $scope.project.performanceConstraintData[action].push(newData);
+            $scope.performanceConstraintData[action] = $scope.emptyConstraint();
+            $scope.performanceConstraintData[action].option = newData.option;
+        }
+    };
+
+    $scope.deleteConstraint = function (action, index) {
+        $scope.project.performanceConstraintData[action].splice(index, 1);
+    }
+
     $scope.saveProject = function () {
-        $http.patch('/api/v1/projects/' + projectID + '/resource-constraint-data', {
-            resourceConstraintData: $scope.project.resourceConstraintData
+        $http.patch('/api/v1/projects/' + projectID + '/performance-constraint-data', {
+            performanceConstraintData: $scope.project.performanceConstraintData
         }).then(function (json) {
             if (json.data.result)
                 $location.path('/projects/' + $scope.project._id);
@@ -579,6 +640,6 @@ exports.ResourceConstraintController = function ($scope, $routeParams, $http, $l
     };
 
     setTimeout(function () {
-        $scope.$emit('AccessControlController');
+        $scope.$emit('PerformanceConstraintController');
     }, 0);
 };

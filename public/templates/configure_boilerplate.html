@@ -70,6 +70,15 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col s6 m4 push-s6 push-m8">
+                            <button class="btn waves-effect waves-light col s12 m12"
+                                    ng-click="project.boilerplateData.accessControl = _.clone($boilerplateTemplates.accessControl);
+                                    toast('Default boilerplate restored', 2000);">
+                                Restore Default Boilerplate
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </li>
             <li>
@@ -97,6 +106,43 @@
                                 <input id="actionControl.false.example" readonly
                                        value="{{ requirementToString(project.boilerplateData.actionControl.false) }}"/>
                             </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s6 m4 push-s6 push-m8">
+                            <button class="btn waves-effect waves-light col s12 m12"
+                                    ng-click="project.boilerplateData.actionControl = _.clone($boilerplateTemplates.actionControl);
+                                    toast('Default boilerplate restored', 2000);">
+                                Restore Default Boilerplate
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="collapsible-header active"><h5>Performance Constraint Module</h5></div>
+                <div class="collapsible-body">
+                    <div class="row margin-top-10">
+                        <div class="row" ng-repeat="(option, boilerplate) in project.boilerplateData.performanceConstraint">
+                            <div class="col s12 m6">
+                                <label for="performanceConstraint.{{ option }}">For "{{ option }}" option</label>
+                                <input id="performanceConstraint.{{ option }}"
+                                       ng-model="project.boilerplateData.performanceConstraint[option]"/>
+                            </div>
+                            <div class="col s12 m6">
+                                <label for="performanceConstraint.{{ option }}.example">Example</label>
+                                <input id="performanceConstraint.{{ option }}.example" readonly
+                                       value="{{ requirementToString(project.boilerplateData.performanceConstraint[option]) }}"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s6 m4 push-s6 push-m8">
+                            <button class="btn waves-effect waves-light col s12 m12"
+                                    ng-click="project.boilerplateData.performanceConstraint = _.clone($boilerplateTemplates.performanceConstraint);
+                                    toast('Default boilerplate restored', 2000);">
+                                Restore Default Boilerplate
+                            </button>
                         </div>
                     </div>
                 </div>

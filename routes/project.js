@@ -523,14 +523,14 @@ module.exports = function (wagner) {
         };
     }));
 
-    api.get('/:id/resource-constraint-data', wagner.invoke(function (Project) {
+    api.get('/:id/performance-constraint-data', wagner.invoke(function (Project) {
         return function (req, res) {
             Project.findOne({
                 _id: req.params.id
             }).select({
                 _id: true,
                 domainData: true,
-                resourceConstraintData: true
+                performanceConstraintData: true
             }).then(function (project) {
                 return res.json({
                     result: project != null,
@@ -548,14 +548,14 @@ module.exports = function (wagner) {
         };
     }));
 
-    api.patch('/:id/resource-constraint-data', wagner.invoke(function (Project) {
+    api.patch('/:id/performance-constraint-data', wagner.invoke(function (Project) {
         return function (req, res) {
             try {
-                var resourceConstraintData = req.body.resourceConstraintData;
+                var performanceConstraintData = req.body.performanceConstraintData;
 
                 Project.findOne({_id: req.params.id})
                     .then(function (project) {
-                        project.resourceConstraintData = resourceConstraintData;
+                        project.performanceConstraintData = performanceConstraintData;
 
                         project.save()
                             .then(function () {
