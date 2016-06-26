@@ -46,9 +46,9 @@ app.config(function ($routeProvider) {
             template: '<generate-requirement></generate-requirement>'
         })
 
-        .when('/projects/:id/resource-constraint', {
-            title: 'Configure Resource Constraint',
-            template: '<resource-constraint></resource-constraint>'
+        .when('/projects/:id/performance-constraint', {
+            title: 'Configure Performance Constraint',
+            template: '<performance-constraint></performance-constraint>'
         })
 
         .when('/projects/:id/boilerplate', {

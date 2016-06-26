@@ -44,7 +44,7 @@ var projectSchema = {
         type: mongoose.Schema.Types.Mixed,
         default: {}
     },
-    resourceConstraintData: {
+    performanceConstraintData: {
         type: mongoose.Schema.Types.Mixed,
         default: {}
     }

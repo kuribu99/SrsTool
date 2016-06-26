@@ -86,7 +86,7 @@ exports.$template = function () {
             true: "<actor> shall be able to <action>",
             false: "<actor> shall not be able to <action>"
         },
-        resourceConstraint: {
+        performanceConstraint: {
             'exactly': 'The <constraint> of <action> shall be exactly <value>',
             'less than': 'The <constraint> of <action> shall be less than <value>',
             'more than': 'The <constraint> of <action> shall be more than <value>',
@@ -98,7 +98,7 @@ exports.$template = function () {
         }
     };
 
-    this.resourceConstraintOptions = Object.keys(this.boilerplateTemplates.resourceConstraint);
+    this.performanceConstraintOptions = Object.keys(this.boilerplateTemplates.performanceConstraint);
 
     return this;
 };

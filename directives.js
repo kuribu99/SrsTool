@@ -74,9 +74,9 @@ exports.configureBoilerplate = function () {
     };
 };
 
-exports.resourceConstraint = function () {
+exports.performanceConstraint = function () {
     return {
-        controller: 'ResourceConstraintController',
-        templateUrl: './templates/resource_constraint.html'
+        controller: 'PerformanceConstraintController',
+        templateUrl: './templates/performance_constraint.html'
     };
 };
