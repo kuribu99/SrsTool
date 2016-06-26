@@ -70,6 +70,15 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col s6 m4 push-s6 push-m8">
+                            <button class="btn waves-effect waves-light col s12 m12"
+                                    ng-click="project.boilerplateData.accessControl = _.clone($boilerplateTemplates.accessControl);
+                                    toast('Default boilerplate restored', 2000);">
+                                Restore Default Boilerplate
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </li>
             <li>
@@ -99,6 +108,15 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col s6 m4 push-s6 push-m8">
+                            <button class="btn waves-effect waves-light col s12 m12"
+                                    ng-click="project.boilerplateData.actionControl = _.clone($boilerplateTemplates.actionControl);
+                                    toast('Default boilerplate restored', 2000);">
+                                Restore Default Boilerplate
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </li>
             <li>
@@ -121,7 +139,8 @@
                     <div class="row">
                         <div class="col s6 m4 push-s6 push-m8">
                             <button class="btn waves-effect waves-light col s12 m12"
-                                    ng-click="project.boilerplateData.resourceConstraint = _.clone($boilerplateTemplates.resourceConstraint)">
+                                    ng-click="project.boilerplateData.resourceConstraint = _.clone($boilerplateTemplates.resourceConstraint);
+                                    toast('Default boilerplate restored', 2000);">
                                 Restore Default Boilerplate
                             </button>
                         </div>

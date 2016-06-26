@@ -506,6 +506,7 @@ exports.ConfigureBoilerplateController = function ($scope, $routeParams, $http, 
     $scope.$formatter = $formatter;
     $scope.$boilerplateTemplates = $template.boilerplateTemplates;
     $scope._ = _;
+    $scope.toast = toast;
 
     $http.get('/api/v1/projects/' + projectID + '/boilerplate-data')
         .then(function (json) {
