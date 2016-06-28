@@ -554,10 +554,10 @@ exports.ConfigureBoilerplateController = function ($scope, $routeParams, $http, 
                 '<module>': 'user authentication',
                 '<action>': 'register account',
                 '<constraint>': 'response time',
-                '<value>': '1 seconds',
+                '<value>': '1 seconds'
             }
         });
-    }
+    };
 
     $scope.saveProject = function () {
         $http.patch('/api/v1/projects/' + projectID + '/boilerplate-data', {
@@ -628,7 +628,7 @@ exports.PerformanceConstraintController = function ($scope, $routeParams, $http,
 
     $scope.deleteConstraint = function (action, index) {
         $scope.project.performanceConstraintData[action].splice(index, 1);
-    }
+    };
 
     $scope.saveProject = function () {
         $http.patch('/api/v1/projects/' + projectID + '/performance-constraint-data', {
@@ -643,5 +643,44 @@ exports.PerformanceConstraintController = function ($scope, $routeParams, $http,
 
     setTimeout(function () {
         $scope.$emit('PerformanceConstraintController');
+    }, 0);
+};
+
+exports.FunctionalConstraintController = function ($scope, $routeParams, $http, $location, $formatter) {
+    var projectID = encodeURIComponent($routeParams.id);
+
+    $scope.$formatter = $formatter;
+    $scope.functionalConstraintData = {};
+
+    $http.get('/api/v1/projects/' + projectID + '/functional-constraint-data')
+        .then(function (json) {
+            if (json.data.result) {
+                $scope.project = json.data.project;
+
+                if (!$scope.project.functionalConstraintData)
+                    $scope.project.functionalConstraintData = {};
+
+            } else
+                $location.path('/projects/' + $scope.project._id);
+
+        }, failCallBack);
+
+    $scope.deleteConstraint = function (action, index) {
+        $scope.project.functionalConstraintData[action].splice(index, 1);
+    };
+
+    $scope.saveProject = function () {
+        $http.patch('/api/v1/projects/' + projectID + '/functional-constraint-data', {
+            functionalConstraintData: $scope.project.functionalConstraintData
+        }).then(function (json) {
+            if (json.data.result)
+                $location.path('/projects/' + $scope.project._id);
+            else
+                console.log(json.data);
+        }, failCallBack);
+    };
+
+    setTimeout(function () {
+        $scope.$emit('FunctionalConstraintController');
     }, 0);
 };

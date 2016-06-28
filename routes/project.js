@@ -590,5 +590,72 @@ module.exports = function (wagner) {
         };
     }));
 
+    api.get('/:id/functional-constraint-data', wagner.invoke(function (Project) {
+        return function (req, res) {
+            Project.findOne({
+                _id: req.params.id
+            }).select({
+                _id: true,
+                domainData: true,
+                functionalConstraintData: true
+            }).then(function (project) {
+                return res.json({
+                    result: project != null,
+                    project: project
+                });
+            }, function (error) {
+                if (error) {
+                    return res.status(status.INTERNAL_SERVER_ERROR).json({
+                        result: false,
+                        projects: null,
+                        error: error.toString()
+                    });
+                }
+            });
+        };
+    }));
+
+    api.patch('/:id/functional-constraint-data', wagner.invoke(function (Project) {
+        return function (req, res) {
+            try {
+                var functionalConstraintData = req.body.functionalConstraintData;
+
+                Project.findOne({_id: req.params.id})
+                    .then(function (project) {
+                        project.functionalConstraintData = functionalConstraintData;
+
+                        project.save()
+                            .then(function () {
+                                return res.json({
+                                    result: true
+                                });
+
+                            }, function (error) {
+                                console.log(error);
+                                if (error) {
+                                    return res.status(status.INTERNAL_SERVER_ERROR).json({
+                                        result: false,
+                                        error: error.toString()
+                                    });
+                                }
+                            });
+                    }, function (error) {
+                        if (error) {
+                            return res.status(status.INTERNAL_SERVER_ERROR).json({
+                                result: false,
+                                error: error.toString()
+                            });
+                        }
+                    });
+
+            } catch (e) {
+                return res.status(status.BAD_REQUEST).json({
+                    result: false,
+                    error: e.toString()
+                });
+            }
+        };
+    }));
+
     return api;
 };
