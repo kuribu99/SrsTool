@@ -3,11 +3,13 @@ var _ = require('underscore');
 var failCallBack = function (error) {
     if (error) {
         console.log(error);
-        toast(error.data, 2000);
+        toast(error.data);
     }
 };
 
 var toast = function (message, time) {
+    if(!time)
+        time = 2000;
     Materialize.toast(message, time);
 };
 
@@ -33,7 +35,7 @@ exports.HomeController = function ($scope, $http, $location) {
             }, failCallBack);
         }
         else
-            alert('Project name and domain name must not be empty');
+            toast('Project name and domain name must not be empty');
     };
 
     setTimeout(function () {
@@ -103,7 +105,7 @@ exports.ProjectViewController = function ($scope, $routeParams, $http, $location
         }).then(function (json) {
             if (json.data.result) {
                 $location.path('/projects/' + $scope.project._id);
-                $scope.toast('Saved successfully', 2000);
+                $scope.toast('Saved successfully');
             }
             else
                 console.log(json.data);
@@ -150,7 +152,7 @@ exports.EditProjectController = function ($scope, $routeParams, $http, $location
             }, failCallBack);
         }
         else
-            alert('Project name and domain name must not be empty');
+            toast('Project name and domain name must not be empty');
     };
 
     setTimeout(function () {
@@ -612,11 +614,11 @@ exports.PerformanceConstraintController = function ($scope, $routeParams, $http,
     $scope.addConstraint = function (action) {
         var newData = $scope.performanceConstraintData[action];
         if (newData.constraint == '')
-            toast('Constraint name is required', 2000);
+            toast('Constraint name is required');
         else if (newData.option == '')
-            toast('Please choose an option', 2000);
+            toast('Please choose an option');
         else if (newData.value == '')
-            toast('Value is required', 2000);
+            toast('Value is required');
         else {
             $scope.project.performanceConstraintData[action].push(newData);
             $scope.performanceConstraintData[action] = $scope.emptyConstraint();
