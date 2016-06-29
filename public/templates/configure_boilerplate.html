@@ -7,7 +7,7 @@
             </a>
         </div>
         <div class="col s12 m6 input-field">
-            <a class="btn waves-effect waves-light red col s12 m12" ng-href="/#/projects/{{ project._id }}">
+            <a class="btn waves-effect waves-light red col s12 m12" ng-click="back()">
                 <i class="material-icons left">power_settings_new</i>Back
             </a>
         </div>
@@ -47,10 +47,19 @@
                 <div class="collapsible-header active"><h5>Access Control Module</h5></div>
                 <div class="collapsible-body">
                     <div class="row margin-top-10">
+                        <div class="col s6 m4 push-s6 push-m8">
+                            <button class="btn waves-effect waves-light col s12 m12"
+                                    ng-click="restore('accessControl')">
+                                Restore Default Boilerplate
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="row">
                             <div class="col s12 m6">
                                 <label for="accessControl.true">For allowed actors</label>
-                                <input id="accessControl.true" ng-model="project.boilerplateData.accessControl.true"/>
+                                <input id="accessControl.true" ng-change="change()"
+                                       ng-model="project.boilerplateData.accessControl.true"/>
                             </div>
                             <div class="col s12 m6">
                                 <label for="accessControl.true.example">Example</label>
@@ -61,7 +70,8 @@
                         <div clas="row">
                             <div class="col s12 m6">
                                 <label for="accessControl.false">For restricted actors</label>
-                                <input id="accessControl.false" ng-model="project.boilerplateData.accessControl.false"/>
+                                <input id="accessControl.false" ng-change="change()"
+                                       ng-model="project.boilerplateData.accessControl.false"/>
                             </div>
                             <div class="col s12 m6">
                                 <label for="accessControl.true.example">Example</label>
@@ -70,25 +80,25 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col s6 m4 push-s6 push-m8">
-                            <button class="btn waves-effect waves-light col s12 m12"
-                                    ng-click="project.boilerplateData.accessControl = _.clone($boilerplateTemplates.accessControl);
-                                    toast('Default boilerplate restored');">
-                                Restore Default Boilerplate
-                            </button>
-                        </div>
-                    </div>
                 </div>
             </li>
             <li>
                 <div class="collapsible-header active"><h5>Action Control Module</h5></div>
                 <div class="collapsible-body">
                     <div class="row margin-top-10">
+                        <div class="col s6 m4 push-s6 push-m8">
+                            <button class="btn waves-effect waves-light col s12 m12"
+                                    ng-click="restore('actionControl')">
+                                Restore Default Boilerplate
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="row">
                             <div class="col s12 m6">
                                 <label for="actionControl.true">For allowed actions</label>
-                                <input id="actionControl.true" ng-model="project.boilerplateData.actionControl.true"/>
+                                <input id="actionControl.true" ng-change="change()"
+                                       ng-model="project.boilerplateData.actionControl.true"/>
                             </div>
                             <div class="col s12 m6">
                                 <label for="actionControl.true.example">Example</label>
@@ -99,7 +109,8 @@
                         <div clas="row">
                             <div class="col s12 m6">
                                 <label for="actionControl.false">For restricted actions</label>
-                                <input id="actionControl.false" ng-model="project.boilerplateData.actionControl.false"/>
+                                <input id="actionControl.false" ng-change="change()"
+                                       ng-model="project.boilerplateData.actionControl.false"/>
                             </div>
                             <div class="col s12 m6">
                                 <label for="actionControl.true.example">Example</label>
@@ -108,25 +119,26 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col s6 m4 push-s6 push-m8">
-                            <button class="btn waves-effect waves-light col s12 m12"
-                                    ng-click="project.boilerplateData.actionControl = _.clone($boilerplateTemplates.actionControl);
-                                    toast('Default boilerplate restored');">
-                                Restore Default Boilerplate
-                            </button>
-                        </div>
-                    </div>
                 </div>
             </li>
             <li>
                 <div class="collapsible-header active"><h5>Performance Constraint Module</h5></div>
                 <div class="collapsible-body">
                     <div class="row margin-top-10">
-                        <div class="row" ng-repeat="(option, boilerplate) in project.boilerplateData.performanceConstraint">
+                        <div class="col s6 m4 push-s6 push-m8">
+                            <button class="btn waves-effect waves-light col s12 m12"
+                                    ng-click="restore('performanceConstraint')">
+                                Restore Default Boilerplate
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="row"
+                             ng-repeat="(option, boilerplate) in project.boilerplateData.performanceConstraint">
                             <div class="col s12 m6">
                                 <label for="performanceConstraint.{{ option }}">For "{{ option }}" option</label>
                                 <input id="performanceConstraint.{{ option }}"
+                                       ng-change="change()"
                                        ng-model="project.boilerplateData.performanceConstraint[option]"/>
                             </div>
                             <div class="col s12 m6">
@@ -134,15 +146,6 @@
                                 <input id="performanceConstraint.{{ option }}.example" readonly
                                        value="{{ requirementToString(project.boilerplateData.performanceConstraint[option]) }}"/>
                             </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col s6 m4 push-s6 push-m8">
-                            <button class="btn waves-effect waves-light col s12 m12"
-                                    ng-click="project.boilerplateData.performanceConstraint = _.clone($boilerplateTemplates.performanceConstraint);
-                                    toast('Default boilerplate restored');">
-                                Restore Default Boilerplate
-                            </button>
                         </div>
                     </div>
                 </div>

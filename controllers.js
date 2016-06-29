@@ -8,9 +8,14 @@ var failCallBack = function (error) {
 };
 
 var toast = function (message, time) {
-    if(!time)
+    if (!time)
         time = 2000;
     Materialize.toast(message, time);
+};
+
+var confirmBack = function (callback) {
+    return confirm("You have not saved the project yet!\n" +
+        "Do you want to save your project?");
 };
 
 exports.HomeController = function ($scope, $http, $location) {
@@ -87,6 +92,7 @@ exports.ProjectViewController = function ($scope, $routeParams, $http, $location
 
     $scope.$formatter = $formatter;
     $scope.toast = toast;
+    $scope.changed = false;
 
     $http.get('/api/v1/projects/' + projectID + '/view')
         .then(function (json) {
@@ -104,16 +110,23 @@ exports.ProjectViewController = function ($scope, $routeParams, $http, $location
             generatedRequirements: $scope.project.generatedRequirements
         }).then(function (json) {
             if (json.data.result) {
-                $location.path('/projects/' + $scope.project._id);
-                $scope.toast('Saved successfully');
+                $scope.changed = false;
+                toast("Saved successfully");
             }
             else
                 console.log(json.data);
         }, failCallBack);
     };
 
+    $scope.back = function () {
+        if ($scope.changed && confirmBack())
+            $scope.saveProject();
+        $location.path('/');
+    };
+
     $scope.removeRequirement = function (moduleName, index) {
         $scope.project.generatedRequirements[moduleName].splice(index, 1);
+        $scope.changed = true;
     };
 
     setTimeout(function () {
@@ -166,6 +179,7 @@ exports.EditDomainController = function ($scope, $routeParams, $http, $location)
     $scope.tbxModule = "";
     $scope.tbxActor = "";
     $scope.tbxAction = "";
+    $scope.changed = false;
 
     $http.get('/api/v1/projects/' + projectID + '/domain-data/')
         .then(function (json) {
@@ -190,11 +204,23 @@ exports.EditDomainController = function ($scope, $routeParams, $http, $location)
         $http.patch('/api/v1/projects/' + projectID + '/domain-data/', {
             project: $scope.project
         }).then(function (json) {
-            if (json.data.result)
-                $location.path('/projects/' + $scope.project._id);
+            if (json.data.result) {
+                $scope.changed = false;
+                toast("Saved successfully");
+            }
             else
                 console.log(json.data);
         }, failCallBack);
+    };
+
+    $scope.back = function () {
+        if ($scope.changed && confirmBack())
+            $scope.saveProject();
+        $location.path('/projects/' + $scope.project._id);
+    };
+
+    $scope.change = function () {
+        $scope.changed = true;
     };
 
     $scope.addModule = function () {
@@ -206,6 +232,7 @@ exports.EditDomainController = function ($scope, $routeParams, $http, $location)
                 $scope.newModules.splice(index, 1);
 
             $scope.tbxModule = '';
+            $scope.change();
         }
     };
 
@@ -213,6 +240,7 @@ exports.EditDomainController = function ($scope, $routeParams, $http, $location)
         $scope.project.domainData.modules.splice(index, 1);
         if ($scope.newModules.indexOf(module) < 0)
             $scope.newModules.push(module);
+        $scope.change();
     };
 
     $scope.addActor = function () {
@@ -224,6 +252,7 @@ exports.EditDomainController = function ($scope, $routeParams, $http, $location)
                 $scope.newActors.splice(index, 1);
 
             $scope.tbxActor = '';
+            $scope.change();
         }
     };
 
@@ -231,6 +260,7 @@ exports.EditDomainController = function ($scope, $routeParams, $http, $location)
         $scope.project.domainData.actors.splice(index, 1);
         if ($scope.newActors.indexOf(actor) < 0)
             $scope.newActors.push(actor);
+        $scope.change();
     };
 
     $scope.addAction = function () {
@@ -242,6 +272,7 @@ exports.EditDomainController = function ($scope, $routeParams, $http, $location)
                 $scope.newActions.splice(index, 1);
 
             $scope.tbxAction = '';
+            $scope.change();
         }
     };
 
@@ -249,6 +280,7 @@ exports.EditDomainController = function ($scope, $routeParams, $http, $location)
         $scope.project.domainData.actions.splice(index, 1);
         if ($scope.newActions.indexOf(action) < 0)
             $scope.newActions.push(action);
+        $scope.change();
     };
 
     setTimeout(function () {
@@ -262,6 +294,7 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
     $scope.$formatter = $formatter;
     $scope.$boilerplateTemplates = $template.boilerplateTemplates;
     $scope.generatedRequirements = [];
+    $scope.changed = false;
 
     $http.get('/api/v1/projects/' + projectID)
         .then(function (json) {
@@ -376,6 +409,7 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
                     $scope.project.generatedRequirements[moduleName].push(requirement);
                     delete requirement.checked;
                     addedRequirements.push(requirement);
+                    $scope.change();
                 }
             });
 
@@ -398,11 +432,23 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
         $http.patch('/api/v1/projects/' + projectID + '/generated-requirements', {
             generatedRequirements: $scope.project.generatedRequirements
         }).then(function (json) {
-            if (json.data.result)
-                $location.path('/projects/' + $scope.project._id);
+            if (json.data.result) {
+                $scope.changed = false;
+                toast("Saved successfully");
+            }
             else
                 console.log(json.data);
         }, failCallBack);
+    };
+
+    $scope.change = function () {
+        $scope.changed = true;
+    };
+
+    $scope.back = function () {
+        if ($scope.changed && confirmBack())
+            $scope.saveProject();
+        $location.path('/projects/' + $scope.project._id);
     };
 
     setTimeout(function () {
@@ -414,6 +460,7 @@ exports.AccessControlController = function ($scope, $routeParams, $http, $locati
     var projectID = encodeURIComponent($routeParams.id);
 
     $scope.$formatter = $formatter;
+    $scope.changed = false;
 
     $http.get('/api/v1/projects/' + projectID + '/access-control-data')
         .then(function (json) {
@@ -452,11 +499,23 @@ exports.AccessControlController = function ($scope, $routeParams, $http, $locati
         $http.patch('/api/v1/projects/' + projectID + '/access-control-data', {
             accessControlData: $scope.project.accessControlData
         }).then(function (json) {
-            if (json.data.result)
-                $location.path('/projects/' + $scope.project._id);
+            if (json.data.result) {
+                $scope.changed = false;
+                toast("Saved successfully");
+            }
             else
                 console.log(json.data);
         }, failCallBack);
+    };
+
+    $scope.back = function () {
+        if ($scope.changed && confirmBack())
+            $scope.saveProject();
+        $location.path('/projects/' + $scope.project._id);
+    };
+
+    $scope.change = function () {
+        $scope.changed = true;
     };
 
     setTimeout(function () {
@@ -468,6 +527,7 @@ exports.ActionControlController = function ($scope, $routeParams, $http, $locati
     var projectID = encodeURIComponent($routeParams.id);
 
     $scope.$formatter = $formatter;
+    $scope.changed = false;
 
     $http.get('/api/v1/projects/' + projectID + '/action-control-data')
         .then(function (json) {
@@ -509,11 +569,23 @@ exports.ActionControlController = function ($scope, $routeParams, $http, $locati
         $http.patch('/api/v1/projects/' + projectID + '/action-control-data', {
             actionControlData: $scope.project.actionControlData
         }).then(function (json) {
-            if (json.data.result)
-                $location.path('/projects/' + $scope.project._id);
+            if (json.data.result) {
+                $scope.changed = false;
+                toast("Saved successfully");
+            }
             else
                 console.log(json.data);
         }, failCallBack);
+    };
+
+    $scope.back = function () {
+        if ($scope.changed && confirmBack())
+            $scope.saveProject();
+        $location.path('/projects/' + $scope.project._id);
+    };
+
+    $scope.change = function () {
+        $scope.changed = true;
     };
 
     setTimeout(function () {
@@ -528,6 +600,7 @@ exports.ConfigureBoilerplateController = function ($scope, $routeParams, $http, 
     $scope.$boilerplateTemplates = $template.boilerplateTemplates;
     $scope._ = _;
     $scope.toast = toast;
+    $scope.changed = false;
 
     $http.get('/api/v1/projects/' + projectID + '/boilerplate-data')
         .then(function (json) {
@@ -563,11 +636,29 @@ exports.ConfigureBoilerplateController = function ($scope, $routeParams, $http, 
         $http.patch('/api/v1/projects/' + projectID + '/boilerplate-data', {
             boilerplateData: $scope.project.boilerplateData
         }).then(function (json) {
-            if (json.data.result)
-                $location.path('/projects/' + $scope.project._id);
+            if (json.data.result) {
+                $scope.changed = false;
+                toast("Saved successfully");
+            }
             else
                 console.log(json.data);
         }, failCallBack);
+    };
+
+    $scope.back = function () {
+        if ($scope.changed && confirmBack())
+            $scope.saveProject();
+        $location.path('/projects/' + $scope.project._id);
+    };
+
+    $scope.change = function () {
+        $scope.changed = true;
+    };
+
+    $scope.restore = function (key) {
+        $scope.project.boilerplateData[key] = _.clone($scope.$boilerplateTemplates[key]);
+        toast('Default boilerplate restored');
+        $scope.change();
     };
 
     setTimeout(function () {
@@ -579,6 +670,7 @@ exports.PerformanceConstraintController = function ($scope, $routeParams, $http,
     var projectID = encodeURIComponent($routeParams.id);
 
     $scope.$formatter = $formatter;
+    $scope.changed = false;
     $scope.$performanceConstraintOptions = $template.performanceConstraintOptions;
     $scope.performanceConstraintData = {};
 
@@ -623,22 +715,36 @@ exports.PerformanceConstraintController = function ($scope, $routeParams, $http,
             $scope.project.performanceConstraintData[action].push(newData);
             $scope.performanceConstraintData[action] = $scope.emptyConstraint();
             $scope.performanceConstraintData[action].option = newData.option;
+            $scope.change();
         }
     };
 
     $scope.deleteConstraint = function (action, index) {
         $scope.project.performanceConstraintData[action].splice(index, 1);
+        $scope.change();
     };
 
     $scope.saveProject = function () {
         $http.patch('/api/v1/projects/' + projectID + '/performance-constraint-data', {
             performanceConstraintData: $scope.project.performanceConstraintData
         }).then(function (json) {
-            if (json.data.result)
-                $location.path('/projects/' + $scope.project._id);
+            if (json.data.result) {
+                $scope.changed = false;
+                toast("Saved successfully");
+            }
             else
                 console.log(json.data);
         }, failCallBack);
+    };
+
+    $scope.back = function () {
+        if ($scope.changed && confirmBack())
+            $scope.saveProject();
+        $location.path('/projects/' + $scope.project._id);
+    };
+
+    $scope.change = function () {
+        $scope.changed = true;
     };
 
     setTimeout(function () {
@@ -650,6 +756,7 @@ exports.FunctionalConstraintController = function ($scope, $routeParams, $http, 
     var projectID = encodeURIComponent($routeParams.id);
 
     $scope.$formatter = $formatter;
+    $scope.changed = false;
     $scope.functionalConstraintData = {};
 
     $http.get('/api/v1/projects/' + projectID + '/functional-constraint-data')
@@ -667,17 +774,30 @@ exports.FunctionalConstraintController = function ($scope, $routeParams, $http, 
 
     $scope.deleteConstraint = function (action, index) {
         $scope.project.functionalConstraintData[action].splice(index, 1);
+        $scope.change();
     };
 
     $scope.saveProject = function () {
         $http.patch('/api/v1/projects/' + projectID + '/functional-constraint-data', {
             functionalConstraintData: $scope.project.functionalConstraintData
         }).then(function (json) {
-            if (json.data.result)
-                $location.path('/projects/' + $scope.project._id);
+            if (json.data.result) {
+                $scope.changed = false;
+                toast("Saved successfully");
+            }
             else
                 console.log(json.data);
         }, failCallBack);
+    };
+
+    $scope.back = function () {
+        if ($scope.changed && confirmBack())
+            $scope.saveProject();
+        $location.path('/projects/' + $scope.project._id);
+    };
+
+    $scope.change = function () {
+        $scope.changed = true;
     };
 
     setTimeout(function () {

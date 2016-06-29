@@ -7,7 +7,7 @@
             </a>
         </div>
         <div class="col s12 m6 input-field">
-            <a class="btn waves-effect waves-light red col s12 m12" ng-href="/#/projects/{{ project._id }}">
+            <a class="btn waves-effect waves-light red col s12 m12" ng-click="back()">
                 <i class="material-icons left">power_settings_new</i>Back
             </a>
         </div>
@@ -19,17 +19,18 @@
             <li class="tab col s3 m3"><a class="active" href="#INSTRUCTIONS">
                 <i class="material-icons right">announcement</i>Instructions</a>
             </li>
-            <li class="tab col s3 m3"><a href="#modules">Modules</a></li>
-            <li class="tab col s3 m3"><a href="#actors">Actors</a></li>
-            <li class="tab col s3 m3"><a href="#actions">Actions</a></li>
+            <li class="tab col s3 m3"><a href="#modules">Modules (<span ng-bind="project.domainData.modules.length"></span>)</a></li>
+            <li class="tab col s3 m3"><a href="#actors">Actors (<span ng-bind="project.domainData.actors.length"></span>)</a></li>
+            <li class="tab col s3 m3"><a href="#actions">Actions (<span ng-bind="project.domainData.actions.length"></span>)</a></li>
         </ul>
     </div>
     <div id="INSTRUCTIONS" class="row active">
         <div class="card blue-grey darken-1 hoverable">
             <div class="card-content white-text">
                 <h4 class="card-title">Configure Domain Attributes</h4>
-                <p>Add or remove domain attributes of this project</p>
-                <p>Keywords will be suggested based on selected domain</p>
+                <p>Domain attributes refers to the modules (subsystem), actor (users) and actions (feature of the system)</p>
+                <p>You can add or remove domain attributes of this project here</p>
+                <p>The attributes will be used to configure and generate requirements for you</p>
             </div>
         </div>
     </div>

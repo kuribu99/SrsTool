@@ -7,7 +7,7 @@
             </a>
         </div>
         <div class="col s12 m6 input-field">
-            <a class="btn waves-effect waves-light red col s12 m12" ng-href="/#/projects/{{ project._id }}">
+            <a class="btn waves-effect waves-light red col s12 m12" ng-click="back()">
                 <i class="material-icons left">power_settings_new</i>Back
             </a>
         </div>
@@ -22,11 +22,13 @@
             <div class="collapsible-body">
                 <div class="row">
                     <p>
-                        For each module in this domain, the actor that the can access to the module can be controlled
+                        For each module in this domain, you can control whether any actor can access to the module.
                         <br/>
-                        Check to allow actor to access to the selected module
+                        This can ensure that only authorized actor are allowed to acess due to security concerns.
                         <br/>
-                        Uncheck to restrict the actor from accessing the selected module
+                        - Check to allow actor to access to the selected module.
+                        <br/>
+                        - Uncheck to restrict the actor from accessing the selected module.
                     </p>
                 </div>
             </div>
@@ -37,7 +39,7 @@
                 <div class="row">
                     <div class="input-field" ng-repeat="actor in project.domainData.actors">
                         <input id="{{ module.replace(' ', '_') }}.{{ actor.replace(' ', '_') }}" type="checkbox"
-                               ng-model="actors[actor]">
+                               ng-model="actors[actor]" ng-change="change()">
                         <label for="{{ module.replace(' ', '_') }}.{{ actor.replace(' ', '_') }}"
                                ng-bind="actor"></label>
                     </div>

@@ -7,7 +7,7 @@
             </a>
         </div>
         <div class="col s12 m6 input-field">
-            <a class="btn waves-effect waves-light red col s12 m12" ng-href="/#/projects/{{ project._id }}">
+            <a class="btn waves-effect waves-light red col s12 m12" ng-click="back()">
                 <i class="material-icons left">power_settings_new</i>Back
             </a>
         </div>
@@ -22,11 +22,13 @@
             <div class="collapsible-body">
                 <div class="row">
                     <p>
-                        For each actor in this domain, the action that the actor can perform can be controlled
+                        For each actor in this domain, you can control whether the actor can perform which action
                         <br/>
-                        Check to allow actor to performed selected action
+                        This act like an use case for each actor
                         <br/>
-                        Uncheck to restrict the actor from performing selected action
+                        - Check to allow actor to performed selected action
+                        <br/>
+                        - Uncheck to restrict the actor from performing selected action
                     </p>
                 </div>
             </div>
@@ -37,7 +39,7 @@
                 <div class="row">
                     <div class="input-field" ng-repeat="action in project.domainData.actions">
                         <input id="{{ actor.replace(' ', '_') }}.{{ action.replace(' ', '_') }}" type="checkbox"
-                               ng-model="actions[action]">
+                               ng-model="actions[action]" ng-change="change()">
                         <label for="{{ actor.replace(' ', '_') }}.{{ action.replace(' ', '_') }}"
                                ng-bind="action"></label>
                     </div>

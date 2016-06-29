@@ -7,7 +7,7 @@
             </a>
         </div>
         <div class="col s12 m6 input-field">
-            <a class="btn waves-effect waves-light red col s12 m12" ng-href="/#/projects/{{ project._id }}">
+            <a class="btn waves-effect waves-light red col s12 m12" ng-click="back()">
                 <i class="material-icons left">power_settings_new</i>Back
             </a>
         </div>
@@ -26,17 +26,24 @@
                         performance of the system
                         <br/>
                         For example, the most commonly introduced performance constraints are:
+                        <br/>
+                        - Page load time
+                        <br/>
+                        - Page response time
+                        <br/>
+                        - RAM usage
                     </p>
-                    <ol class="collection">
-                        <li>Page load time</li>
-                        <li>Page response time</li>
-                        <li>RAM usage</li>
-                    </ol>
                 </div>
             </div>
         </li>
         <li ng-repeat="action in project.domainData.actions">
-            <div class="collapsible-header active"><h5 ng-bind="action"></h5></div>
+            <div class="collapsible-header active">
+                <h5>
+                    <span ng-bind="action"></span>
+                    <span class="badge white-text light-green" ng-bind="project.performanceConstraintData[action].length"
+                          ng-if="project.performanceConstraintData[action].length > 0"></span>
+                </h5>
+            </div>
             <div class="collapsible-body">
                 <div class="row valign-wrapper">
                     <div class="col s4 m3 input-field">
