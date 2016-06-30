@@ -77,6 +77,16 @@ exports.$formatter = function () {
 };
 
 exports.$template = function () {
+    this.modules = {
+        Functional: [
+            'Action Control'
+        ],
+        NonFunctional: [
+            'Access Control',
+            'Performance Constraint'
+        ]
+    };
+
     this.boilerplateTemplates = {
         accessControl: {
             true: "<actor> shall be able to access to <module> module",

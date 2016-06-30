@@ -101,10 +101,11 @@ exports.ProjectListController = function ($scope, $routeParams, $http) {
     }, 0);
 };
 
-exports.ProjectViewController = function ($scope, $routeParams, $http, $location, $formatter) {
+exports.ProjectViewController = function ($scope, $routeParams, $http, $location, $formatter, $template) {
     var projectID = encodeURIComponent($routeParams.id);
 
     $scope.$formatter = $formatter;
+    $scope.$modules = $template.modules;
     $scope.toast = toast;
     $scope.changed = false;
 

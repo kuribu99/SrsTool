@@ -90,48 +90,114 @@
 </div>
 <div class="row">
     <div class="row">
-        <ul class="collapsible collapsible-accordion" data-collapsible="accordion">
-            <li ng-repeat="(moduleName, requirements) in project.generatedRequirements">
-                <div class="collapsible-header active">
-                    <h5>
-                        <span ng-bind="moduleName"></span>
+        <ul class="tabs blue lighten-2">
+            <li class="tab col s4 m4"><a class="active" href="#INSTRUCTIONS">
+                <i class="material-icons right">announcement</i>Instructions</a>
+            </li>
+            <li class="tab col s4 m4"><a href="#fr">Functional Requirements</a></li>
+            <li class="tab col s4 m4"><a href="#nfr">Non-Functional Requirements</a></li>
+        </ul>
+    </div>
+    <div id="INSTRUCTIONS" class="row active">
+        <div class="card blue-grey darken-1 hoverable">
+            <div class="card-content white-text">
+                Flowchart here
+            </div>
+        </div>
+    </div>
+    <div id="fr" class="row">
+        <div class="row">
+            <ul class="collapsible collapsible-accordion" data-collapsible="accordion">
+                <li ng-repeat="(moduleName, requirements) in project.generatedRequirements"
+                    ng-if="$modules.Functional.indexOf(moduleName) >= 0">
+                    <div class="collapsible-header active">
+                        <h5>
+                            <span ng-bind="moduleName"></span>
                     <span class="badge white-text light-green"
                           ng-bind="requirements.length + ' requirements'"></span>
-                    </h5></div>
-                <div class="collapsible-body">
-                    <div class="row" ng-if="requirements.length > 0">
-                        <table class="highlight">
-                            <thead>
-                            <tr>
-                                <td>#</td>
-                                <td>Requirement</td>
-                                <td>Actions</td>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr ng-repeat="requirement in requirements track by $index">
-                                <td>{{ $index + 1 }}</td>
-                                <td>{{ $formatter.requirementToString(requirement) }}</td>
-                                <td>
-                                    <div class="input-field">
-                                        <a class="btn waves-effect waves-light red"
-                                           ng-click="removeRequirement(moduleName, $index)">
-                                            <i class="material-icons left">delete</i>Delete
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="row" ng-if="requirements.length == 0">
-                        <div class="center-align">
-                            <h5 class="header">No requirement found</h5>
+                        </h5></div>
+                    <div class="collapsible-body">
+                        <div class="row" ng-if="requirements.length > 0">
+                            <table class="highlight">
+                                <thead>
+                                <tr>
+                                    <td>#</td>
+                                    <td>Requirement</td>
+                                    <td>Actions</td>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="requirement in requirements track by $index">
+                                    <td>{{ $index + 1 }}</td>
+                                    <td>{{ $formatter.requirementToString(requirement) }}</td>
+                                    <td>
+                                        <div class="input-field">
+                                            <a class="btn waves-effect waves-light red"
+                                               ng-click="removeRequirement(moduleName, $index)">
+                                                <i class="material-icons left">delete</i>Delete
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row" ng-if="requirements.length == 0">
+                            <div class="center-align">
+                                <h5 class="header">No requirement found</h5>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </li>
-        </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div id="nfr" class="row">
+        <div class="row">
+            <ul class="collapsible collapsible-accordion" data-collapsible="accordion">
+                <li ng-repeat="(moduleName, requirements) in project.generatedRequirements"
+                    ng-if="$modules.NonFunctional.indexOf(moduleName) >= 0">
+                    <div class="collapsible-header active">
+                        <h5>
+                            <span ng-bind="moduleName"></span>
+                    <span class="badge white-text light-green"
+                          ng-bind="requirements.length + ' requirements'"></span>
+                        </h5></div>
+                    <div class="collapsible-body">
+                        <div class="row" ng-if="requirements.length > 0">
+                            <table class="highlight">
+                                <thead>
+                                <tr>
+                                    <td>#</td>
+                                    <td>Requirement</td>
+                                    <td>Actions</td>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="requirement in requirements track by $index">
+                                    <td>{{ $index + 1 }}</td>
+                                    <td>{{ $formatter.requirementToString(requirement) }}</td>
+                                    <td>
+                                        <div class="input-field">
+                                            <a class="btn waves-effect waves-light red"
+                                               ng-click="removeRequirement(moduleName, $index)">
+                                                <i class="material-icons left">delete</i>Delete
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row" ng-if="requirements.length == 0">
+                            <div class="center-align">
+                                <h5 class="header">No requirement found</h5>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
     </div>
 </div>
 <script>
@@ -148,5 +214,6 @@
             belowOrigin: false, // Displays dropdown below the button
             alignment: 'left' // Displays dropdown with edge aligned to the left of button
         });
+        $('ul.tabs').tabs();
     }, 500);
 </script>
