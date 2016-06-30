@@ -92,7 +92,12 @@
     <div class="row">
         <ul class="collapsible collapsible-accordion" data-collapsible="accordion">
             <li ng-repeat="(moduleName, requirements) in project.generatedRequirements">
-                <div class="collapsible-header active"><h5 ng-bind="moduleName"></h5></div>
+                <div class="collapsible-header active">
+                    <h5>
+                        <span ng-bind="moduleName"></span>
+                    <span class="badge white-text light-green"
+                          ng-bind="requirements.length + ' requirements'"></span>
+                    </h5></div>
                 <div class="collapsible-body">
                     <div class="row" ng-if="requirements.length > 0">
                         <table class="highlight">
@@ -143,5 +148,5 @@
             belowOrigin: false, // Displays dropdown below the button
             alignment: 'left' // Displays dropdown with edge aligned to the left of button
         });
-    }, 200);
+    }, 500);
 </script>

@@ -18,6 +18,12 @@ var confirmBack = function (callback) {
         "Do you want to save your project?");
 };
 
+var countTrue = function (arr) {
+    return _.filter(arr, function (val) {
+        return val;
+    }).length;
+};
+
 exports.HomeController = function ($scope, $http, $location) {
     $scope.projectName = "";
     $scope.domainName = "default";
@@ -518,6 +524,10 @@ exports.AccessControlController = function ($scope, $routeParams, $http, $locati
         $scope.changed = true;
     };
 
+    $scope.count = function (arr) {
+        return 'Allowed: ' + countTrue(arr) + '/' + Object.keys(arr).length;
+    };
+
     setTimeout(function () {
         $scope.$emit('AccessControlController');
     }, 0);
@@ -586,6 +596,10 @@ exports.ActionControlController = function ($scope, $routeParams, $http, $locati
 
     $scope.change = function () {
         $scope.changed = true;
+    };
+
+    $scope.count = function (arr) {
+        return 'Allowed: ' + countTrue(arr) + '/' + Object.keys(arr).length;
     };
 
     setTimeout(function () {

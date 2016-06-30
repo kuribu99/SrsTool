@@ -40,8 +40,8 @@
             <div class="collapsible-header active">
                 <h5>
                     <span ng-bind="action"></span>
-                    <span class="badge white-text light-green" ng-bind="project.performanceConstraintData[action].length"
-                          ng-if="project.performanceConstraintData[action].length > 0"></span>
+                    <span class="badge white-text light-green"
+                          ng-bind="project.performanceConstraintData[action].length + ' constraints'"></span>
                 </h5>
             </div>
             <div class="collapsible-body">

@@ -34,7 +34,14 @@
             </div>
         </li>
         <li ng-repeat="(actor, actions) in project.actionControlData">
-            <div class="collapsible-header active"><h5 ng-bind="actor"></h5></div>
+            <div class="collapsible-header active">
+                <h5>
+                    <span ng-bind="actor"></span>
+                    <span class="badge white-text light-green"
+                          ng-bind="count(actions)"
+                          ng-if="project.domainData.actions.length > 0"></span>
+                </h5>
+            </div>
             <div class="collapsible-body">
                 <div class="row">
                     <div class="input-field" ng-repeat="action in project.domainData.actions">

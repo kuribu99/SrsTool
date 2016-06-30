@@ -16,7 +16,14 @@
 <div class="row">
     <ul class="collapsible collapsible-accordion" data-collapsible="accordion">
         <li ng-repeat="action in project.domainData.actions">
-            <div class="collapsible-header active"><h5 ng-bind="action"></h5></div>
+            <div class="collapsible-header active">
+                <h5>
+                    <span ng-bind="action"></span>
+                    <span class="badge white-text light-green"
+                          ng-bind="project.performanceConstraintData[action].length"
+                          ng-if="project.performanceConstraintData[action].length > 0"></span>
+                </h5>
+            </div>
             <div class="collapsible-body">
                 <div class="row valign-wrapper">
                     <div class="col s4 m3 input-field">
@@ -26,7 +33,7 @@
                     </div>
                     <div class="col s4 m3 input-field">
                         <select id="{{ action }}.option" ng-model="performanceConstraintData[action].option"
-                            ng-options="option for option in $performanceConstraintOptions">
+                                ng-options="option for option in $performanceConstraintOptions">
                             <option value="" disabled>Choose an option</option>
                         </select>
                         <label>Value Option</label>
