@@ -308,6 +308,7 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
 
     $scope.$formatter = $formatter;
     $scope.$boilerplateTemplates = $template.boilerplateTemplates;
+    $scope.$modules = $template.modules;
     $scope.generatedRequirements = [];
     $scope.changed = false;
 

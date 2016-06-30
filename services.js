@@ -105,13 +105,13 @@ exports.$template = function () {
             'minimum': 'The minimum <constraint> of <action> shall be <value>',
             'maximum': 'The maximum <constraint> of <action> shall be <value>',
             'within': 'The <constraint> of <action> shall be within <value>'
-        },
+        }
     };
 
     this.performanceConstraintOptions = Object.keys(this.boilerplateTemplates.performanceConstraint);
     this.functionalConstraintOptions = {
-        'will perform action if': true,
-        'will not perform action if': false
+        'shall perform dependent action': true,
+        'shall not perform dependent action': false
     };
 
     return this;

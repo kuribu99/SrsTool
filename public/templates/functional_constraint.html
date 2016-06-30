@@ -115,26 +115,29 @@
                 <div class="row valign-wrapper">
                     <div class="col s4 m3 input-field">
                         <label for="tbxActionDependency.action">Action</label>
-                        <input id="tbxActionDependency.action" type="text"
+                        <input id="tbxActionDependency.action" type="text" list="actions"
                                ng-model="tbxActionDependency.action"/>
                     </div>
                     <div class="col s4 m3 input-field">
-                        <label for="tbxActionDependency.relation">Relation</label>
                         <select id="tbxActionDependency.relation" type="text"
-                                ng-options="key as value for (key, value) in $functionalConstraintOptions"
+                                ng-options="value as key for (key, value) in $functionalConstraintOptions"
                                 ng-model="tbxActionDependency.relation">
                             <option value="" disabled>Choose a relation</option>
                         </select>
+                        <label>Relation</label>
                     </div>
                     <div class="col s4 m3 input-field">
                         <label for="tbxActionDependency.dependentAction">Dependent Action</label>
-                        <input id="tbxActionDependency.dependentAction" type="text"
+                        <input id="tbxActionDependency.dependentAction" type="text" list="actions"
                                ng-model="tbxActionDependency.dependentAction"/>
                     </div>
                     <div class="col s4 m3 valign">
                         <button class="btn waves-effect waves-light col s12 m12" ng-click="addActionDependency()">Add
                         </button>
                     </div>
+                    <datalist id="actions">
+                        <option ng-repeat="action in project.domainData.actions" value="{{ action }}" ng-bind="action"></option>
+                    </datalist>
                 </div>
                 <div class="row" ng-if="project.functionalConstraintData.actionDependencies.length > 0">
                     <table class="highlight">
