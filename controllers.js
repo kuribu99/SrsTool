@@ -24,6 +24,14 @@ var countTrue = function (arr) {
     }).length;
 };
 
+var sameObject = function (v1, v2) {
+    for (var key in v1) {
+        if (v2[key] == null || v1[key] != v2[key])
+            return false;
+    }
+    return true;
+};
+
 exports.HomeController = function ($scope, $http, $location) {
     $scope.projectName = "";
     $scope.domainName = "default";
@@ -389,18 +397,10 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
         if (requirements == null)
             return false;
         for (var index in requirements) {
-            if ($scope.isSameValue(requirements[index].values, values))
+            if (sameObject(requirements[index].values, values))
                 return true;
         }
         return false;
-    };
-
-    $scope.isSameValue = function (v1, v2) {
-        for (var key in v1) {
-            if (v2[key] == null || v1[key] != v2[key])
-                return false;
-        }
-        return true;
     };
 
     $scope.addCheckedRequirements = function () {
@@ -766,11 +766,13 @@ exports.PerformanceConstraintController = function ($scope, $routeParams, $http,
     }, 0);
 };
 
-exports.FunctionalConstraintController = function ($scope, $routeParams, $http, $location, $formatter) {
+exports.FunctionalConstraintController = function ($scope, $routeParams, $http, $location, $formatter, $template) {
     var projectID = encodeURIComponent($routeParams.id);
 
     $scope.$formatter = $formatter;
     $scope.changed = false;
+    $scope.$functionalConstraintOptions = $template.functionalConstraintOptions;
+    $scope.$invertedfunctionalConstraintOptions = _.invert($template.functionalConstraintOptions);
     $scope.functionalConstraintData = {};
 
     $http.get('/api/v1/projects/' + projectID + '/functional-constraint-data')
@@ -779,16 +781,80 @@ exports.FunctionalConstraintController = function ($scope, $routeParams, $http, 
                 $scope.project = json.data.project;
 
                 if (!$scope.project.functionalConstraintData)
-                    $scope.project.functionalConstraintData = {};
+                    $scope.project.functionalConstraintData = {
+                        interfaces: [],
+                        actionDependencies: []
+                    };
 
             } else
                 $location.path('/projects/' + $scope.project._id);
 
         }, failCallBack);
 
-    $scope.deleteConstraint = function (action, index) {
-        $scope.project.functionalConstraintData[action].splice(index, 1);
-        $scope.change();
+    $scope.newInterface = function () {
+        return {
+            interfaceName: '',
+            dependency: '',
+            condition: ''
+        }
+    };
+
+    $scope.addInterface = function () {
+        if ($scope.tbxInterface.interfaceName == '')
+            toast('Interface/Functionality name is required');
+        else if ($scope.hasInterface($scope.tbxInterface))
+            toast('Interface/Functionality already exist');
+        else {
+            $scope.project.functionalConstraintData.interfaces.push($scope.tbxInterface);
+            $scope.tbxInterface = $scope.newInterface();
+            $scope.changed = true;
+        }
+    };
+
+    $scope.hasInterface = function (newInterface) {
+        for (var index in $scope.project.functionalConstraintData.interfaces) {
+            if (sameObject($scope.project.functionalConstraintData.interfaces[index], newInterface))
+                return true;
+        }
+        return false;
+    };
+
+    $scope.deleteInterface = function (index) {
+        $scope.project.functionalConstraintData.interfaces.splice(index, 1);
+        $scope.changed = true;
+    };
+
+    $scope.newActionDependency = function () {
+        return {
+            action: '',
+            dependentAction: '',
+            relation: true
+        }
+    };
+
+    $scope.addActionDependency = function () {
+        if ($scope.tbxActionDependency.action == '' || $scope.tbxActionDependency.dependentAction == '')
+            toast('Action and its dependency are required');
+        else if ($scope.hasActionDependency($scope.tbxActionDependency))
+            toast('Action/Dependency pair already exist');
+        else {
+            $scope.project.functionalConstraintData.actionDependencies.push($scope.tbxActionDependency);
+            $scope.tbxActionDependency = $scope.newActionDependency();
+            $scope.changed = true;
+        }
+    };
+
+    $scope.hasActionDependency = function (newActionDependency) {
+        for (var index in $scope.project.functionalConstraintData.actionDependencies) {
+            if (sameObject($scope.project.functionalConstraintData.actionDependencies[index], newActionDependency))
+                return true;
+        }
+        return false;
+    };
+
+    $scope.deleteActionDependency= function (index) {
+        $scope.project.functionalConstraintData.actionDependencies.splice(index, 1);
+        $scope.changed = true;
     };
 
     $scope.saveProject = function () {
@@ -813,6 +879,9 @@ exports.FunctionalConstraintController = function ($scope, $routeParams, $http, 
     $scope.change = function () {
         $scope.changed = true;
     };
+
+    $scope.tbxInterface = $scope.newInterface();
+    $scope.tbxActionDependency = $scope.newActionDependency();
 
     setTimeout(function () {
         $scope.$emit('FunctionalConstraintController');
