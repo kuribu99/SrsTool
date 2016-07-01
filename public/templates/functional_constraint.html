@@ -50,8 +50,8 @@
                 <h5>
                     <span>Interface/Functionality Dependency</span>
                     <span class="badge white-text light-green"
-                          ng-bind="project.functionalConstraintData.length"
-                          ng-if="project.functionalConstraintData.length > 0"></span>
+                          ng-bind="project.functionalConstraintData.interfaces.length"
+                          ng-if="project.functionalConstraintData.interfaces.length > 0"></span>
                 </h5>
             </div>
             <div class="collapsible-body">
@@ -107,8 +107,8 @@
                 <h5>
                     <span>Action Dependency</span>
                     <span class="badge white-text light-green"
-                          ng-bind="project.functionalConstraintData.length"
-                          ng-if="project.functionalConstraintData.length > 0"></span>
+                          ng-bind="project.functionalConstraintData.actionDependencies.length"
+                          ng-if="project.functionalConstraintData.actionDependencies.length > 0"></span>
                 </h5>
             </div>
             <div class="collapsible-body">
@@ -120,7 +120,7 @@
                     </div>
                     <div class="col s4 m3 input-field">
                         <select id="tbxActionDependency.relation" type="text"
-                                ng-options="value as key for (key, value) in $functionalConstraintOptions"
+                                ng-options="key as value for (key, value) in $actionDependenciesOptions"
                                 ng-model="tbxActionDependency.relation">
                             <option value="" disabled>Choose a relation</option>
                         </select>
@@ -152,10 +152,70 @@
                         <tbody>
                         <tr ng-repeat="actionDependency in project.functionalConstraintData.actionDependencies track by $index">
                             <td ng-bind="actionDependency.action"></td>
-                            <td ng-bind="$invertedfunctionalConstraintOptions[actionDependency.relation]"></td>
+                            <td ng-bind="$actionDependenciesOptions[actionDependency.relation]"></td>
                             <td ng-bind="actionDependency.dependentAction"></td>
                             <td>
                                 <a class="waves-effect waves-light btn red" ng-click="deleteActionDependency($index)">
+                                    <i class="material-icons left">delete</i>Delete
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </li>
+        <li>
+            <div class="collapsible-header">
+                <h5>
+                    <span>Action Rules</span>
+                    <span class="badge white-text light-green"
+                          ng-bind="project.functionalConstraintData.actionRules.length"
+                          ng-if="project.functionalConstraintData.actionRules.length > 0"></span>
+                </h5>
+            </div>
+            <div class="collapsible-body">
+                <div class="row valign-wrapper">
+                    <div class="col s4 m3 input-field">
+                        <label for="tbxActionRule.action">Action</label>
+                        <input id="tbxActionRule.action" type="text" list="actions"
+                               ng-model="tbxActionRule.action"/>
+                    </div>
+                    <div class="col s4 m3 input-field">
+                        <select id="tbxActionRule.relation" type="text"
+                                ng-options="key as value for (key, value) in $actionRulesOptions"
+                                ng-model="tbxActionRule.relation">
+                            <option value="" disabled>Choose a relation</option>
+                        </select>
+                        <label>Relation</label>
+                    </div>
+                    <div class="col s4 m3 input-field">
+                        <label for="tbxActionRule.rule">Rules/Standard/Formulae</label>
+                        <input id="tbxActionRule.rule" type="text"
+                               ng-model="tbxActionRule.rule"/>
+                    </div>
+                    <div class="col s4 m3 valign">
+                        <button class="btn waves-effect waves-light col s12 m12" ng-click="addActionRule()">Add
+                        </button>
+                    </div>
+                </div>
+                <div class="row" ng-if="project.functionalConstraintData.actionRules.length > 0">
+                    <table class="highlight">
+                        <thead>
+                        <tr>
+                            <td>Action</td>
+                            <td>Relation</td>
+                            <td>Rules/Standard/Formulae</td>
+                            <td></td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="actionRule in project.functionalConstraintData.actionRules track by $index">
+                            <td ng-bind="actionRule.action"></td>
+                            <td ng-bind="$actionRulesOptions[actionRule.relation]"></td>
+                            <td ng-bind="actionRule.rule"></td>
+                            <td>
+                                <a class="waves-effect waves-light btn red" ng-click="deleteActionRule($index)">
                                     <i class="material-icons left">delete</i>Delete
                                 </a>
                             </td>

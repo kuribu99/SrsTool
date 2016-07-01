@@ -117,6 +117,10 @@ exports.$template = function () {
             actionDependencies: {
                 true: "The <system> shall <dependentAction> when <action>",
                 false: "The <system> shall not <dependentAction> when <action>"
+            },
+            actionRules: {
+                true: "The <system> shall <action> based on <rule>",
+                false: "The <system> shall not <action> based on  <rule>"
             }
         }
     };
@@ -146,14 +150,23 @@ exports.$template = function () {
                 '<system>': 'system',
                 '<action>': 'user finish registering account',
                 '<dependentAction>': 'login to the system'
+            },
+            actionRules: {
+                '<system>': 'system',
+                '<action>': 'calculate GST charge',
+                '<rule>': 'GST rate of Malaysia'
             }
         }
-    }
+    };
 
     this.performanceConstraintOptions = Object.keys(this.boilerplateTemplates.performanceConstraint);
-    this.functionalConstraintOptions = {
-        'shall perform dependent action': true,
-        'shall not perform dependent action': false
+    this.actionDependenciesOptions = {
+        true: 'shall perform dependent action',
+        false: 'shall not perform dependent action'
+    };
+    this.actionRulesOptions = {
+        true: 'based on',
+        false: 'not based on'
     };
 
     return this;

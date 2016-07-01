@@ -162,7 +162,7 @@
                 <div class="collapsible-body">
                     <div class="row margin-top-10">
                         <div class="col s6 m8"
-                             ng-bind="'Available placeholders: <system>, <interface>, <dependency>, <condition>, <dependentAction>, <action>'"></div>
+                             ng-bind="'Available placeholders: <system>, <interface>, <dependency>, <condition>, <dependentAction>, <action>, <rule>'"></div>
                         <div class="col s6 m4">
                             <button class="btn waves-effect waves-light col s12 m12"
                                     ng-click="restore('functionalConstraint')">
@@ -258,6 +258,36 @@
                             <input id="functionalConstraint.actionDependencies.false.example" readonly
                                    value="{{ requirementToString(project.boilerplateData.functionalConstraint.actionDependencies.false,
                                        $values.functionalConstraint.actionDependencies) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="functionalConstraint.actionRules.true">
+                                Action shall based on rule
+                            </label>
+                            <input id="functionalConstraint.actionRules.true" ng-change="change()"
+                                   ng-model="project.boilerplateData.functionalConstraint.actionRules.true"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="functionalConstraint.actionRules.true.example">Example</label>
+                            <input id="functionalConstraint.actionRules.true.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.functionalConstraint.actionRules.true,
+                                       $values.functionalConstraint.actionRules) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="functionalConstraint.actionDependencies.false">
+                                Action shall not based on rule
+                            </label>
+                            <input id="functionalConstraint.actionRules.false" ng-change="change()"
+                                   ng-model="project.boilerplateData.functionalConstraint.actionRules.false"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="functionalConstraint.actionRules.false.example">Example</label>
+                            <input id="functionalConstraint.actionRules.false.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.functionalConstraint.actionRules.false,
+                                       $values.functionalConstraint.actionRules) }}"/>
                         </div>
                     </div>
                 </div>

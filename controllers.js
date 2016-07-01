@@ -416,6 +416,19 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
                 $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
         }
 
+        for (var index in $scope.project.functionalConstraintData.actionRules) {
+            var item = $scope.project.functionalConstraintData.actionRules[index];
+            var boilerplate = $scope.project.boilerplateData.functionalConstraint.actionRules[item.relation];
+            var values = {
+                '<system>': $scope.project.projectName,
+                '<action>': item.action,
+                '<rule>': item.rule,
+            };
+
+            if (!$scope.hasRequirement(moduleName, values))
+                $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
+        }
+
         $scope.numberRequirements = _.flatten($scope.generatedRequirements).length;
         $scope.numberModules = Object.keys($scope.generatedRequirements).length;
         $scope.numberNewRequirements = 0;
@@ -795,8 +808,8 @@ exports.FunctionalConstraintController = function ($scope, $routeParams, $http, 
 
     $scope.$formatter = $formatter;
     $scope.changed = false;
-    $scope.$functionalConstraintOptions = $template.functionalConstraintOptions;
-    $scope.$invertedfunctionalConstraintOptions = _.invert($template.functionalConstraintOptions);
+    $scope.$actionDependenciesOptions = $template.actionDependenciesOptions;
+    $scope.$actionRulesOptions = $template.actionRulesOptions;
     $scope.functionalConstraintData = {};
 
     $http.get('/api/v1/projects/' + projectID + '/functional-constraint-data')
@@ -807,7 +820,8 @@ exports.FunctionalConstraintController = function ($scope, $routeParams, $http, 
                 if (!$scope.project.functionalConstraintData)
                     $scope.project.functionalConstraintData = {
                         interfaces: [],
-                        actionDependencies: []
+                        actionDependencies: [],
+                        actionRules: []
                     };
 
             } else
@@ -852,13 +866,17 @@ exports.FunctionalConstraintController = function ($scope, $routeParams, $http, 
         return {
             action: '',
             dependentAction: '',
-            relation: true
+            relation: ''
         }
     };
 
     $scope.addActionDependency = function () {
-        if ($scope.tbxActionDependency.action == '' || $scope.tbxActionDependency.dependentAction == '')
-            toast('Action and its dependency are required');
+        if ($scope.tbxActionDependency.action == '')
+            toast('Action is required');
+        else if ($scope.tbxActionDependency.relation == '')
+            toast('Relation is required');
+        else if ($scope.tbxActionDependency.dependentAction == '')
+            toast('Dependent action is required');
         else if ($scope.hasActionDependency($scope.tbxActionDependency))
             toast('Action/Dependency pair already exist');
         else {
@@ -878,6 +896,43 @@ exports.FunctionalConstraintController = function ($scope, $routeParams, $http, 
 
     $scope.deleteActionDependency = function (index) {
         $scope.project.functionalConstraintData.actionDependencies.splice(index, 1);
+        $scope.changed = true;
+    };
+
+    $scope.newActionRule = function () {
+        return {
+            action: '',
+            rule: '',
+            relation: ''
+        }
+    };
+
+    $scope.addActionRule = function () {
+        if ($scope.tbxActionRule.action == '')
+            toast('Action name is required');
+        else if ($scope.tbxActionRule.relation == '')
+            toast('Relation is required');
+        else if ($scope.tbxActionRule.rule == '')
+            toast('Rule is required');
+        else if ($scope.hasActionRule($scope.tbxActionRule))
+            toast('Action/Rule pair already exist');
+        else {
+            $scope.project.functionalConstraintData.actionRules.push($scope.tbxActionRule);
+            $scope.tbxActionRule = $scope.newActionRule();
+            $scope.changed = true;
+        }
+    };
+
+    $scope.hasActionRule = function (newActionRule) {
+        for (var index in $scope.project.functionalConstraintData.actionRules) {
+            if (sameObject($scope.project.functionalConstraintData.actionRules[index], newActionRule))
+                return true;
+        }
+        return false;
+    };
+
+    $scope.deleteActionRule = function (index) {
+        $scope.project.functionalConstraintData.actionRules.splice(index, 1);
         $scope.changed = true;
     };
 
@@ -906,6 +961,7 @@ exports.FunctionalConstraintController = function ($scope, $routeParams, $http, 
 
     $scope.tbxInterface = $scope.newInterface();
     $scope.tbxActionDependency = $scope.newActionDependency();
+    $scope.tbxActionRule = $scope.newActionRule();
 
     setTimeout(function () {
         $scope.$emit('FunctionalConstraintController');
