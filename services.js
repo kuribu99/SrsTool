@@ -83,7 +83,8 @@ exports.$template = function () {
         ],
         NonFunctional: [
             'Access Control',
-            'Performance Constraint'
+            'Performance Constraint',
+            'Functional Constraint'
         ]
     };
 
@@ -105,8 +106,49 @@ exports.$template = function () {
             'minimum': 'The minimum <constraint> of <action> shall be <value>',
             'maximum': 'The maximum <constraint> of <action> shall be <value>',
             'within': 'The <constraint> of <action> shall be within <value>'
+        },
+        functionalConstraint: {
+            interface: {
+                0: "The <system> shall provide <interface>",
+                1: "The <system> shall provide <interface> required by <dependency>",
+                2: "The <system> shall provide <interface> if <condition>",
+                3: "The <system> shall provide <interface> required by <dependency> if <condition>"
+            },
+            actionDependencies: {
+                true: "The <system> shall <dependentAction> when <action>",
+                false: "The <system> shall not <dependentAction> when <action>"
+            }
         }
     };
+
+    this.boilerplateValues = {
+        accessControl: {
+            '<actor>': 'lecturer',
+            '<module>': 'user authentication'
+        },
+        actionControl: {
+            '<actor>': 'lecturer',
+            '<action>': 'register account'
+        },
+        performanceConstraint: {
+            '<action>': 'register account',
+            '<constraint>': 'response time',
+            '<value>': '1 seconds'
+        },
+        functionalConstraint: {
+            interface: {
+                '<system>': 'system',
+                '<interface>': 'REST API',
+                '<dependency>': 'login module',
+                '<condition>': 'the user is logged in'
+            },
+            actionDependencies: {
+                '<system>': 'system',
+                '<action>': 'user finish registering account',
+                '<dependentAction>': 'login to the system'
+            }
+        }
+    }
 
     this.performanceConstraintOptions = Object.keys(this.boilerplateTemplates.performanceConstraint);
     this.functionalConstraintOptions = {

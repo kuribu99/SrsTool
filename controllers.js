@@ -336,10 +336,10 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
         $scope.generatedRequirements = {
             'Access Control': [],
             'Action Control': [],
-            'Performance Constraint': []
+            'Performance Constraint': [],
+            'Functional Constraint': []
         };
 
-        // Access Control
         var moduleName = 'Access Control';
         for (var module in $scope.project.accessControlData) {
             for (var actor in $scope.project.accessControlData[module]) {
@@ -355,7 +355,6 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
             }
         }
 
-        // Action Control
         moduleName = 'Action Control';
         for (var actor in $scope.project.actionControlData) {
             for (var action in $scope.project.actionControlData[actor]) {
@@ -371,7 +370,6 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
             }
         }
 
-        // Performance constraint
         moduleName = 'Performance Constraint';
         for (var action in $scope.project.performanceConstraintData) {
             for (var index in $scope.project.performanceConstraintData[action]) {
@@ -387,6 +385,35 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
                 if (!$scope.hasRequirement(moduleName, values))
                     $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
             }
+        }
+
+        moduleName = 'Functional Constraint';
+        for (var index in $scope.project.functionalConstraintData.interfaces) {
+            var item = $scope.project.functionalConstraintData.interfaces[index];
+            var boilerplateNo = (item.dependency == '' ? 0 : 1) + (item.condition == '' ? 0 : 2);
+            var boilerplate = $scope.project.boilerplateData.functionalConstraint.interface[boilerplateNo];
+            var values = {
+                '<system>': $scope.project.projectName,
+                '<interface>': item.interfaceName,
+                '<dependency>': item.dependency,
+                '<condition>': item.condition,
+            };
+
+            if (!$scope.hasRequirement(moduleName, values))
+                $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
+        }
+
+        for (var index in $scope.project.functionalConstraintData.actionDependencies) {
+            var item = $scope.project.functionalConstraintData.actionDependencies[index];
+            var boilerplate = $scope.project.boilerplateData.functionalConstraint.actionDependencies[item.relation];
+            var values = {
+                '<system>': $scope.project.projectName,
+                '<action>': item.action,
+                '<dependentAction>': item.dependentAction,
+            };
+
+            if (!$scope.hasRequirement(moduleName, values))
+                $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
         }
 
         $scope.numberRequirements = _.flatten($scope.generatedRequirements).length;
@@ -614,6 +641,7 @@ exports.ConfigureBoilerplateController = function ($scope, $routeParams, $http, 
 
     $scope.$formatter = $formatter;
     $scope.$boilerplateTemplates = $template.boilerplateTemplates;
+    $scope.$values = $template.boilerplateValues;
     $scope._ = _;
     $scope.toast = toast;
     $scope.changed = false;
@@ -627,24 +655,18 @@ exports.ConfigureBoilerplateController = function ($scope, $routeParams, $http, 
 
                 for (var key in $scope.$boilerplateTemplates)
                     if ($scope.project.boilerplateData[key] == null)
-                        $scope.project.boilerplateData[key] = $scope.$boilerplateTemplates[key];
+                        $scope.project.boilerplateData[key] = _.clone($scope.$boilerplateTemplates[key]);
             }
             else
                 $location.path('/');
         }, failCallBack);
 
-    $scope.requirementToString = function (template) {
+    $scope.requirementToString = function (template, values) {
         if (template == null || template == '')
             return '';
         return $formatter.requirementToString({
             boilerplate: template,
-            values: {
-                '<actor>': 'lecturer',
-                '<module>': 'user authentication',
-                '<action>': 'register account',
-                '<constraint>': 'response time',
-                '<value>': '1 seconds'
-            }
+            values: values
         });
     };
 
@@ -854,7 +876,7 @@ exports.FunctionalConstraintController = function ($scope, $routeParams, $http, 
         return false;
     };
 
-    $scope.deleteActionDependency= function (index) {
+    $scope.deleteActionDependency = function (index) {
         $scope.project.functionalConstraintData.actionDependencies.splice(index, 1);
         $scope.changed = true;
     };

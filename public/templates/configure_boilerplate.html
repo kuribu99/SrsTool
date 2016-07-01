@@ -47,7 +47,9 @@
                 <div class="collapsible-header active"><h5>Access Control Module</h5></div>
                 <div class="collapsible-body">
                     <div class="row margin-top-10">
-                        <div class="col s6 m4 push-s6 push-m8">
+                        <div class="col s6 m8"
+                             ng-bind="'Available placeholders: <actor>, <module>'"></div>
+                        <div class="col s6 m4">
                             <button class="btn waves-effect waves-light col s12 m12"
                                     ng-click="restore('accessControl')">
                                 Restore Default Boilerplate
@@ -64,7 +66,7 @@
                             <div class="col s12 m6">
                                 <label for="accessControl.true.example">Example</label>
                                 <input id="accessControl.true.example" readonly
-                                       value="{{ requirementToString(project.boilerplateData.accessControl.true) }}"/>
+                                       value="{{ requirementToString(project.boilerplateData.accessControl.true, $values.accessControl) }}"/>
                             </div>
                         </div>
                         <div clas="row">
@@ -76,7 +78,7 @@
                             <div class="col s12 m6">
                                 <label for="accessControl.true.example">Example</label>
                                 <input id="accessControl.false.example" readonly
-                                       value="{{ requirementToString(project.boilerplateData.accessControl.false) }}"/>
+                                       value="{{ requirementToString(project.boilerplateData.accessControl.false, $values.accessControl) }}"/>
                             </div>
                         </div>
                     </div>
@@ -86,7 +88,9 @@
                 <div class="collapsible-header active"><h5>Action Control Module</h5></div>
                 <div class="collapsible-body">
                     <div class="row margin-top-10">
-                        <div class="col s6 m4 push-s6 push-m8">
+                        <div class="col s6 m8"
+                             ng-bind="'Available placeholders: <actor>, <action>'"></div>
+                        <div class="col s6 m4">
                             <button class="btn waves-effect waves-light col s12 m12"
                                     ng-click="restore('actionControl')">
                                 Restore Default Boilerplate
@@ -103,7 +107,7 @@
                             <div class="col s12 m6">
                                 <label for="actionControl.true.example">Example</label>
                                 <input id="actionControl.true.example" readonly
-                                       value="{{ requirementToString(project.boilerplateData.actionControl.true) }}"/>
+                                       value="{{ requirementToString(project.boilerplateData.actionControl.true, $values.actionControl) }}"/>
                             </div>
                         </div>
                         <div clas="row">
@@ -115,7 +119,7 @@
                             <div class="col s12 m6">
                                 <label for="actionControl.true.example">Example</label>
                                 <input id="actionControl.false.example" readonly
-                                       value="{{ requirementToString(project.boilerplateData.actionControl.false) }}"/>
+                                       value="{{ requirementToString(project.boilerplateData.actionControl.false, $values.actionControl ) }}"/>
                             </div>
                         </div>
                     </div>
@@ -125,7 +129,9 @@
                 <div class="collapsible-header active"><h5>Performance Constraint Module</h5></div>
                 <div class="collapsible-body">
                     <div class="row margin-top-10">
-                        <div class="col s6 m4 push-s6 push-m8">
+                        <div class="col s6 m8"
+                             ng-bind="'Available placeholders: <constraint>, <action>, <value>'"></div>
+                        <div class="col s6 m4">
                             <button class="btn waves-effect waves-light col s12 m12"
                                     ng-click="restore('performanceConstraint')">
                                 Restore Default Boilerplate
@@ -144,8 +150,114 @@
                             <div class="col s12 m6">
                                 <label for="performanceConstraint.{{ option }}.example">Example</label>
                                 <input id="performanceConstraint.{{ option }}.example" readonly
-                                       value="{{ requirementToString(project.boilerplateData.performanceConstraint[option]) }}"/>
+                                       value="{{ requirementToString(project.boilerplateData.performanceConstraint[option],
+                                       $values.performanceConstraint) }}"/>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="collapsible-header active"><h5>Functional Constraint Module</h5></div>
+                <div class="collapsible-body">
+                    <div class="row margin-top-10">
+                        <div class="col s6 m8"
+                             ng-bind="'Available placeholders: <system>, <interface>, <dependency>, <condition>, <dependentAction>, <action>'"></div>
+                        <div class="col s6 m4">
+                            <button class="btn waves-effect waves-light col s12 m12"
+                                    ng-click="restore('functionalConstraint')">
+                                Restore Default Boilerplate
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="functionalConstraint.interface.0">
+                                Interface without dependency or condition
+                            </label>
+                            <input id="functionalConstraint.interface.0" ng-change="change()"
+                                   ng-model="project.boilerplateData.functionalConstraint.interface[0]"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="functionalConstraint.interface.0.example">Example</label>
+                            <input id="functionalConstraint.interface.0.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.functionalConstraint.interface[0],
+                                       $values.functionalConstraint.interface) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="functionalConstraint.interface.1">
+                                Interface with dependency
+                            </label>
+                            <input id="functionalConstraint.interface.1" ng-change="change()"
+                                   ng-model="project.boilerplateData.functionalConstraint.interface[1]"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="functionalConstraint.interface.1.example">Example</label>
+                            <input id="functionalConstraint.interface.1.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.functionalConstraint.interface[1],
+                                       $values.functionalConstraint.interface) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="functionalConstraint.interface.2">
+                                Interface with condition
+                            </label>
+                            <input id="functionalConstraint.interface.2" ng-change="change()"
+                                   ng-model="project.boilerplateData.functionalConstraint.interface[2]"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="functionalConstraint.interface.2.example">Example</label>
+                            <input id="functionalConstraint.interface.2.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.functionalConstraint.interface[2],
+                                       $values.functionalConstraint.interface) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="functionalConstraint.interface.3">
+                                Interface with both dependency and condition
+                            </label>
+                            <input id="functionalConstraint.interface.3" ng-change="change()"
+                                   ng-model="project.boilerplateData.functionalConstraint.interface[3]"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="functionalConstraint.interface.3.example">Example</label>
+                            <input id="functionalConstraint.interface.3.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.functionalConstraint.interface[3],
+                                       $values.functionalConstraint.interface) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="functionalConstraint.actionDependencies.true">
+                                Action shall trigger dependent action
+                            </label>
+                            <input id="functionalConstraint.actionDependencies.true" ng-change="change()"
+                                   ng-model="project.boilerplateData.functionalConstraint.actionDependencies.true"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="functionalConstraint.actionDependencies.true.example">Example</label>
+                            <input id="functionalConstraint.actionDependencies.true.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.functionalConstraint.actionDependencies.true,
+                                       $values.functionalConstraint.actionDependencies) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="functionalConstraint.actionDependencies.false">
+                                Action shall not trigger dependent action
+                            </label>
+                            <input id="functionalConstraint.actionDependencies.false" ng-change="change()"
+                                   ng-model="project.boilerplateData.functionalConstraint.actionDependencies.false"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="functionalConstraint.actionDependencies.false.example">Example</label>
+                            <input id="functionalConstraint.actionDependencies.false.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.functionalConstraint.actionDependencies.false,
+                                       $values.functionalConstraint.actionDependencies) }}"/>
                         </div>
                     </div>
                 </div>
