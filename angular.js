@@ -66,6 +66,11 @@ app.config(function ($routeProvider) {
             template: '<functional-constraint></functional-constraint>'
         })
 
+        .when('/projects/:id/configure-compatibility', {
+            title: 'Configure Compatibility',
+            template: '<configure-compatibility></configure-compatibility>'
+        })
+
         .when('/projects/:id/boilerplate', {
             title: 'Configure Boilerplate',
             template: '<configure-boilerplate></configure-boilerplate>'

@@ -122,6 +122,24 @@ exports.$template = function () {
                 true: "The <system> shall <action> based on <rule>",
                 false: "The <system> shall not <action> based on  <rule>"
             }
+        },
+        compatibility: {
+            operatingSystem: {
+                0: "The <system> shall be able to execute in <operatingSystem> with no compatibility issue",
+                1: "The <system> shall be able to execute in <operatingSystem> <version> and above with no compatibility issue",
+                2: "The <system> shall be able to execute in <operatingSystem> with <issue>",
+                3: "The <system> shall be able to execute in <operatingSystem> <version> and above with <issue>"
+            },
+            executionEnvironment: {
+                0: "The <system> shall be able to execute with <software> with no compatibility issue",
+                1: "The <system> shall be able to execute with <software> <version> and above with no compatibility issue",
+                2: "The <system> shall be able to execute with <software> with <issue>",
+                3: "The <system> shall be able to execute with <software> <version> and above with <issue>"
+            },
+            outputCompatibility: {
+                true: "The <output> of the <system> <version1> shall be compatible with <version2>",
+                false: "The <output> of the <system> <version1> shall not be compatible with <version2>"
+            }
         }
     };
 
@@ -155,6 +173,26 @@ exports.$template = function () {
                 '<system>': 'system',
                 '<action>': 'calculate GST charge',
                 '<rule>': 'GST rate of Malaysia'
+            }
+        },
+        compatibility: {
+            operatingSystem: {
+                '<system>': 'system',
+                '<operatingSystem>': 'Microsoft Windows',
+                '<version>': '10',
+                '<issue>': 'no GPU acceleration'
+            },
+            executionEnvironment: {
+                '<system>': 'system',
+                '<software>': 'Java',
+                '<version>': '1.8',
+                '<issue>': 'higher heap size'
+            },
+            outputCompatibility: {
+                '<output>': 'PDF generated',
+                '<system>': 'system',
+                '<newVersion>': 'v1.4',
+                '<oldVersion>': 'v1.3'
             }
         }
     };

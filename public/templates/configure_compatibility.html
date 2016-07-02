@@ -1,0 +1,229 @@
+<div class="row valign-wrapper">
+    <h4 class=" col s12 m8 valign">Configure Compatibility</h4>
+    <div class="valign col s8 m4">
+        <div class="col s12 m6 input-field">
+            <a class="btn waves-effect waves-light green col s12 m12" ng-click="saveProject()">
+                <i class="material-icons left">done</i>Save
+            </a>
+        </div>
+        <div class="col s12 m6 input-field">
+            <a class="btn waves-effect waves-light red col s12 m12" ng-click="back()">
+                <i class="material-icons left">power_settings_new</i>Back
+            </a>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <ul class="collapsible collapsible-accordion" data-collapsible="accordion">
+        <li>
+            <div class="collapsible-header active blue white-text">
+                Instructions<i class="material-icons right">announcement</i>
+            </div>
+            <div class="collapsible-body">
+                <div class="row">
+                    <p>
+                        Other than explicitly written actions (which are functional requirements),
+                        <wbr/>
+                        the system should also provide certain interface or functionality for user
+                        <br/>
+                        For example, certain system will provide RESTful API which is not an action that user could
+                        perform,
+                        <wbr/>
+                        however, it is needed for the system to perform its normal functionalities
+                        <br/>
+                        These functional constraint will describe how actions are performed by the system
+                        <br/>
+                        <br/>
+                        For example, the most commonly introduced functional constraints are:
+                        <br/>
+                        - System API or console commands
+                        <br/>
+                        - Linked action (which one action triggers another)
+                        <br/>
+                        - Dependencies (such as dependency on other framework)
+                    </p>
+                </div>
+            </div>
+        </li>
+        <li>
+            <div class="collapsible-header">
+                <h5>
+                    <span>Operating System</span>
+                    <span class="badge white-text light-green"
+                          ng-bind="project.compatibilityData.operatingSystem.length"
+                          ng-if="project.compatibilityData.operatingSystem.length > 0"></span>
+                </h5>
+            </div>
+            <div class="collapsible-body">
+                <div class="row valign-wrapper">
+                    <div class="col s4 m3 input-field">
+                        <label for="tbxOperatingSystem.operatingSystem">Operating System</label>
+                        <input id="tbxOperatingSystem.operatingSystem" type="text"
+                               ng-model="tbxOperatingSystem.operatingSystem"/>
+                    </div>
+                    <div class="col s4 m3 input-field">
+                        <label for="tbxOperatingSystem.version">Version (optional)</label>
+                        <input id="tbxOperatingSystem.version" type="text"
+                               ng-model="tbxOperatingSystem.version"/>
+                    </div>
+                    <div class="col s4 m3 input-field">
+                        <label for="tbxOperatingSystem.issue">Issue (optional)</label>
+                        <input id="tbxOperatingSystem.issue" type="text"
+                               ng-model="tbxOperatingSystem.issue"/>
+                    </div>
+                    <div class="col s4 m3 valign">
+                        <button class="btn waves-effect waves-light col s12 m12" ng-click="addOperatingSystem()">Add
+                        </button>
+                    </div>
+                </div>
+                <div class="row" ng-if="project.compatibilityData.operatingSystem.length > 0">
+                    <table class="highlight">
+                        <thead>
+                        <tr>
+                            <td>Operating System</td>
+                            <td>Version</td>
+                            <td>Issue</td>
+                            <td></td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="item in project.compatibilityData.operatingSystem track by $index">
+                            <td ng-bind="item.operatingSystem"></td>
+                            <td ng-bind="item.version"></td>
+                            <td ng-bind="item.issue"></td>
+                            <td>
+                                <a class="waves-effect waves-light btn red" ng-click="deleteOperatingSystem($index)">
+                                    <i class="material-icons left">delete</i>Delete
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </li>
+        <li>
+            <div class="collapsible-header">
+                <h5>
+                    <span>Execution Environment</span>
+                    <span class="badge white-text light-green"
+                          ng-bind="project.compatibilityData.executionEnvironment.length"
+                          ng-if="project.compatibilityData.executionEnvironment.length > 0"></span>
+                </h5>
+            </div>
+            <div class="collapsible-body">
+                <div class="row valign-wrapper">
+                    <div class="col s4 m3 input-field">
+                        <label for="tbxOperatingSystem.operatingSystem">Software Name</label>
+                        <input id="tbxOperatingSystem.operatingSystem" type="text"
+                               ng-model="tbxOperatingSystem.operatingSystem"/>
+                    </div>
+                    <div class="col s4 m3 input-field">
+                        <label for="tbxOperatingSystem.version">Version (optional)</label>
+                        <input id="tbxOperatingSystem.version" type="text"
+                               ng-model="tbxOperatingSystem.version"/>
+                    </div>
+                    <div class="col s4 m3 input-field">
+                        <label for="tbxOperatingSystem.issue">Issue (optional)</label>
+                        <input id="tbxOperatingSystem.issue" type="text"
+                               ng-model="tbxOperatingSystem.issue"/>
+                    </div>
+                    <div class="col s4 m3 valign">
+                        <button class="btn waves-effect waves-light col s12 m12" ng-click="addOperatingSystem()">Add
+                        </button>
+                    </div>
+                </div>
+                <div class="row" ng-if="project.compatibilityData.executionEnvironment.length > 0">
+                    <table class="highlight">
+                        <thead>
+                        <tr>
+                            <td>Operating System</td>
+                            <td>Version</td>
+                            <td>Issue</td>
+                            <td></td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="item in project.compatibilityData.executionEnvironment track by $index">
+                            <td ng-bind="item.operatingSystem"></td>
+                            <td ng-bind="item.version"></td>
+                            <td ng-bind="item.issue"></td>
+                            <td>
+                                <a class="waves-effect waves-light btn red" ng-click="deleteOperatingSystem($index)">
+                                    <i class="material-icons left">delete</i>Delete
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </li>
+        <li>
+            <div class="collapsible-header">
+                <h5>
+                    <span>Output Compatibility</span>
+                    <span class="badge white-text light-green"
+                          ng-bind="project.compatibilityData.outputCompatibility.length"
+                          ng-if="project.compatibilityData.executionEnvironment.length > 0"></span>
+                </h5>
+            </div>
+            <div class="collapsible-body">
+                <div class="row valign-wrapper">
+                    <div class="col s4 m3 input-field">
+                        <label for="tbxOutputCompatibility.output">Software Name</label>
+                        <input id="tbxOutputCompatibility.output" type="text"
+                               ng-model="tbxOutputCompatibility.output"/>
+                    </div>
+                    <div class="col s4 m3 input-field">
+                        <label for="tbxOutputCompatibility.newVersion">New Version</label>
+                        <input id="tbxOutputCompatibility.newVersion" type="text"
+                               ng-model="tbxOutputCompatibility.newVersion"/>
+                    </div>
+                    <div class="col s4 m3 input-field">
+                        <label for="tbxOutputCompatibility.oldVersion">Old Version</label>
+                        <input id="tbxOutputCompatibility.oldVersion" type="text"
+                               ng-model="tbxOutputCompatibility.oldVersion"/>
+                    </div>
+                    <div class="col s4 m3 valign">
+                        <button class="btn waves-effect waves-light col s12 m12" ng-click="addOutputCompatibility()">Add
+                        </button>
+                    </div>
+                </div>
+                <div class="row" ng-if="project.compatibilityData.executionEnvironment.length > 0">
+                    <table class="highlight">
+                        <thead>
+                        <tr>
+                            <td>Operating System</td>
+                            <td>Version</td>
+                            <td>Issue</td>
+                            <td></td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="item in project.compatibilityData.executionEnvironment track by $index">
+                            <td ng-bind="item.output"></td>
+                            <td ng-bind="item.newVersion"></td>
+                            <td ng-bind="item.oldVersion"></td>
+                            <td>
+                                <a class="waves-effect waves-light btn red" ng-click="deleteOperatingSystem($index)">
+                                    <i class="material-icons left">delete</i>Delete
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </li>
+    </ul>
+</div>
+<script>
+    setTimeout(function () {
+        $('.collapsible').collapsible({
+            accordion: false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
+        });
+        $('select').material_select();
+        Materialize.updateTextFields();
+    }, 500);
+</script>

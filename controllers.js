@@ -24,7 +24,7 @@ var countTrue = function (arr) {
     }).length;
 };
 
-var sameObject = function (v1, v2) {
+var isSameObject = function (v1, v2) {
     for (var key in v1) {
         if (v2[key] == null || v1[key] != v2[key])
             return false;
@@ -439,7 +439,7 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
         if (requirements == null)
             return false;
         for (var index in requirements) {
-            if (sameObject(requirements[index].values, values))
+            if (isSameObject(requirements[index].values, values))
                 return true;
         }
         return false;
@@ -504,7 +504,7 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
     }, 0);
 };
 
-exports.AccessControlController = function ($scope, $routeParams, $http, $location, $formatter) {
+exports.AccessControlController = function ($scope, $routeParams, $http, $location) {
     var projectID = encodeURIComponent($routeParams.id);
 
     $scope.$formatter = $formatter;
@@ -575,10 +575,9 @@ exports.AccessControlController = function ($scope, $routeParams, $http, $locati
     }, 0);
 };
 
-exports.ActionControlController = function ($scope, $routeParams, $http, $location, $formatter) {
+exports.ActionControlController = function ($scope, $routeParams, $http, $location) {
     var projectID = encodeURIComponent($routeParams.id);
 
-    $scope.$formatter = $formatter;
     $scope.changed = false;
 
     $http.get('/api/v1/projects/' + projectID + '/action-control-data')
@@ -717,10 +716,9 @@ exports.ConfigureBoilerplateController = function ($scope, $routeParams, $http, 
     }, 0);
 };
 
-exports.PerformanceConstraintController = function ($scope, $routeParams, $http, $location, $formatter, $template) {
+exports.PerformanceConstraintController = function ($scope, $routeParams, $http, $location, $template) {
     var projectID = encodeURIComponent($routeParams.id);
 
-    $scope.$formatter = $formatter;
     $scope.changed = false;
     $scope.$performanceConstraintOptions = $template.performanceConstraintOptions;
     $scope.performanceConstraintData = {};
@@ -803,14 +801,12 @@ exports.PerformanceConstraintController = function ($scope, $routeParams, $http,
     }, 0);
 };
 
-exports.FunctionalConstraintController = function ($scope, $routeParams, $http, $location, $formatter, $template) {
+exports.FunctionalConstraintController = function ($scope, $routeParams, $http, $location, $template) {
     var projectID = encodeURIComponent($routeParams.id);
 
-    $scope.$formatter = $formatter;
     $scope.changed = false;
     $scope.$actionDependenciesOptions = $template.actionDependenciesOptions;
     $scope.$actionRulesOptions = $template.actionRulesOptions;
-    $scope.functionalConstraintData = {};
 
     $http.get('/api/v1/projects/' + projectID + '/functional-constraint-data')
         .then(function (json) {
@@ -851,7 +847,7 @@ exports.FunctionalConstraintController = function ($scope, $routeParams, $http, 
 
     $scope.hasInterface = function (newInterface) {
         for (var index in $scope.project.functionalConstraintData.interfaces) {
-            if (sameObject($scope.project.functionalConstraintData.interfaces[index], newInterface))
+            if (isSameObject($scope.project.functionalConstraintData.interfaces[index], newInterface))
                 return true;
         }
         return false;
@@ -888,7 +884,7 @@ exports.FunctionalConstraintController = function ($scope, $routeParams, $http, 
 
     $scope.hasActionDependency = function (newActionDependency) {
         for (var index in $scope.project.functionalConstraintData.actionDependencies) {
-            if (sameObject($scope.project.functionalConstraintData.actionDependencies[index], newActionDependency))
+            if (isSameObject($scope.project.functionalConstraintData.actionDependencies[index], newActionDependency))
                 return true;
         }
         return false;
@@ -925,7 +921,7 @@ exports.FunctionalConstraintController = function ($scope, $routeParams, $http, 
 
     $scope.hasActionRule = function (newActionRule) {
         for (var index in $scope.project.functionalConstraintData.actionRules) {
-            if (sameObject($scope.project.functionalConstraintData.actionRules[index], newActionRule))
+            if (isSameObject($scope.project.functionalConstraintData.actionRules[index], newActionRule))
                 return true;
         }
         return false;
@@ -965,5 +961,160 @@ exports.FunctionalConstraintController = function ($scope, $routeParams, $http, 
 
     setTimeout(function () {
         $scope.$emit('FunctionalConstraintController');
+    }, 0);
+};
+
+exports.ConfigureCompatibilityController = function ($scope, $routeParams, $http, $location, $template) {
+    var projectID = encodeURIComponent($routeParams.id);
+
+    $scope.changed = false;
+
+    $http.get('/api/v1/projects/' + projectID + '/compatibility-data')
+        .then(function (json) {
+            if (json.data.result) {
+                $scope.project = json.data.project;
+
+                if (!$scope.project.compatibilityData)
+                    $scope.project.compatibilityData = {
+                        operatingSystem: [],
+                        executionEnvironment: [],
+                        outputCompatibility: []
+                    };
+
+            } else
+                $location.path('/projects/' + $scope.project._id);
+
+        }, failCallBack);
+
+    $scope.newOperatingSystem = function () {
+        return {
+            operatingSystem: '',
+            version: '',
+            issue: ''
+        };
+    };
+
+    $scope.addOperatingSystem = function () {
+        if ($scope.tbxOperatingSystem.operatingSystem == '')
+            toast('Operating system name is required');
+        else if ($scope.hasOperatingSystem($scope.tbxOperatingSystem))
+            toast('Operating system name or version or issue already exist');
+        else {
+            $scope.project.compatibilityData.operatingSystem.push($scope.tbxOperatingSystem);
+            $scope.tbxOperatingSystem = $scope.newOperatingSystem();
+            $scope.changed = true;
+        }
+    };
+
+    $scope.hasOperatingSystem = function (newOperatingSystem) {
+        for (var index in $scope.project.compatibilityData.operatingSystem) {
+            if (isSameObject($scope.project.compatibilityData.operatingSystem[index], newOperatingSystem))
+                return true;
+        }
+        return false;
+    };
+
+    $scope.deleteOperatingSystem = function (index) {
+        $scope.project.compatibilityData.operatingSystem.splice(index, 1);
+        $scope.changed = true;
+    };
+
+    $scope.newExecutionEnvironment = function () {
+        return {
+            software: '',
+            version: '',
+            issue: ''
+        };
+    };
+
+    $scope.addExecutionEnvironment = function () {
+        if ($scope.tbxExecutionEnvironment.software == '')
+            toast('Software name is required');
+        else if ($scope.hasExecutionEnvironment($scope.tbxExecutionEnvironment))
+            toast('Software or version or issue already exist');
+        else {
+            $scope.project.compatibilityData.executionEnvironment.push($scope.tbxExecutionEnvironment);
+            $scope.tbxExecutionEnvironment = $scope.newExecutionEnvironment();
+            $scope.changed = true;
+        }
+    };
+
+    $scope.hasExecutionEnvironment = function (newExecutionEnvironment) {
+        for (var index in $scope.project.compatibilityData.executionEnvironment) {
+            if (isSameObject($scope.project.compatibilityData.executionEnvironment[index], newExecutionEnvironment))
+                return true;
+        }
+        return false;
+    };
+
+    $scope.deleteExecutionEnvironment = function (index) {
+        $scope.project.compatibilityData.executionEnvironment.splice(index, 1);
+        $scope.changed = true;
+    };
+
+    $scope.newOutputCompatibility = function () {
+        return {
+            output: '',
+            version1: '',
+            version2: ''
+        };
+    };
+
+    $scope.addOutputCompatibility = function () {
+        if ($scope.tbxOutputCompatibility.output == '')
+            toast('Output is required');
+        else if ($scope.tbxOutputCompatibility.version1 == '' || $scope.tbxOutputCompatibility.version2 == '')
+            toast('Software versions are required');
+        else if ($scope.hasOutputCompatibility($scope.tbxOutputCompatibility))
+            toast('Output or software version already exist');
+        else {
+            $scope.project.compatibilityData.outputCompatibility.push($scope.tbxOutputCompatibility);
+            $scope.tbxOutputCompatibility = $scope.newOutputCompatibility();
+            $scope.changed = true;
+        }
+    };
+
+    $scope.hasOutputCompatibility = function (newOutputCompatibility) {
+        for (var index in $scope.project.compatibilityData.outputCompatibility) {
+            if (isSameObject($scope.project.compatibilityData.outputCompatibility[index], newOutputCompatibility))
+                return true;
+        }
+        return false;
+    };
+
+    $scope.deleteOutputCompatibility = function (index) {
+        $scope.project.compatibilityData.outputCompatibility.splice(index, 1);
+        $scope.changed = true;
+    };
+
+    $scope.saveProject = function () {
+        $http.patch('/api/v1/projects/' + projectID + '/compatibility-data', {
+            compatibilityData: $scope.project.compatibilityData
+        }).then(function (json) {
+            if (json.data.result) {
+                $scope.changed = false;
+                toast("Saved successfully");
+            }
+            else
+                console.log(json.data);
+        }, failCallBack);
+    };
+
+    $scope.back = function () {
+        if ($scope.changed && confirmBack())
+            $scope.saveProject();
+        $location.path('/projects/' + $scope.project._id);
+    };
+
+    $scope.change = function () {
+        $scope.changed = true;
+    };
+
+    $scope.tbxOperatingSystem = $scope.newOperatingSystem();
+    $scope.tbxExecutionEnvironment = $scope.newExecutionEnvironment();
+    $scope.tbxOutputCompatibility = $scope.newOutputCompatibility();
+
+    setTimeout(function () {
+        $scope.$emit('ConfigureCompatibilityController');
     }, 0);
 };

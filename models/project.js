@@ -51,6 +51,10 @@ var projectSchema = {
     functionalConstraintData: {
         type: mongoose.Schema.Types.Mixed,
         default: {}
+    },
+    compatibilityData: {
+        type: mongoose.Schema.Types.Mixed,
+        default: {}
     }
 };
 

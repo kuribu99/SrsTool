@@ -87,3 +87,10 @@ exports.functionalConstraint = function () {
         templateUrl: './templates/functional_constraint.html'
     };
 };
+
+exports.configureCompatibility = function () {
+    return {
+        controller: 'ConfigureCompatibilityController',
+        templateUrl: './templates/configure_compatibility.html'
+    };
+};
