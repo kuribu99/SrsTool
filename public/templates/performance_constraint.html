@@ -43,7 +43,7 @@
                 <h5>
                     <span ng-bind="action"></span>
                     <span class="badge white-text light-green"
-                          ng-bind="project.performanceConstraintData[action].length + ' constraints'"></span>
+                          ng-bind="getConstraintCount(action)"></span>
                 </h5>
             </div>
             <div class="collapsible-body">

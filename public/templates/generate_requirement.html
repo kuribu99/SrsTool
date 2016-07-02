@@ -60,8 +60,8 @@
                                 <li ng-repeat="requirement in requirements track by $index">
                                     <div class="input-field">
                                         <input type="checkbox" ng-model="requirement.checked"
-                                               id="{{ moduleName }}.{{ $index }}"/>
-                                        <label for="{{ moduleName }}.{{ $index }}"
+                                               id="fr.{{ moduleName }}.{{ $index }}"/>
+                                        <label for="fr.{{ moduleName }}.{{ $index }}"
                                                ng-bind="$formatter.requirementToString(requirement)"></label>
                                     </div>
                                 </li>
@@ -83,9 +83,12 @@
                 <li ng-repeat="(moduleName, requirements) in generatedRequirements"
                     ng-if="$modules.NonFunctional.indexOf(moduleName) >= 0">
                     <div class="collapsible-header active">
-                        <h5><span ng-bind="moduleName"></span>
+                        <h5>
+                            <span ng-bind="moduleName"></span>
                             <span class="new badge" ng-bind="requirements.length"
-                                  ng-if="requirements.length > 0"></span></h5>
+                                  ng-if="requirements.length > 0"></span>
+                            <span class="badge white-text light-green" ng-if="requirements.length == 0">None</span>
+                        </h5>
                     </div>
                     <div class="collapsible-body">
                         <div class="row" ng-if="requirements.length > 0">
@@ -93,8 +96,8 @@
                                 <li ng-repeat="requirement in requirements track by $index">
                                     <div class="input-field">
                                         <input type="checkbox" ng-model="requirement.checked"
-                                               id="{{ moduleName }}.{{ $index }}"/>
-                                        <label for="{{ moduleName }}.{{ $index }}"
+                                               id="nfr.{{ moduleName }}.{{ $index }}"/>
+                                        <label for="nfr.{{ moduleName }}.{{ $index }}"
                                                ng-bind="$formatter.requirementToString(requirement)"></label>
                                     </div>
                                 </li>

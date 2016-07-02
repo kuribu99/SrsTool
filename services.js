@@ -137,8 +137,8 @@ exports.$template = function () {
                 3: "The <system> shall be able to execute with <software> <version> and above with <issue>"
             },
             outputCompatibility: {
-                true: "The <output> of the <system> <version1> shall be compatible with <version2>",
-                false: "The <output> of the <system> <version1> shall not be compatible with <version2>"
+                true: "The <output> of the <system> <newVersion> shall be compatible with <oldVersion>",
+                false: "The <output> of the <system> <newVersion> shall not be compatible with <oldVersion>"
             }
         }
     };
@@ -205,6 +205,10 @@ exports.$template = function () {
     this.actionRulesOptions = {
         true: 'based on',
         false: 'not based on'
+    };
+    this.compatibilityOptions = {
+        true: 'Yes',
+        false: 'No'
     };
 
     return this;

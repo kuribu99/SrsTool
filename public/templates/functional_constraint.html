@@ -49,9 +49,7 @@
             <div class="collapsible-header">
                 <h5>
                     <span>Interface/Functionality Dependency</span>
-                    <span class="badge white-text light-green"
-                          ng-bind="project.functionalConstraintData.interfaces.length"
-                          ng-if="project.functionalConstraintData.interfaces.length > 0"></span>
+                    <span class="badge white-text light-green" ng-bind="getInterfaceCount()"></span>
                 </h5>
             </div>
             <div class="collapsible-body">
@@ -106,9 +104,7 @@
             <div class="collapsible-header">
                 <h5>
                     <span>Action Dependency</span>
-                    <span class="badge white-text light-green"
-                          ng-bind="project.functionalConstraintData.actionDependencies.length"
-                          ng-if="project.functionalConstraintData.actionDependencies.length > 0"></span>
+                    <span class="badge white-text light-green" ng-bind="getActionDependencyCount()"></span>
                 </h5>
             </div>
             <div class="collapsible-body">
@@ -136,7 +132,8 @@
                         </button>
                     </div>
                     <datalist id="actions">
-                        <option ng-repeat="action in project.domainData.actions" value="{{ action }}" ng-bind="action"></option>
+                        <option ng-repeat="action in project.domainData.actions" value="{{ action }}"
+                                ng-bind="action"></option>
                     </datalist>
                 </div>
                 <div class="row" ng-if="project.functionalConstraintData.actionDependencies.length > 0">
@@ -169,9 +166,7 @@
             <div class="collapsible-header">
                 <h5>
                     <span>Action Rules</span>
-                    <span class="badge white-text light-green"
-                          ng-bind="project.functionalConstraintData.actionRules.length"
-                          ng-if="project.functionalConstraintData.actionRules.length > 0"></span>
+                    <span class="badge white-text light-green" ng-bind="getActionRuleCount()"></span>
                 </h5>
             </div>
             <div class="collapsible-body">
