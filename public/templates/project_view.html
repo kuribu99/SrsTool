@@ -1,13 +1,19 @@
-<div class="row valign-wrapper">
-    <h4 class=" col s12 m8 valign" ng-bind="project.projectName"></h4>
-    <div class="valign col s8 m4">
+<div class="row">
+    <div class="col s12 m8 valign-wrapper">
+        <h4 class="col valign" ng-bind="project.projectName"></h4>
+        <div class="col valign">
+            <a class="btn waves-effect waves-light" ng-href="/#/projects/{{ project._id }}/edit">
+                <i class="material-icons left">mode_edit</i>Edit</a>
+        </div>
+    </div>
+    <div class="col s8 m4">
         <div class="col s12 m6 input-field">
             <a class="btn waves-effect waves-light green col s12 m12" ng-click="saveProject()">
                 <i class="material-icons left">done</i>Save
             </a>
         </div>
         <div class="col s12 m6 input-field">
-            <a class="btn waves-effect waves-light red col s12 m12" ng-href="/#/">
+            <a class="btn waves-effect waves-light red col s12 m12" ng-click="back()">
                 <i class="material-icons left">power_settings_new</i>Back
             </a>
         </div>
@@ -15,32 +21,21 @@
 </div>
 <div class="row">
     <div class="col input-field">
-        <a class="btn waves-effect waves-light blue" ng-href="/#/projects/{{ project._id }}/edit">
-            <i class="material-icons left">mode_edit</i>Edit Project
-        </a>
-    </div>
-    <div class="col input-field">
         <a class="btn waves-effect waves-light blue" ng-href="/#/projects/{{ project._id }}/domain">
             <i class="material-icons left">code</i>Edit Domain
         </a>
     </div>
-    <div class="col input-field">
-        <a class="btn waves-effect waves-light blue" ng-href="/#/projects/{{ project._id }}/generate">
-            <i class="material-icons left">note_add</i>Generate Requirements
-        </a>
-    </div>
-    <div class="col input-field">
-        <a class="btn waves-effect waves-light blue" ng-href="/#/projects/{{ project._id }}/boilerplate">
-            <i class="material-icons left">settings</i>Configure Boilerplate
-        </a>
-    </div>
-</div>
-<div class="row">
     <div class="col s6 m4 input-field">
-        <a class="col s12 m12 dropdown-button btn blue" data-activates="fr-dropdown">
-            <i class="material-icons left">view_module</i>Specify Functional Requirements
+        <a class="col s12 m12 dropdown-button btn blue" data-activates="dropdown">
+            <i class="material-icons left">view_module</i>Specify Requirements
         </a>
-        <ul id="fr-dropdown" class="dropdown-content">
+        <ul id="dropdown" class="dropdown-content">
+            <li class="disabled">
+                <a>
+                    <i class="material-icons left">view_list</i>Functional Requirement
+                </a>
+            </li>
+            <li class="divider"></li>
             <li ng-if="project.domainData.actions.length > 0 && project.domainData.actors.length > 0">
                 <a class="waves-effect waves-light" ng-href="/#/projects/{{ project._id }}/action-control">
                     Configure Action Control
@@ -52,13 +47,12 @@
                     Configure Action Control
                 </a>
             </li>
-        </ul>
-    </div>
-    <div class="col s6 m4 input-field">
-        <a class="col s12 m12 dropdown-button btn blue" data-activates="nfr-dropdown">
-            <i class="material-icons left">view_module</i>Specify Non-Functional Requirements
-        </a>
-        <ul id="nfr-dropdown" class="dropdown-content">
+            <li class="disabled">
+                <a>
+                    <i class="material-icons left">view_list</i>Non-Functional Requirement
+                </a>
+            </li>
+            <li class="divider"></li>
             <li ng-if="project.domainData.modules.length > 0 && project.domainData.actors.length > 0">
                 <a class="waves-effect waves-light" ng-href="/#/projects/{{ project._id }}/access-control">
                     Configure Access Control
@@ -75,58 +69,165 @@
                     Configure Performance Constraint
                 </a>
             </li>
-            <li ng-if="project.domainData.actions.length == 0">
-                <a class="waves-effect waves-light"
-                   ng-click="toast('Please add at least one action to do so', 2000)">
-                    Configure Performance Constraint
+            <li>
+                <a class="waves-effect waves-light" ng-href="/#/projects/{{ project._id }}/functional-constraint">
+                    Configure Functional Constraint
+                </a>
+            </li>
+            <li>
+                <a class="waves-effect waves-light" ng-href="/#/projects/{{ project._id }}/configure-compatibility">
+                    Configure Compatibility
                 </a>
             </li>
         </ul>
     </div>
-</div>
-<div class="col s12 m12 card card-panel waves-light waves-effect center-align green"
-     ng-if="Object.keys(project.generatedRequirements).length == 0">
-    <h5 class="header">No requirement found</h5>
+    <div class="col input-field">
+        <a class="btn waves-effect waves-light blue" ng-href="/#/projects/{{ project._id }}/generate">
+            <i class="material-icons left">note_add</i>Generate Requirements
+        </a>
+    </div>
+    <div class="col input-field">
+        <a class="btn waves-effect waves-light blue" ng-href="/#/projects/{{ project._id }}/boilerplate">
+            <i class="material-icons left">settings</i>Configure Boilerplate
+        </a>
+    </div>
 </div>
 <div class="row">
     <div class="row">
-        <ul class="collapsible collapsible-accordion" data-collapsible="accordion">
-            <li ng-repeat="(moduleName, requirements) in project.generatedRequirements">
-                <div class="collapsible-header active"><h5 ng-bind="moduleName"></h5></div>
-                <div class="collapsible-body">
-                    <div class="row" ng-if="requirements.length > 0">
-                        <table class="highlight">
-                            <thead>
-                            <tr>
-                                <td>#</td>
-                                <td>Requirement</td>
-                                <td>Actions</td>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr ng-repeat="requirement in requirements track by $index">
-                                <td>{{ $index + 1 }}</td>
-                                <td>{{ $formatter.requirementToString(requirement) }}</td>
-                                <td>
-                                    <div class="input-field">
-                                        <a class="btn waves-effect waves-light red"
-                                           ng-click="removeRequirement(moduleName, $index)">
-                                            <i class="material-icons left">delete</i>Delete
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="row" ng-if="requirements.length == 0">
-                        <div class="center-align">
-                            <h5 class="header">No requirement found</h5>
+        <ul class="tabs blue lighten-2">
+            <li class="tab col s4 m4"><a class="active" href="#INSTRUCTIONS">
+                <i class="material-icons right">announcement</i>Instructions</a>
+            </li>
+            <li class="tab col s4 m4"><a href="#fr">Functional Requirements</a></li>
+            <li class="tab col s4 m4"><a href="#nfr">Non-Functional Requirements</a></li>
+        </ul>
+    </div>
+    <div id="INSTRUCTIONS" class="row active">
+        <div class="card blue-grey darken-1 hoverable">
+            <div class="card-content white-text">
+                <h5 class="card-title">Q: How to use Software Requirement Specification Tool?<br/></h5>
+                <div>
+                    <p>A: The answer is simple. Simply follow the following steps</p>
+                    <ol>
+                        <li>Create your project</li>
+                        <li>Edit your domain to add in modules, actors and actions</li>
+                        <li>Specify your requirements using our custom built forms</li>
+                        <li>Generate your requirements automatically</li>
+                        <li>Lastly, export your requirements to your desired format</li>
+                        <li>
+                            Optionally, configure your boilerplates, a.k.a. requirement templates to suit your needs
+                        </li>
+                    </ol>
+                    <img class="materialboxed"
+                         data-caption="Flowchart on how to use Software Requirement Specification tool" width="800px"
+                         src="./images/project_view.png">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="fr" class="row">
+        <div class="row" ng-if="numberFunctionalRequirement > 0">
+            <ul class="collapsible collapsible-accordion" data-collapsible="accordion">
+                <li ng-repeat="(moduleName, requirements) in project.generatedRequirements"
+                    ng-if="$modules.Functional.indexOf(moduleName) >= 0">
+                    <div class="collapsible-header active">
+                        <h5>
+                            <span ng-bind="moduleName"></span>
+                    <span class="badge white-text light-green"
+                          ng-bind="requirements.length + ' requirements'"></span>
+                        </h5></div>
+                    <div class="collapsible-body">
+                        <div class="row" ng-if="requirements.length > 0">
+                            <table class="highlight">
+                                <thead>
+                                <tr>
+                                    <td>#</td>
+                                    <td>Requirement</td>
+                                    <td>Actions</td>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="requirement in requirements track by $index">
+                                    <td>{{ $index + 1 }}</td>
+                                    <td>{{ $formatter.requirementToString(requirement) }}</td>
+                                    <td>
+                                        <div class="input-field">
+                                            <a class="btn waves-effect waves-light red"
+                                               ng-click="removeRequirement(moduleName, $index)">
+                                                <i class="material-icons left">delete</i>Delete
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row" ng-if="requirements.length == 0">
+                            <div class="center-align">
+                                <h5 class="header">No requirement found</h5>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </li>
-        </ul>
+                </li>
+            </ul>
+        </div>
+        <div class="card-panel hoverable" ng-if="numberFunctionalRequirement == 0">
+            <h5 class="card-title">
+                Ooops, no functional requirement are added yet!
+            </h5>
+        </div>
+    </div>
+    <div id="nfr" class="row">
+        <div class="row" ng-if="numberNonFunctionalRequirement > 0">
+            <ul class="collapsible collapsible-accordion" data-collapsible="accordion">
+                <li ng-repeat="(moduleName, requirements) in project.generatedRequirements"
+                    ng-if="$modules.NonFunctional.indexOf(moduleName) >= 0">
+                    <div class="collapsible-header active">
+                        <h5>
+                            <span ng-bind="moduleName"></span>
+                    <span class="badge white-text light-green"
+                          ng-bind="requirements.length + ' requirements'"></span>
+                        </h5></div>
+                    <div class="collapsible-body">
+                        <div class="row" ng-if="requirements.length > 0">
+                            <table class="highlight">
+                                <thead>
+                                <tr>
+                                    <td>#</td>
+                                    <td>Requirement</td>
+                                    <td>Actions</td>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="requirement in requirements track by $index">
+                                    <td>{{ $index + 1 }}</td>
+                                    <td>{{ $formatter.requirementToString(requirement) }}</td>
+                                    <td>
+                                        <div class="input-field">
+                                            <a class="btn waves-effect waves-light red"
+                                               ng-click="removeRequirement(moduleName, $index)">
+                                                <i class="material-icons left">delete</i>Delete
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row" ng-if="requirements.length == 0">
+                            <div class="center-align">
+                                <h5 class="header">No requirement found</h5>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="card-panel hoverable" ng-if="numberNonFunctionalRequirement == 0">
+            <h5 class="card-title">
+                Ooops, no non-functional requirement are added yet!
+            </h5>
+        </div>
     </div>
 </div>
 <script>
@@ -143,5 +244,7 @@
             belowOrigin: false, // Displays dropdown below the button
             alignment: 'left' // Displays dropdown with edge aligned to the left of button
         });
-    }, 200);
+        $('ul.tabs').tabs();
+        $('.materialboxed').materialbox();
+    }, 500);
 </script>

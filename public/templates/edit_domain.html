@@ -7,7 +7,7 @@
             </a>
         </div>
         <div class="col s12 m6 input-field">
-            <a class="btn waves-effect waves-light red col s12 m12" ng-href="/#/projects/{{ project._id }}">
+            <a class="btn waves-effect waves-light red col s12 m12" ng-click="back()">
                 <i class="material-icons left">power_settings_new</i>Back
             </a>
         </div>
@@ -19,17 +19,35 @@
             <li class="tab col s3 m3"><a class="active" href="#INSTRUCTIONS">
                 <i class="material-icons right">announcement</i>Instructions</a>
             </li>
-            <li class="tab col s3 m3"><a href="#modules">Modules</a></li>
-            <li class="tab col s3 m3"><a href="#actors">Actors</a></li>
-            <li class="tab col s3 m3"><a href="#actions">Actions</a></li>
+            <li class="tab col s3 m3"><a href="#modules">Modules (<span
+                    ng-bind="project.domainData.modules.length"></span>)</a></li>
+            <li class="tab col s3 m3"><a href="#actors">Actors (<span ng-bind="project.domainData.actors.length"></span>)</a>
+            </li>
+            <li class="tab col s3 m3"><a href="#actions">Actions (<span
+                    ng-bind="project.domainData.actions.length"></span>)</a></li>
         </ul>
     </div>
     <div id="INSTRUCTIONS" class="row active">
         <div class="card blue-grey darken-1 hoverable">
-            <div class="card-content white-text">
-                <h4 class="card-title">Configure Domain Attributes</h4>
-                <p>Add or remove domain attributes of this project</p>
-                <p>Keywords will be suggested based on selected domain</p>
+            <div class="card-content white-text row">
+                <div class="col s12 m6">
+                    <h5 class="card-title">Q: What are domain attributes are what is it for?</h5>
+                    <p>A: Domain attributes refers to the:</p>
+                    <ol>
+                        <li>modules (subsystem)</li>
+                        <li>actor (users)</li>
+                        <li>actions (feature of the system)</li>
+                    </ol>
+                    <p>
+                        These attributes will be used in requirement specification modules where you will describe how
+                        each attribute is related to each other, which these details will be used to generate
+                        requirements.
+                    </p>
+                </div>
+                <div class="col s12 m6">
+                    <img class="materialboxed" width="400px" src="./images/edit_domain.png"
+                         data-caption="Flowchart on what are domain attribute and how is it related to requirement">
+                </div>
             </div>
         </div>
     </div>
@@ -152,5 +170,6 @@
     setTimeout(function () {
         $('ul.tabs').tabs();
         Materialize.updateTextFields();
+        $('.materialboxed').materialbox();
     }, 500);
 </script>

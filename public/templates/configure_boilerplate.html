@@ -7,7 +7,7 @@
             </a>
         </div>
         <div class="col s12 m6 input-field">
-            <a class="btn waves-effect waves-light red col s12 m12" ng-href="/#/projects/{{ project._id }}">
+            <a class="btn waves-effect waves-light red col s12 m12" ng-click="back()">
                 <i class="material-icons left">power_settings_new</i>Back
             </a>
         </div>
@@ -19,64 +19,76 @@
             <li class="tab col s4 m4"><a class="active" href="#INSTRUCTIONS">
                 <i class="material-icons right">announcement</i>Instructions</a>
             </li>
-            <li class="tab col s4 m4"><a href="#boilerplate_list">Configure Boilerplate List</a></li>
             <li class="tab col s4 m4"><a href="#module_boilerplate">Configure Module Boilerplate</a></li>
         </ul>
     </div>
     <div id="INSTRUCTIONS" class="row active">
         <div class="card blue-grey darken-1 hoverable">
-            <div class="card-content white-text">
-                <h4 class="card-title">Configure Boilerplate List</h4>
-                <p>Add or remove frequently used boilerplate in this project</p>
-                <p>Boilerplate which are not added will still be able to be used, but stored at lower priority</p>
+            <div class="card-content white-text row">
+                <div class="col s12 m6">
+                    <h5 class="card-title">Q: What is a requirement boilerplate and how it generates requirement?</h5>
+                    <p>
+                        To generate your requirements from your specification in the previous modules (Access Control,
+                        Action Control, etc), requirement boilerplate will be used to map the values into requirements.
+                    </p>
+                    <br/>
+                    <p>
+                        You may configure these boilerplates to generate the requirement that best suit your needs, such
+                        as prefixing terms or cutting off unnecessary terms.
+                    </p>
+                    <br/>
+                    <p>
+                        The idea of requirement boilerplate is to use &lt;angle brackets&gt; to enclose a word, which is
+                        known as <strong>placeholders</strong>, and then later, fill in appropriate values for the
+                        placeholder
+                    </p>
+                </div>
+                <div class="col s12 m6">
+                    <img class="materialboxed margin-top-10" width="500px" src="./images/configure_boilerplate.png"
+                         data-caption="Flowchart on how requirement boilerplate works and how requirements are generated">
+                </div>
             </div>
         </div>
-        <div class="card blue-grey darken-1 hoverable">
-            <div class="card-content white-text">
-                <h4 class="card-title">Configure Module Boilerplate</h4>
-                <p>Select boilerplate that will be used to generate requirements</p>
-            </div>
-        </div>
-    </div>
-    <div id="boilerplate_list" class="row">
-        <h4>Not supported yet</h4>
     </div>
     <div id="module_boilerplate" class="row">
         <ul class="collapsible collapsible-accordion" data-collapsible="accordion">
             <li>
                 <div class="collapsible-header active"><h5>Access Control Module</h5></div>
                 <div class="collapsible-body">
-                    <div class="row margin-top-10">
+                    <div class="row margin-top-10 valign-wrapper">
+                        <div class="col s6 m8 valign"
+                             ng-bind="'Available placeholders: <actor>, <module>'"></div>
+                        <div class="col s6 m4 valign">
+                            <button class="btn waves-effect waves-light col s12 m12"
+                                    ng-click="restore('accessControl')">
+                                Restore Default Boilerplate
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="row">
                             <div class="col s12 m6">
                                 <label for="accessControl.true">For allowed actors</label>
-                                <input id="accessControl.true" ng-model="project.boilerplateData.accessControl.true"/>
+                                <input id="accessControl.true" ng-change="change()"
+                                       ng-model="project.boilerplateData.accessControl.true"/>
                             </div>
                             <div class="col s12 m6">
                                 <label for="accessControl.true.example">Example</label>
                                 <input id="accessControl.true.example" readonly
-                                       value="{{ requirementToString(project.boilerplateData.accessControl.true) }}"/>
+                                       value="{{ requirementToString(project.boilerplateData.accessControl.true, $values.accessControl) }}"/>
                             </div>
                         </div>
                         <div clas="row">
                             <div class="col s12 m6">
                                 <label for="accessControl.false">For restricted actors</label>
-                                <input id="accessControl.false" ng-model="project.boilerplateData.accessControl.false"/>
+                                <input id="accessControl.false" ng-change="change()"
+                                       ng-model="project.boilerplateData.accessControl.false"/>
                             </div>
                             <div class="col s12 m6">
                                 <label for="accessControl.true.example">Example</label>
                                 <input id="accessControl.false.example" readonly
-                                       value="{{ requirementToString(project.boilerplateData.accessControl.false) }}"/>
+                                       value="{{ requirementToString(project.boilerplateData.accessControl.false, $values.accessControl) }}"/>
                             </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col s6 m4 push-s6 push-m8">
-                            <button class="btn waves-effect waves-light col s12 m12"
-                                    ng-click="project.boilerplateData.accessControl = _.clone($boilerplateTemplates.accessControl);
-                                    toast('Default boilerplate restored', 2000);">
-                                Restore Default Boilerplate
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -84,37 +96,40 @@
             <li>
                 <div class="collapsible-header active"><h5>Action Control Module</h5></div>
                 <div class="collapsible-body">
-                    <div class="row margin-top-10">
+                    <div class="row margin-top-10 valign-wrapper">
+                        <div class="col s6 m8 valign"
+                             ng-bind="'Available placeholders: <actor>, <action>'"></div>
+                        <div class="col s6 m4 valign">
+                            <button class="btn waves-effect waves-light col s12 m12"
+                                    ng-click="restore('actionControl')">
+                                Restore Default Boilerplate
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="row">
                             <div class="col s12 m6">
                                 <label for="actionControl.true">For allowed actions</label>
-                                <input id="actionControl.true" ng-model="project.boilerplateData.actionControl.true"/>
+                                <input id="actionControl.true" ng-change="change()"
+                                       ng-model="project.boilerplateData.actionControl.true"/>
                             </div>
                             <div class="col s12 m6">
                                 <label for="actionControl.true.example">Example</label>
                                 <input id="actionControl.true.example" readonly
-                                       value="{{ requirementToString(project.boilerplateData.actionControl.true) }}"/>
+                                       value="{{ requirementToString(project.boilerplateData.actionControl.true, $values.actionControl) }}"/>
                             </div>
                         </div>
                         <div clas="row">
                             <div class="col s12 m6">
                                 <label for="actionControl.false">For restricted actions</label>
-                                <input id="actionControl.false" ng-model="project.boilerplateData.actionControl.false"/>
+                                <input id="actionControl.false" ng-change="change()"
+                                       ng-model="project.boilerplateData.actionControl.false"/>
                             </div>
                             <div class="col s12 m6">
                                 <label for="actionControl.true.example">Example</label>
                                 <input id="actionControl.false.example" readonly
-                                       value="{{ requirementToString(project.boilerplateData.actionControl.false) }}"/>
+                                       value="{{ requirementToString(project.boilerplateData.actionControl.false, $values.actionControl ) }}"/>
                             </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col s6 m4 push-s6 push-m8">
-                            <button class="btn waves-effect waves-light col s12 m12"
-                                    ng-click="project.boilerplateData.actionControl = _.clone($boilerplateTemplates.actionControl);
-                                    toast('Default boilerplate restored', 2000);">
-                                Restore Default Boilerplate
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -122,27 +137,331 @@
             <li>
                 <div class="collapsible-header active"><h5>Performance Constraint Module</h5></div>
                 <div class="collapsible-body">
-                    <div class="row margin-top-10">
-                        <div class="row" ng-repeat="(option, boilerplate) in project.boilerplateData.performanceConstraint">
+                    <div class="row margin-top-10 valign-wrapper">
+                        <div class="col s6 m8 valign"
+                             ng-bind="'Available placeholders: <constraint>, <action>, <value>'"></div>
+                        <div class="col s6 m4 valign">
+                            <button class="btn waves-effect waves-light col s12 m12"
+                                    ng-click="restore('performanceConstraint')">
+                                Restore Default Boilerplate
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="row"
+                             ng-repeat="(option, boilerplate) in project.boilerplateData.performanceConstraint">
                             <div class="col s12 m6">
                                 <label for="performanceConstraint.{{ option }}">For "{{ option }}" option</label>
                                 <input id="performanceConstraint.{{ option }}"
+                                       ng-change="change()"
                                        ng-model="project.boilerplateData.performanceConstraint[option]"/>
                             </div>
                             <div class="col s12 m6">
                                 <label for="performanceConstraint.{{ option }}.example">Example</label>
                                 <input id="performanceConstraint.{{ option }}.example" readonly
-                                       value="{{ requirementToString(project.boilerplateData.performanceConstraint[option]) }}"/>
+                                       value="{{ requirementToString(project.boilerplateData.performanceConstraint[option],
+                                       $values.performanceConstraint) }}"/>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col s6 m4 push-s6 push-m8">
+                </div>
+            </li>
+            <li>
+                <div class="collapsible-header active"><h5>Functional Constraint Module</h5></div>
+                <div class="collapsible-body">
+                    <div class="row margin-top-10 valign-wrapper">
+                        <div class="col s6 m8 valign"
+                             ng-bind="'Available placeholders: <system>, <interface>, <dependency>, <condition>, <dependentAction>, <action>, <rule>'"></div>
+                        <div class="col s6 m4 valign">
                             <button class="btn waves-effect waves-light col s12 m12"
-                                    ng-click="project.boilerplateData.performanceConstraint = _.clone($boilerplateTemplates.performanceConstraint);
-                                    toast('Default boilerplate restored', 2000);">
+                                    ng-click="restore('functionalConstraint')">
                                 Restore Default Boilerplate
                             </button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="functionalConstraint.interface.0">
+                                Interface without dependency or condition
+                            </label>
+                            <input id="functionalConstraint.interface.0" ng-change="change()"
+                                   ng-model="project.boilerplateData.functionalConstraint.interface[0]"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="functionalConstraint.interface.0.example">Example</label>
+                            <input id="functionalConstraint.interface.0.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.functionalConstraint.interface[0],
+                                       $values.functionalConstraint.interface) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="functionalConstraint.interface.1">
+                                Interface with dependency
+                            </label>
+                            <input id="functionalConstraint.interface.1" ng-change="change()"
+                                   ng-model="project.boilerplateData.functionalConstraint.interface[1]"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="functionalConstraint.interface.1.example">Example</label>
+                            <input id="functionalConstraint.interface.1.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.functionalConstraint.interface[1],
+                                       $values.functionalConstraint.interface) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="functionalConstraint.interface.2">
+                                Interface with condition
+                            </label>
+                            <input id="functionalConstraint.interface.2" ng-change="change()"
+                                   ng-model="project.boilerplateData.functionalConstraint.interface[2]"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="functionalConstraint.interface.2.example">Example</label>
+                            <input id="functionalConstraint.interface.2.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.functionalConstraint.interface[2],
+                                       $values.functionalConstraint.interface) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="functionalConstraint.interface.3">
+                                Interface with both dependency and condition
+                            </label>
+                            <input id="functionalConstraint.interface.3" ng-change="change()"
+                                   ng-model="project.boilerplateData.functionalConstraint.interface[3]"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="functionalConstraint.interface.3.example">Example</label>
+                            <input id="functionalConstraint.interface.3.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.functionalConstraint.interface[3],
+                                       $values.functionalConstraint.interface) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="functionalConstraint.actionDependencies.true">
+                                Action shall trigger dependent action
+                            </label>
+                            <input id="functionalConstraint.actionDependencies.true" ng-change="change()"
+                                   ng-model="project.boilerplateData.functionalConstraint.actionDependencies.true"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="functionalConstraint.actionDependencies.true.example">Example</label>
+                            <input id="functionalConstraint.actionDependencies.true.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.functionalConstraint.actionDependencies.true,
+                                       $values.functionalConstraint.actionDependencies) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="functionalConstraint.actionDependencies.false">
+                                Action shall not trigger dependent action
+                            </label>
+                            <input id="functionalConstraint.actionDependencies.false" ng-change="change()"
+                                   ng-model="project.boilerplateData.functionalConstraint.actionDependencies.false"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="functionalConstraint.actionDependencies.false.example">Example</label>
+                            <input id="functionalConstraint.actionDependencies.false.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.functionalConstraint.actionDependencies.false,
+                                       $values.functionalConstraint.actionDependencies) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="functionalConstraint.actionRules.true">
+                                Action shall based on rule
+                            </label>
+                            <input id="functionalConstraint.actionRules.true" ng-change="change()"
+                                   ng-model="project.boilerplateData.functionalConstraint.actionRules.true"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="functionalConstraint.actionRules.true.example">Example</label>
+                            <input id="functionalConstraint.actionRules.true.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.functionalConstraint.actionRules.true,
+                                       $values.functionalConstraint.actionRules) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="functionalConstraint.actionDependencies.false">
+                                Action shall not based on rule
+                            </label>
+                            <input id="functionalConstraint.actionRules.false" ng-change="change()"
+                                   ng-model="project.boilerplateData.functionalConstraint.actionRules.false"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="functionalConstraint.actionRules.false.example">Example</label>
+                            <input id="functionalConstraint.actionRules.false.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.functionalConstraint.actionRules.false,
+                                       $values.functionalConstraint.actionRules) }}"/>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="collapsible-header active"><h5>Compatibility Module</h5></div>
+                <div class="collapsible-body">
+                    <div class="row margin-top-10 valign-wrapper">
+                        <div class="col s6 m8 valign"
+                             ng-bind="'Available placeholders: <system>, <operatingSystem>, <version>, <issue>, <software>, <output>, <newVersion>, <oldVersion>'"></div>
+                        <div class="col s6 m4 valign">
+                            <button class="btn waves-effect waves-light col s12 m12"
+                                    ng-click="restore('compatibility')">
+                                Restore Default Boilerplate
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="compatibility.operatingSystem.0">
+                                Operating system compatibility with no version or issue
+                            </label>
+                            <input id="compatibility.operatingSystem.0" ng-change="change()"
+                                   ng-model="project.boilerplateData.compatibility.operatingSystem[0]"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="compatibility.operatingSystem.0.example">Example</label>
+                            <input id="compatibility.operatingSystem.0.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.compatibility.operatingSystem[0],
+                                       $values.compatibility.operatingSystem) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="compatibility.operatingSystem.1">
+                                Operating system compatibility with version but no issue
+                            </label>
+                            <input id="compatibility.operatingSystem.1" ng-change="change()"
+                                   ng-model="project.boilerplateData.compatibility.operatingSystem[1]"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="compatibility.operatingSystem.1.example">Example</label>
+                            <input id="compatibility.operatingSystem.1.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.compatibility.operatingSystem[1],
+                                       $values.compatibility.operatingSystem) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="compatibility.operatingSystem.2">
+                                Operating system compatibility with issue but no version
+                            </label>
+                            <input id="compatibility.operatingSystem.2" ng-change="change()"
+                                   ng-model="project.boilerplateData.compatibility.operatingSystem[2]"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="compatibility.operatingSystem.2.example">Example</label>
+                            <input id="compatibility.operatingSystem.2.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.compatibility.operatingSystem[2],
+                                       $values.compatibility.operatingSystem) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="compatibility.operatingSystem.3">
+                                Operating system compatibility with version and issue
+                            </label>
+                            <input id="compatibility.operatingSystem.3" ng-change="change()"
+                                   ng-model="project.boilerplateData.compatibility.operatingSystem[3]"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="compatibility.operatingSystem.3.example">Example</label>
+                            <input id="compatibility.operatingSystem.3.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.compatibility.operatingSystem[3],
+                                       $values.compatibility.operatingSystem) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="compatibility.executionEnvironment.0">
+                                Execution environment compatibility with no version or issue
+                            </label>
+                            <input id="compatibility.executionEnvironment.0" ng-change="change()"
+                                   ng-model="project.boilerplateData.compatibility.executionEnvironment[0]"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="compatibility.executionEnvironment.0.example">Example</label>
+                            <input id="compatibility.executionEnvironment.0.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.compatibility.executionEnvironment[0],
+                                       $values.compatibility.executionEnvironment) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="compatibility.executionEnvironment.1">
+                                Execution environment compatibility with version but no issue
+                            </label>
+                            <input id="compatibility.executionEnvironment.1" ng-change="change()"
+                                   ng-model="project.boilerplateData.compatibility.executionEnvironment[1]"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="compatibility.executionEnvironment.1.example">Example</label>
+                            <input id="compatibility.executionEnvironment.1.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.compatibility.executionEnvironment[1],
+                                       $values.compatibility.executionEnvironment) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="compatibility.executionEnvironment.2">
+                                Execution environment compatibility with issue but no version
+                            </label>
+                            <input id="compatibility.executionEnvironment.2" ng-change="change()"
+                                   ng-model="project.boilerplateData.compatibility.executionEnvironment[2]"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="compatibility.executionEnvironment.2.example">Example</label>
+                            <input id="compatibility.executionEnvironment.2.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.compatibility.executionEnvironment[2],
+                                       $values.compatibility.executionEnvironment) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="compatibility.executionEnvironment.3">
+                                Execution environment compatibility with version and issue
+                            </label>
+                            <input id="compatibility.executionEnvironment.3" ng-change="change()"
+                                   ng-model="project.boilerplateData.compatibility.operatingSystem[3]"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="compatibility.executionEnvironment.3.example">Example</label>
+                            <input id="compatibility.executionEnvironment.3.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.compatibility.executionEnvironment[3],
+                                       $values.compatibility.executionEnvironment) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="compatibility.outputCompatibility.true">
+                                Compatible output with new version
+                            </label>
+                            <input id="compatibility.outputCompatibility.true" ng-change="change()"
+                                   ng-model="project.boilerplateData.compatibility.outputCompatibility.true"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="compatibility.outputCompatibility.true.example">Example</label>
+                            <input id="compatibility.outputCompatibility.true.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.compatibility.outputCompatibility.true,
+                                       $values.compatibility.outputCompatibility) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="compatibility.outputCompatibility.false">
+                                Incompatible output with new version
+                            </label>
+                            <input id="compatibility.outputCompatibility.false" ng-change="change()"
+                                   ng-model="project.boilerplateData.compatibility.outputCompatibility.false"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="compatibility.outputCompatibility.false.example">Example</label>
+                            <input id="compatibility.outputCompatibility.false.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.compatibility.outputCompatibility.false,
+                                       $values.compatibility.outputCompatibility) }}"/>
                         </div>
                     </div>
                 </div>
@@ -157,5 +476,6 @@
         $('.collapsible').collapsible({
             accordion: false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
         });
+        $('.materialboxed').materialbox();
     }, 500);
 </script>

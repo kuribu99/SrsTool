@@ -6,7 +6,7 @@
             </a>
         </div>
         <div class="col s12 m6 input-field">
-            <a class="btn waves-effect waves-light red col s12 m12" ng-href="/#/projects/{{ project._id }}">
+            <a class="btn waves-effect waves-light red col s12 m12" ng-click="back()">
                 <i class="material-icons left">power_settings_new</i>Back
             </a>
         </div>
@@ -22,40 +22,115 @@
 </div>
 <div class="row">
     <h6 class="col">
-        <span ng-bind="numberRequirements || 0"></span> generated requirements from <span ng-bind="numberModules || 0"></span> modules.
-        <span ng-bind="numberNewRequirements || 0"></span> requirements added.
+        <span ng-bind="numberRequirements || 0"></span> generated requirement(s) are from <span
+            ng-bind="numberModules || 0"></span> module(s).
+        <span ng-bind="numberNewRequirements || 0"></span> requirement(s) are added.
     </h6>
 </div>
 <div class="row">
-    <ul class="collapsible collapsible-accordion" data-collapsible="accordion">
-        <li ng-repeat="(moduleName, requirements) in generatedRequirements">
-            <div class="collapsible-header active"><h5 ng-bind="moduleName"></h5></div>
-            <div class="collapsible-body">
-                <div class="row" ng-if="requirements.length > 0">
-                    <ul>
-                        <li ng-repeat="requirement in requirements track by $index">
-                            <div class="input-field">
-                                <input type="checkbox" ng-model="requirement.checked"
-                                       id="{{ moduleName }}.{{ $index }}"/>
-                                <label for="{{ moduleName }}.{{ $index }}"
-                                       ng-bind="$formatter.requirementToString(requirement)"></label>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-                <div class="row" ng-if="requirements.length == 0">
-                    <div class="center-align">
-                        <h5 class="header">No more requirements can be generated</h5>
-                    </div>
-                </div>
+    <div class="row">
+        <ul class="tabs blue lighten-2">
+            <li class="tab col s4 m4"><a class="active" href="#INSTRUCTIONS">
+                <i class="material-icons right">announcement</i>Instructions</a>
+            </li>
+            <li class="tab col s4 m4"><a href="#fr">Functional Requirements</a></li>
+            <li class="tab col s4 m4"><a href="#nfr">Non-Functional Requirements</a></li>
+        </ul>
+    </div>
+    <div id="INSTRUCTIONS" class="row active">
+        <div class="card blue-grey darken-1 hoverable">
+            <div class="card-content white-text row">
+                <h5 class="card-title">Q: How are these requirement generated?</h5>
+                <p>
+                    A: From all the domain attributes you had added, all the requirement specification you had
+                    entered, our system has generated all the requirement based on predefined boilerplates or
+                    boilerplates that you had changed. These requirements can be added into you Software Requirement
+                    Specification (SRS) in this project to be exported for further refinements.
+                </p>
+                <img class="materialboxed margin-top-10" width="800px" src="./images/generate_requirements.png"
+                     data-caption="Flowchart on how requirements are generated">
             </div>
-        </li>
-    </ul>
+        </div>
+    </div>
+    <div id="fr" class="row">
+        <div class="row">
+            <ul class="collapsible collapsible-accordion" data-collapsible="accordion">
+                <li ng-repeat="(moduleName, requirements) in generatedRequirements"
+                    ng-if="$modules.Functional.indexOf(moduleName) >= 0">
+                    <div class="collapsible-header active">
+                        <h5>
+                            <span ng-bind="moduleName"></span>
+                            <span class="new badge" ng-bind="requirements.length"
+                                  ng-if="requirements.length > 0"></span>
+                            <span class="badge white-text light-green" ng-if="requirements.length == 0">None</span>
+                        </h5>
+                    </div>
+                    <div class="collapsible-body">
+                        <div class="row" ng-if="requirements.length > 0">
+                            <ul>
+                                <li ng-repeat="requirement in requirements track by $index">
+                                    <div class="input-field">
+                                        <input type="checkbox" ng-model="requirement.checked"
+                                               id="fr.{{ moduleName }}.{{ $index }}"/>
+                                        <label for="fr.{{ moduleName }}.{{ $index }}"
+                                               ng-bind="$formatter.requirementToString(requirement)"></label>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="row" ng-if="requirements.length == 0">
+                            <div class="center-align">
+                                <h5 class="header">No requirements can be generated</h5>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div id="nfr" class="row">
+        <div class="row">
+            <ul class="collapsible collapsible-accordion" data-collapsible="accordion">
+                <li ng-repeat="(moduleName, requirements) in generatedRequirements"
+                    ng-if="$modules.NonFunctional.indexOf(moduleName) >= 0">
+                    <div class="collapsible-header active">
+                        <h5>
+                            <span ng-bind="moduleName"></span>
+                            <span class="new badge" ng-bind="requirements.length"
+                                  ng-if="requirements.length > 0"></span>
+                            <span class="badge white-text light-green" ng-if="requirements.length == 0">None</span>
+                        </h5>
+                    </div>
+                    <div class="collapsible-body">
+                        <div class="row" ng-if="requirements.length > 0">
+                            <ul>
+                                <li ng-repeat="requirement in requirements track by $index">
+                                    <div class="input-field">
+                                        <input type="checkbox" ng-model="requirement.checked"
+                                               id="nfr.{{ moduleName }}.{{ $index }}"/>
+                                        <label for="nfr.{{ moduleName }}.{{ $index }}"
+                                               ng-bind="$formatter.requirementToString(requirement)"></label>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="row" ng-if="requirements.length == 0">
+                            <div class="center-align">
+                                <h5 class="header">No requirements can be generated</h5>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
 </div>
 <script>
     setTimeout(function () {
         $('.collapsible').collapsible({
             accordion: false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
         });
+        $('ul.tabs').tabs();
+        $('.materialboxed').materialbox();
     }, 500);
 </script>

@@ -44,3 +44,9 @@
     padding-bottom: 0.656rem;
     font-size: 1.64rem;
 }
+
+.dropdown-content li.disabled>a,
+.dropdown-content li.disabled>a:hover {
+    background-color: #FFFFFF;
+    color: #555555;
+}

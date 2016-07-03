@@ -3,12 +3,41 @@ var _ = require('underscore');
 var failCallBack = function (error) {
     if (error) {
         console.log(error);
-        toast(error.data, 2000);
+        toast(error.data);
     }
 };
 
 var toast = function (message, time) {
+    if (!time)
+        time = 2000;
     Materialize.toast(message, time);
+};
+
+var confirmBack = function () {
+    return confirm("You have not saved the project yet!\n" +
+        "Do you want to save your project?");
+};
+
+var countTrue = function (arr) {
+    return _.filter(arr, function (val) {
+        return val;
+    }).length;
+};
+
+var isSameObject = function (v1, v2) {
+    for (var key in v1) {
+        if (v2[key] == null || v1[key] != v2[key])
+            return false;
+    }
+    return true;
+};
+
+var arrayHasObject = function (arr, obj) {
+    for (var index in arr) {
+        if (isSameObject(arr[index], obj))
+            return true;
+    }
+    return false;
 };
 
 exports.HomeController = function ($scope, $http, $location) {
@@ -33,7 +62,7 @@ exports.HomeController = function ($scope, $http, $location) {
             }, failCallBack);
         }
         else
-            alert('Project name and domain name must not be empty');
+            toast('Project name and domain name must not be empty');
     };
 
     setTimeout(function () {
@@ -80,11 +109,15 @@ exports.ProjectListController = function ($scope, $routeParams, $http) {
     }, 0);
 };
 
-exports.ProjectViewController = function ($scope, $routeParams, $http, $location, $formatter) {
+exports.ProjectViewController = function ($scope, $routeParams, $http, $location, $formatter, $template) {
     var projectID = encodeURIComponent($routeParams.id);
 
     $scope.$formatter = $formatter;
+    $scope.$modules = $template.modules;
     $scope.toast = toast;
+    $scope.changed = false;
+    $scope.numberFunctionalRequirement = 0;
+    $scope.numberNonFunctionalRequirement = 0;
 
     $http.get('/api/v1/projects/' + projectID + '/view')
         .then(function (json) {
@@ -92,6 +125,13 @@ exports.ProjectViewController = function ($scope, $routeParams, $http, $location
                 $scope.project = json.data.project;
                 if ($scope.project.generatedRequirements == null)
                     $scope.project.generatedRequirements = {};
+
+                for (var key in $scope.project.generatedRequirements) {
+                    if ($scope.$modules.Functional.indexOf(key) >= 0)
+                        $scope.numberFunctionalRequirement += $scope.project.generatedRequirements[key].length;
+                    else if ($scope.$modules.NonFunctional.indexOf(key) >= 0)
+                        $scope.numberNonFunctionalRequirement += $scope.project.generatedRequirements[key].length;
+                }
             }
             else
                 $location.path('/');
@@ -102,16 +142,23 @@ exports.ProjectViewController = function ($scope, $routeParams, $http, $location
             generatedRequirements: $scope.project.generatedRequirements
         }).then(function (json) {
             if (json.data.result) {
-                $location.path('/projects/' + $scope.project._id);
-                $scope.toast('Saved successfully', 2000);
+                $scope.changed = false;
+                toast("Saved successfully");
             }
             else
                 console.log(json.data);
         }, failCallBack);
     };
 
+    $scope.back = function () {
+        if ($scope.changed && confirmBack())
+            $scope.saveProject();
+        $location.path('/');
+    };
+
     $scope.removeRequirement = function (moduleName, index) {
         $scope.project.generatedRequirements[moduleName].splice(index, 1);
+        $scope.changed = true;
     };
 
     setTimeout(function () {
@@ -150,7 +197,7 @@ exports.EditProjectController = function ($scope, $routeParams, $http, $location
             }, failCallBack);
         }
         else
-            alert('Project name and domain name must not be empty');
+            toast('Project name and domain name must not be empty');
     };
 
     setTimeout(function () {
@@ -164,6 +211,7 @@ exports.EditDomainController = function ($scope, $routeParams, $http, $location)
     $scope.tbxModule = "";
     $scope.tbxActor = "";
     $scope.tbxAction = "";
+    $scope.changed = false;
 
     $http.get('/api/v1/projects/' + projectID + '/domain-data/')
         .then(function (json) {
@@ -188,11 +236,23 @@ exports.EditDomainController = function ($scope, $routeParams, $http, $location)
         $http.patch('/api/v1/projects/' + projectID + '/domain-data/', {
             project: $scope.project
         }).then(function (json) {
-            if (json.data.result)
-                $location.path('/projects/' + $scope.project._id);
+            if (json.data.result) {
+                $scope.changed = false;
+                toast("Saved successfully");
+            }
             else
                 console.log(json.data);
         }, failCallBack);
+    };
+
+    $scope.back = function () {
+        if ($scope.changed && confirmBack())
+            $scope.saveProject();
+        $location.path('/projects/' + $scope.project._id);
+    };
+
+    $scope.change = function () {
+        $scope.changed = true;
     };
 
     $scope.addModule = function () {
@@ -204,6 +264,7 @@ exports.EditDomainController = function ($scope, $routeParams, $http, $location)
                 $scope.newModules.splice(index, 1);
 
             $scope.tbxModule = '';
+            $scope.change();
         }
     };
 
@@ -211,6 +272,7 @@ exports.EditDomainController = function ($scope, $routeParams, $http, $location)
         $scope.project.domainData.modules.splice(index, 1);
         if ($scope.newModules.indexOf(module) < 0)
             $scope.newModules.push(module);
+        $scope.change();
     };
 
     $scope.addActor = function () {
@@ -222,6 +284,7 @@ exports.EditDomainController = function ($scope, $routeParams, $http, $location)
                 $scope.newActors.splice(index, 1);
 
             $scope.tbxActor = '';
+            $scope.change();
         }
     };
 
@@ -229,6 +292,7 @@ exports.EditDomainController = function ($scope, $routeParams, $http, $location)
         $scope.project.domainData.actors.splice(index, 1);
         if ($scope.newActors.indexOf(actor) < 0)
             $scope.newActors.push(actor);
+        $scope.change();
     };
 
     $scope.addAction = function () {
@@ -240,6 +304,7 @@ exports.EditDomainController = function ($scope, $routeParams, $http, $location)
                 $scope.newActions.splice(index, 1);
 
             $scope.tbxAction = '';
+            $scope.change();
         }
     };
 
@@ -247,6 +312,7 @@ exports.EditDomainController = function ($scope, $routeParams, $http, $location)
         $scope.project.domainData.actions.splice(index, 1);
         if ($scope.newActions.indexOf(action) < 0)
             $scope.newActions.push(action);
+        $scope.change();
     };
 
     setTimeout(function () {
@@ -259,7 +325,9 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
 
     $scope.$formatter = $formatter;
     $scope.$boilerplateTemplates = $template.boilerplateTemplates;
+    $scope.$modules = $template.modules;
     $scope.generatedRequirements = [];
+    $scope.changed = false;
 
     $http.get('/api/v1/projects/' + projectID)
         .then(function (json) {
@@ -270,6 +338,29 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
 
                 if ($scope.project.generatedRequirements == null)
                     $scope.project.generatedRequirements = {};
+
+                if ($scope.project.accessControlData == null)
+                    $scope.project.accessControlData = {};
+
+                if ($scope.project.actionControlData == null)
+                    $scope.project.actionControlData = {};
+
+                if ($scope.project.performanceConstraintData == null)
+                    $scope.project.performanceConstraintData = {};
+
+                if ($scope.project.functionalConstraintData == null)
+                    $scope.project.functionalConstraintData = {
+                        interfaces: [],
+                        actionDependencies: [],
+                        actionRules: []
+                    };
+
+                if ($scope.project.compatibilityData == null)
+                    $scope.project.compatibilityData = {
+                        operatingSystem: [],
+                        executionEnvironment: [],
+                        outputCompatibility: []
+                    };
 
                 for (var key in $scope.$boilerplateTemplates)
                     if ($scope.project.boilerplateData[key] == null)
@@ -285,10 +376,11 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
         $scope.generatedRequirements = {
             'Access Control': [],
             'Action Control': [],
-            'Performance Constraint': []
+            'Performance Constraint': [],
+            'Functional Constraint': [],
+            'Compatibility': []
         };
 
-        // Access Control
         var moduleName = 'Access Control';
         for (var module in $scope.project.accessControlData) {
             for (var actor in $scope.project.accessControlData[module]) {
@@ -304,7 +396,6 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
             }
         }
 
-        // Action Control
         moduleName = 'Action Control';
         for (var actor in $scope.project.actionControlData) {
             for (var action in $scope.project.actionControlData[actor]) {
@@ -320,7 +411,6 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
             }
         }
 
-        // Performance constraint
         moduleName = 'Performance Constraint';
         for (var action in $scope.project.performanceConstraintData) {
             for (var index in $scope.project.performanceConstraintData[action]) {
@@ -338,6 +428,93 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
             }
         }
 
+        moduleName = 'Functional Constraint';
+        for (var index in $scope.project.functionalConstraintData.interfaces) {
+            var item = $scope.project.functionalConstraintData.interfaces[index];
+            var boilerplateNo = (item.dependency == '' ? 0 : 1) + (item.condition == '' ? 0 : 2);
+            var boilerplate = $scope.project.boilerplateData.functionalConstraint.interface[boilerplateNo];
+            var values = {
+                '<system>': $scope.project.projectName,
+                '<interface>': item.interfaceName,
+                '<dependency>': item.dependency,
+                '<condition>': item.condition
+            };
+
+            if (!$scope.hasRequirement(moduleName, values))
+                $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
+        }
+
+        for (var index in $scope.project.functionalConstraintData.actionDependencies) {
+            var item = $scope.project.functionalConstraintData.actionDependencies[index];
+            var boilerplate = $scope.project.boilerplateData.functionalConstraint.actionDependencies[item.relation];
+            var values = {
+                '<system>': $scope.project.projectName,
+                '<action>': item.action,
+                '<dependentAction>': item.dependentAction,
+            };
+
+            if (!$scope.hasRequirement(moduleName, values))
+                $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
+        }
+
+        for (var index in $scope.project.functionalConstraintData.actionRules) {
+            var item = $scope.project.functionalConstraintData.actionRules[index];
+            var boilerplate = $scope.project.boilerplateData.functionalConstraint.actionRules[item.relation];
+            var values = {
+                '<system>': $scope.project.projectName,
+                '<action>': item.action,
+                '<rule>': item.rule
+            };
+
+            if (!$scope.hasRequirement(moduleName, values))
+                $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
+        }
+
+        moduleName = 'Compatibility';
+        for (var index in $scope.project.compatibilityData.operatingSystem) {
+            var item = $scope.project.compatibilityData.operatingSystem[index];
+            var boilerplateNo = (item.version == '' ? 0 : 1) + (item.issue == '' ? 0 : 2);
+            var boilerplate = $scope.project.boilerplateData.compatibility.operatingSystem[boilerplateNo];
+            var values = {
+                '<system>': $scope.project.projectName,
+                '<operatingSystem>': item.operatingSystem,
+                '<version>': item.version,
+                '<issue>': item.issue
+            };
+
+            if (!$scope.hasRequirement(moduleName, values))
+                $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
+        }
+
+        for (var index in $scope.project.compatibilityData.executionEnvironment) {
+            var item = $scope.project.compatibilityData.executionEnvironment[index];
+            var boilerplateNo = (item.version == '' ? 0 : 1) + (item.issue == '' ? 0 : 2);
+            var boilerplate = $scope.project.boilerplateData.compatibility.executionEnvironment[boilerplateNo];
+            var values = {
+                '<system>': $scope.project.projectName,
+                '<software>': item.software,
+                '<version>': item.version,
+                '<issue>': item.issue
+            };
+
+            if (!$scope.hasRequirement(moduleName, values))
+                $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
+        }
+
+        for (var index in $scope.project.compatibilityData.outputCompatibility) {
+            var item = $scope.project.compatibilityData.outputCompatibility[index];
+            var boilerplate = $scope.project.boilerplateData.compatibility.outputCompatibility[item.compatibility];
+            var values = {
+                '<system>': $scope.project.projectName,
+                '<output>': item.output,
+                '<oldVersion>': item.oldVersion,
+                '<newVersion>': item.newVersion
+            };
+
+            if (!$scope.hasRequirement(moduleName, values))
+                $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
+        }
+
         $scope.numberRequirements = _.flatten($scope.generatedRequirements).length;
         $scope.numberModules = Object.keys($scope.generatedRequirements).length;
         $scope.numberNewRequirements = 0;
@@ -348,18 +525,10 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
         if (requirements == null)
             return false;
         for (var index in requirements) {
-            if ($scope.isSameValue(requirements[index].values, values))
+            if (isSameObject(requirements[index].values, values))
                 return true;
         }
         return false;
-    };
-
-    $scope.isSameValue = function (v1, v2) {
-        for (var key in v1) {
-            if (v2[key] == null || v1[key] != v2[key])
-                return false;
-        }
-        return true;
     };
 
     $scope.addCheckedRequirements = function () {
@@ -374,6 +543,7 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
                     $scope.project.generatedRequirements[moduleName].push(requirement);
                     delete requirement.checked;
                     addedRequirements.push(requirement);
+                    $scope.change();
                 }
             });
 
@@ -396,11 +566,23 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
         $http.patch('/api/v1/projects/' + projectID + '/generated-requirements', {
             generatedRequirements: $scope.project.generatedRequirements
         }).then(function (json) {
-            if (json.data.result)
-                $location.path('/projects/' + $scope.project._id);
+            if (json.data.result) {
+                $scope.changed = false;
+                toast("Saved successfully");
+            }
             else
                 console.log(json.data);
         }, failCallBack);
+    };
+
+    $scope.change = function () {
+        $scope.changed = true;
+    };
+
+    $scope.back = function () {
+        if ($scope.changed && confirmBack())
+            $scope.saveProject();
+        $location.path('/projects/' + $scope.project._id);
     };
 
     setTimeout(function () {
@@ -412,6 +594,7 @@ exports.AccessControlController = function ($scope, $routeParams, $http, $locati
     var projectID = encodeURIComponent($routeParams.id);
 
     $scope.$formatter = $formatter;
+    $scope.changed = false;
 
     $http.get('/api/v1/projects/' + projectID + '/access-control-data')
         .then(function (json) {
@@ -450,11 +633,27 @@ exports.AccessControlController = function ($scope, $routeParams, $http, $locati
         $http.patch('/api/v1/projects/' + projectID + '/access-control-data', {
             accessControlData: $scope.project.accessControlData
         }).then(function (json) {
-            if (json.data.result)
-                $location.path('/projects/' + $scope.project._id);
+            if (json.data.result) {
+                $scope.changed = false;
+                toast("Saved successfully");
+            }
             else
                 console.log(json.data);
         }, failCallBack);
+    };
+
+    $scope.back = function () {
+        if ($scope.changed && confirmBack())
+            $scope.saveProject();
+        $location.path('/projects/' + $scope.project._id);
+    };
+
+    $scope.change = function () {
+        $scope.changed = true;
+    };
+
+    $scope.getAllowedCount = function (arr) {
+        return 'Allowed: ' + countTrue(arr) + '/' + Object.keys(arr).length;
     };
 
     setTimeout(function () {
@@ -462,10 +661,10 @@ exports.AccessControlController = function ($scope, $routeParams, $http, $locati
     }, 0);
 };
 
-exports.ActionControlController = function ($scope, $routeParams, $http, $location, $formatter) {
+exports.ActionControlController = function ($scope, $routeParams, $http, $location) {
     var projectID = encodeURIComponent($routeParams.id);
 
-    $scope.$formatter = $formatter;
+    $scope.changed = false;
 
     $http.get('/api/v1/projects/' + projectID + '/action-control-data')
         .then(function (json) {
@@ -507,11 +706,27 @@ exports.ActionControlController = function ($scope, $routeParams, $http, $locati
         $http.patch('/api/v1/projects/' + projectID + '/action-control-data', {
             actionControlData: $scope.project.actionControlData
         }).then(function (json) {
-            if (json.data.result)
-                $location.path('/projects/' + $scope.project._id);
+            if (json.data.result) {
+                $scope.changed = false;
+                toast("Saved successfully");
+            }
             else
                 console.log(json.data);
         }, failCallBack);
+    };
+
+    $scope.back = function () {
+        if ($scope.changed && confirmBack())
+            $scope.saveProject();
+        $location.path('/projects/' + $scope.project._id);
+    };
+
+    $scope.change = function () {
+        $scope.changed = true;
+    };
+
+    $scope.getAllowedCount = function (arr) {
+        return 'Allowed: ' + countTrue(arr) + '/' + Object.keys(arr).length;
     };
 
     setTimeout(function () {
@@ -524,8 +739,9 @@ exports.ConfigureBoilerplateController = function ($scope, $routeParams, $http, 
 
     $scope.$formatter = $formatter;
     $scope.$boilerplateTemplates = $template.boilerplateTemplates;
-    $scope._ = _;
+    $scope.$values = $template.boilerplateValues;
     $scope.toast = toast;
+    $scope.changed = false;
 
     $http.get('/api/v1/projects/' + projectID + '/boilerplate-data')
         .then(function (json) {
@@ -536,36 +752,48 @@ exports.ConfigureBoilerplateController = function ($scope, $routeParams, $http, 
 
                 for (var key in $scope.$boilerplateTemplates)
                     if ($scope.project.boilerplateData[key] == null)
-                        $scope.project.boilerplateData[key] = $scope.$boilerplateTemplates[key];
+                        $scope.project.boilerplateData[key] = _.clone($scope.$boilerplateTemplates[key]);
             }
             else
                 $location.path('/');
         }, failCallBack);
 
-    $scope.requirementToString = function (template) {
+    $scope.requirementToString = function (template, values) {
         if (template == null || template == '')
             return '';
         return $formatter.requirementToString({
             boilerplate: template,
-            values: {
-                '<actor>': 'lecturer',
-                '<module>': 'user authentication',
-                '<action>': 'register account',
-                '<constraint>': 'response time',
-                '<value>': '1 seconds',
-            }
+            values: values
         });
-    }
+    };
 
     $scope.saveProject = function () {
         $http.patch('/api/v1/projects/' + projectID + '/boilerplate-data', {
             boilerplateData: $scope.project.boilerplateData
         }).then(function (json) {
-            if (json.data.result)
-                $location.path('/projects/' + $scope.project._id);
+            if (json.data.result) {
+                $scope.changed = false;
+                toast("Saved successfully");
+            }
             else
                 console.log(json.data);
         }, failCallBack);
+    };
+
+    $scope.back = function () {
+        if ($scope.changed && confirmBack())
+            $scope.saveProject();
+        $location.path('/projects/' + $scope.project._id);
+    };
+
+    $scope.change = function () {
+        $scope.changed = true;
+    };
+
+    $scope.restore = function (key) {
+        $scope.project.boilerplateData[key] = JSON.parse(JSON.stringify($scope.$boilerplateTemplates[key]));
+        toast('Default boilerplate restored');
+        $scope.change();
     };
 
     setTimeout(function () {
@@ -573,10 +801,10 @@ exports.ConfigureBoilerplateController = function ($scope, $routeParams, $http, 
     }, 0);
 };
 
-exports.PerformanceConstraintController = function ($scope, $routeParams, $http, $location, $formatter, $template) {
+exports.PerformanceConstraintController = function ($scope, $routeParams, $http, $location, $template) {
     var projectID = encodeURIComponent($routeParams.id);
 
-    $scope.$formatter = $formatter;
+    $scope.changed = false;
     $scope.$performanceConstraintOptions = $template.performanceConstraintOptions;
     $scope.performanceConstraintData = {};
 
@@ -592,7 +820,7 @@ exports.PerformanceConstraintController = function ($scope, $routeParams, $http,
                     if (!$scope.project.performanceConstraintData.hasOwnProperty(action))
                         $scope.project.performanceConstraintData[action] = [];
 
-                    $scope.performanceConstraintData[action] = $scope.emptyConstraint();
+                    $scope.performanceConstraintData[action] = $scope.newConstraint();
                 });
 
             } else
@@ -600,7 +828,7 @@ exports.PerformanceConstraintController = function ($scope, $routeParams, $http,
 
         }, failCallBack);
 
-    $scope.emptyConstraint = function (action) {
+    $scope.newConstraint = function (action) {
         return {
             action: action,
             constraint: '',
@@ -612,34 +840,438 @@ exports.PerformanceConstraintController = function ($scope, $routeParams, $http,
     $scope.addConstraint = function (action) {
         var newData = $scope.performanceConstraintData[action];
         if (newData.constraint == '')
-            toast('Constraint name is required', 2000);
+            toast('Constraint name is required');
         else if (newData.option == '')
-            toast('Please choose an option', 2000);
+            toast('Please choose an option');
         else if (newData.value == '')
-            toast('Value is required', 2000);
+            toast('Value is required');
+        else if ($scope.hasConstraint(newData, action))
+            toast('Constraint/Value pair already exist');
         else {
             $scope.project.performanceConstraintData[action].push(newData);
-            $scope.performanceConstraintData[action] = $scope.emptyConstraint();
+            $scope.performanceConstraintData[action] = $scope.newConstraint();
             $scope.performanceConstraintData[action].option = newData.option;
+            $scope.change();
         }
+    };
+
+    $scope.hasConstraint = function (newConstraint, action) {
+        return arrayHasObject($scope.project.performanceConstraintData[action], newConstraint);
     };
 
     $scope.deleteConstraint = function (action, index) {
         $scope.project.performanceConstraintData[action].splice(index, 1);
-    }
+        $scope.change();
+    };
+
+    $scope.getConstraintCount = function (action) {
+        var count = $scope.project.performanceConstraintData[action].length;
+        switch (count) {
+            case 0:
+                return 'No constraints';
+            case 1:
+                return '1 constraint';
+            default:
+                return count + ' constraints';
+        }
+    };
 
     $scope.saveProject = function () {
         $http.patch('/api/v1/projects/' + projectID + '/performance-constraint-data', {
             performanceConstraintData: $scope.project.performanceConstraintData
         }).then(function (json) {
-            if (json.data.result)
-                $location.path('/projects/' + $scope.project._id);
+            if (json.data.result) {
+                $scope.changed = false;
+                toast("Saved successfully");
+            }
             else
                 console.log(json.data);
         }, failCallBack);
     };
 
+    $scope.back = function () {
+        if ($scope.changed && confirmBack())
+            $scope.saveProject();
+        $location.path('/projects/' + $scope.project._id);
+    };
+
+    $scope.change = function () {
+        $scope.changed = true;
+    };
+
     setTimeout(function () {
         $scope.$emit('PerformanceConstraintController');
+    }, 0);
+};
+
+exports.FunctionalConstraintController = function ($scope, $routeParams, $http, $location, $template) {
+    var projectID = encodeURIComponent($routeParams.id);
+
+    $scope.changed = false;
+    $scope.$actionDependenciesOptions = $template.actionDependenciesOptions;
+    $scope.$actionRulesOptions = $template.actionRulesOptions;
+
+    $http.get('/api/v1/projects/' + projectID + '/functional-constraint-data')
+        .then(function (json) {
+            if (json.data.result) {
+                $scope.project = json.data.project;
+
+                if (!$scope.project.functionalConstraintData)
+                    $scope.project.functionalConstraintData = {
+                        interfaces: [],
+                        actionDependencies: [],
+                        actionRules: []
+                    };
+
+            } else
+                $location.path('/projects/' + $scope.project._id);
+
+        }, failCallBack);
+
+    $scope.newInterface = function () {
+        return {
+            interfaceName: '',
+            dependency: '',
+            condition: ''
+        }
+    };
+
+    $scope.addInterface = function () {
+        if ($scope.tbxInterface.interfaceName == '')
+            toast('Interface/Functionality name is required');
+        else if ($scope.hasInterface($scope.tbxInterface))
+            toast('Interface/Functionality already exist');
+        else {
+            $scope.project.functionalConstraintData.interfaces.push($scope.tbxInterface);
+            $scope.tbxInterface = $scope.newInterface();
+            $scope.changed = true;
+        }
+    };
+
+    $scope.hasInterface = function (newInterface) {
+        return arrayHasObject($scope.project.functionalConstraintData.interfaces, newInterface);
+    };
+
+    $scope.deleteInterface = function (index) {
+        $scope.project.functionalConstraintData.interfaces.splice(index, 1);
+        $scope.changed = true;
+    };
+
+    $scope.getInterfaceCount = function () {
+        var count = $scope.project.functionalConstraintData.interfaces.length;
+        switch (count) {
+            case 0:
+                return 'No dependencies';
+            case 1:
+                return '1 dependency';
+            default:
+                return count + ' dependencies';
+        }
+    };
+
+    $scope.newActionDependency = function () {
+        return {
+            action: '',
+            dependentAction: '',
+            relation: ''
+        }
+    };
+
+    $scope.addActionDependency = function () {
+        if ($scope.tbxActionDependency.action == '')
+            toast('Action is required');
+        else if ($scope.tbxActionDependency.relation == '')
+            toast('Relation is required');
+        else if ($scope.tbxActionDependency.dependentAction == '')
+            toast('Dependent action is required');
+        else if ($scope.hasActionDependency($scope.tbxActionDependency))
+            toast('Action/Dependency pair already exist');
+        else {
+            var newData = $scope.tbxActionDependency
+            $scope.project.functionalConstraintData.actionDependencies.push(newData);
+            $scope.tbxActionDependency = $scope.newActionDependency();
+            $scope.tbxActionDependency.relation = newData.relation;
+            $scope.changed = true;
+        }
+    };
+
+    $scope.hasActionDependency = function (newActionDependency) {
+        return arrayHasObject($scope.project.functionalConstraintData.actionDependencies, newActionDependency);
+    };
+
+    $scope.deleteActionDependency = function (index) {
+        $scope.project.functionalConstraintData.actionDependencies.splice(index, 1);
+        $scope.changed = true;
+    };
+
+    $scope.getActionDependencyCount = function () {
+        var count = $scope.project.functionalConstraintData.actionDependencies.length;
+        switch (count) {
+            case 0:
+                return 'No dependencies';
+            case 1:
+                return '1 dependency';
+            default:
+                return count + ' dependencies';
+        }
+    };
+
+    $scope.newActionRule = function () {
+        return {
+            action: '',
+            rule: '',
+            relation: ''
+        }
+    };
+
+    $scope.addActionRule = function () {
+        if ($scope.tbxActionRule.action == '')
+            toast('Action name is required');
+        else if ($scope.tbxActionRule.relation == '')
+            toast('Relation is required');
+        else if ($scope.tbxActionRule.rule == '')
+            toast('Rule is required');
+        else if ($scope.hasActionRule($scope.tbxActionRule))
+            toast('Action/Rule pair already exist');
+        else {
+            $scope.project.functionalConstraintData.actionRules.push($scope.tbxActionRule);
+            $scope.tbxActionRule = $scope.newActionRule();
+            $scope.changed = true;
+        }
+    };
+
+    $scope.hasActionRule = function (newActionRule) {
+        return arrayHasObject($scope.project.functionalConstraintData.actionRules, newActionRule);
+    };
+
+    $scope.deleteActionRule = function (index) {
+        $scope.project.functionalConstraintData.actionRules.splice(index, 1);
+        $scope.changed = true;
+    };
+
+    $scope.getActionRuleCount = function () {
+        var count = $scope.project.functionalConstraintData.actionRules.length;
+        switch (count) {
+            case 0:
+                return 'No rules';
+            case 1:
+                return '1 rule';
+            default:
+                return count + ' rules';
+        }
+    };
+
+    $scope.saveProject = function () {
+        $http.patch('/api/v1/projects/' + projectID + '/functional-constraint-data', {
+            functionalConstraintData: $scope.project.functionalConstraintData
+        }).then(function (json) {
+            if (json.data.result) {
+                $scope.changed = false;
+                toast("Saved successfully");
+            }
+            else
+                console.log(json.data);
+        }, failCallBack);
+    };
+
+    $scope.back = function () {
+        if ($scope.changed && confirmBack())
+            $scope.saveProject();
+        $location.path('/projects/' + $scope.project._id);
+    };
+
+    $scope.change = function () {
+        $scope.changed = true;
+    };
+
+    $scope.tbxInterface = $scope.newInterface();
+    $scope.tbxActionDependency = $scope.newActionDependency();
+    $scope.tbxActionRule = $scope.newActionRule();
+
+    setTimeout(function () {
+        $scope.$emit('FunctionalConstraintController');
+    }, 0);
+};
+
+exports.ConfigureCompatibilityController = function ($scope, $routeParams, $http, $location, $template) {
+    var projectID = encodeURIComponent($routeParams.id);
+
+    $scope.$compatibilityOptions = $template.compatibilityOptions;
+    $scope.changed = false;
+
+    $http.get('/api/v1/projects/' + projectID + '/compatibility-data')
+        .then(function (json) {
+            if (json.data.result) {
+                $scope.project = json.data.project;
+
+                if (!$scope.project.compatibilityData)
+                    $scope.project.compatibilityData = {
+                        operatingSystem: [],
+                        executionEnvironment: [],
+                        outputCompatibility: []
+                    };
+
+            } else
+                $location.path('/projects/' + $scope.project._id);
+
+        }, failCallBack);
+
+    $scope.newOperatingSystem = function () {
+        return {
+            operatingSystem: '',
+            version: '',
+            issue: ''
+        };
+    };
+
+    $scope.addOperatingSystem = function () {
+        if ($scope.tbxOperatingSystem.operatingSystem == '')
+            toast('Operating system name is required');
+        else if ($scope.hasOperatingSystem($scope.tbxOperatingSystem))
+            toast('Operating system name or version or issue already exist');
+        else {
+            $scope.project.compatibilityData.operatingSystem.push($scope.tbxOperatingSystem);
+            $scope.tbxOperatingSystem = $scope.newOperatingSystem();
+            $scope.changed = true;
+        }
+    };
+
+    $scope.hasOperatingSystem = function (newOperatingSystem) {
+        return arrayHasObject($scope.project.compatibilityData.operatingSystem, newOperatingSystem);
+    };
+
+    $scope.deleteOperatingSystem = function (index) {
+        $scope.project.compatibilityData.operatingSystem.splice(index, 1);
+        $scope.changed = true;
+    };
+
+    $scope.getOperatingSystemCount = function () {
+        var count = $scope.project ? $scope.project.compatibilityData.operatingSystem.length : 0;
+        switch (count) {
+            case 0:
+                return 'None';
+            case 1:
+                return '1 OS';
+            default:
+                return count + ' OS';
+        }
+    };
+
+    $scope.newExecutionEnvironment = function () {
+        return {
+            software: '',
+            version: '',
+            issue: ''
+        };
+    };
+
+    $scope.addExecutionEnvironment = function () {
+        if ($scope.tbxExecutionEnvironment.software == '')
+            toast('Software name is required');
+        else if ($scope.hasExecutionEnvironment($scope.tbxExecutionEnvironment))
+            toast('Software or version or issue already exist');
+        else {
+            $scope.project.compatibilityData.executionEnvironment.push($scope.tbxExecutionEnvironment);
+            $scope.tbxExecutionEnvironment = $scope.newExecutionEnvironment();
+            $scope.changed = true;
+        }
+    };
+
+    $scope.hasExecutionEnvironment = function (newExecutionEnvironment) {
+        return arrayHasObject($scope.project.compatibilityData.executionEnvironment, newExecutionEnvironment);
+    };
+
+    $scope.deleteExecutionEnvironment = function (index) {
+        $scope.project.compatibilityData.executionEnvironment.splice(index, 1);
+        $scope.changed = true;
+    };
+
+    $scope.getExecutionEnvironmentCount = function () {
+        var count = $scope.project ? $scope.project.compatibilityData.executionEnvironment.length : 0;
+        switch (count) {
+            case 0:
+                return 'None';
+            default:
+                return count + ' software';
+        }
+    };
+
+    $scope.newOutputCompatibility = function () {
+        return {
+            output: '',
+            newVersion: '',
+            oldVersion: '',
+            compatibility: ''
+        };
+    };
+
+    $scope.addOutputCompatibility = function () {
+        if ($scope.tbxOutputCompatibility.output == '')
+            toast('Output is required');
+        else if ($scope.tbxOutputCompatibility.oldVersion == '' || $scope.tbxOutputCompatibility.newVersion == '')
+            toast('Software versions are required');
+        else if ($scope.tbxOutputCompatibility.compatibility == '')
+            toast('Compatibility option is required');
+        else if ($scope.hasOutputCompatibility($scope.tbxOutputCompatibility))
+            toast('Output or software version already exist');
+        else {
+            var newData = $scope.tbxOutputCompatibility;
+            $scope.project.compatibilityData.outputCompatibility.push(newData);
+            $scope.tbxOutputCompatibility = $scope.newOutputCompatibility();
+            $scope.tbxOutputCompatibility.compatibility = newData.compatibility;
+            $scope.changed = true;
+        }
+    };
+
+    $scope.hasOutputCompatibility = function (newOutputCompatibility) {
+        return arrayHasObject($scope.project.compatibilityData.outputCompatibility, newOutputCompatibility);
+    };
+
+    $scope.deleteOutputCompatibility = function (index) {
+        $scope.project.compatibilityData.outputCompatibility.splice(index, 1);
+        $scope.changed = true;
+    };
+
+    $scope.getOutputCompatibilityCount = function () {
+        var count = $scope.project ? $scope.project.compatibilityData.outputCompatibility.length : 0;
+        switch (count) {
+            case 0:
+                return 'None';
+            case 1:
+                return '1 compatibility';
+            default:
+                return count + ' compatibilities';
+        }
+    };
+
+    $scope.saveProject = function () {
+        $http.patch('/api/v1/projects/' + projectID + '/compatibility-data', {
+            compatibilityData: $scope.project.compatibilityData
+        }).then(function (json) {
+            if (json.data.result) {
+                $scope.changed = false;
+                toast("Saved successfully");
+            }
+            else
+                console.log(json.data);
+        }, failCallBack);
+    };
+
+    $scope.back = function () {
+        if ($scope.changed && confirmBack())
+            $scope.saveProject();
+        $location.path('/projects/' + $scope.project._id);
+    };
+
+    $scope.change = function () {
+        $scope.changed = true;
+    };
+
+    $scope.tbxOperatingSystem = $scope.newOperatingSystem();
+    $scope.tbxExecutionEnvironment = $scope.newExecutionEnvironment();
+    $scope.tbxOutputCompatibility = $scope.newOutputCompatibility();
+
+    setTimeout(function () {
+        $scope.$emit('ConfigureCompatibilityController');
     }, 0);
 };

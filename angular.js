@@ -51,11 +51,6 @@ app.config(function ($routeProvider) {
             template: '<performance-constraint></performance-constraint>'
         })
 
-        .when('/projects/:id/boilerplate', {
-            title: 'Configure Boilerplate',
-            template: '<configure-boilerplate></configure-boilerplate>'
-        })
-
         .when('/projects/:id/access-control', {
             title: 'Configure Access Control',
             template: '<access-control></access-control>'
@@ -64,6 +59,21 @@ app.config(function ($routeProvider) {
         .when('/projects/:id/action-control', {
             title: 'Configure Action Control',
             template: '<action-control></action-control>'
+        })
+
+        .when('/projects/:id/functional-constraint', {
+            title: 'Configure Functional Constraint',
+            template: '<functional-constraint></functional-constraint>'
+        })
+
+        .when('/projects/:id/configure-compatibility', {
+            title: 'Configure Compatibility',
+            template: '<configure-compatibility></configure-compatibility>'
+        })
+
+        .when('/projects/:id/boilerplate', {
+            title: 'Configure Boilerplate',
+            template: '<configure-boilerplate></configure-boilerplate>'
         });
 });
 

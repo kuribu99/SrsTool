@@ -1,0 +1,233 @@
+<div class="row valign-wrapper">
+    <h4 class=" col s12 m8 valign">Configure Functional Constraint</h4>
+    <div class="valign col s8 m4">
+        <div class="col s12 m6 input-field">
+            <a class="btn waves-effect waves-light green col s12 m12" ng-click="saveProject()">
+                <i class="material-icons left">done</i>Save
+            </a>
+        </div>
+        <div class="col s12 m6 input-field">
+            <a class="btn waves-effect waves-light red col s12 m12" ng-click="back()">
+                <i class="material-icons left">power_settings_new</i>Back
+            </a>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <ul class="collapsible collapsible-accordion" data-collapsible="accordion">
+        <li>
+            <div class="collapsible-header active blue white-text">
+                Instructions<i class="material-icons right">announcement</i>
+            </div>
+            <div class="collapsible-body">
+                <div class="row">
+                    <p>
+                        Other than explicitly written actions (which are functional requirements),
+                        <wbr/>
+                        the system should also provide certain interface or functionality for user
+                        <br/>
+                        For example, certain system will provide RESTful API which is not an action that user could
+                        perform,
+                        <wbr/>
+                        however, it is needed for the system to perform its normal functionalities
+                        <br/>
+                        These functional constraint will describe how actions are performed by the system
+                        <br/>
+                        <br/>
+                        For example, the most commonly introduced functional constraints are:
+                        <br/>
+                        - System API or console commands
+                        <br/>
+                        - Linked action (which one action triggers another)
+                        <br/>
+                        - Dependencies (such as dependency on other framework)
+                    </p>
+                </div>
+            </div>
+        </li>
+        <li>
+            <div class="collapsible-header">
+                <h5>
+                    <span>Interface/Functionality Dependency</span>
+                    <span class="badge white-text light-green" ng-bind="getInterfaceCount()"></span>
+                </h5>
+            </div>
+            <div class="collapsible-body">
+                <div class="row valign-wrapper">
+                    <div class="col s4 m3 input-field">
+                        <label for="tbxInterface.interfaceName">Interface/Functionality Name</label>
+                        <input id="tbxInterface.interfaceName" type="text"
+                               ng-model="tbxInterface.interfaceName"/>
+                    </div>
+                    <div class="col s4 m3 input-field">
+                        <label for="tbxInterface.dependency">Dependency (optional)</label>
+                        <input id="tbxInterface.dependency" type="text"
+                               ng-model="tbxInterface.dependency"/>
+                    </div>
+                    <div class="col s4 m3 input-field">
+                        <label for="tbxInterface.condition">Condition (optional)</label>
+                        <input id="tbxInterface.condition" type="text"
+                               ng-model="tbxInterface.condition"/>
+                    </div>
+                    <div class="col s4 m3 valign">
+                        <button class="btn waves-effect waves-light col s12 m12" ng-click="addInterface()">Add
+                        </button>
+                    </div>
+                </div>
+                <div class="row" ng-if="project.functionalConstraintData.interfaces.length > 0">
+                    <table class="highlight">
+                        <thead>
+                        <tr>
+                            <td>Interface/Functionality Name</td>
+                            <td>Dependency</td>
+                            <td>Condition</td>
+                            <td></td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="interface in project.functionalConstraintData.interfaces track by $index">
+                            <td ng-bind="interface.interfaceName"></td>
+                            <td ng-bind="interface.dependency"></td>
+                            <td ng-bind="interface.condition"></td>
+                            <td>
+                                <a class="waves-effect waves-light btn red" ng-click="deleteInterface($index)">
+                                    <i class="material-icons left">delete</i>Delete
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </li>
+        <li>
+            <div class="collapsible-header">
+                <h5>
+                    <span>Action Dependency</span>
+                    <span class="badge white-text light-green" ng-bind="getActionDependencyCount()"></span>
+                </h5>
+            </div>
+            <div class="collapsible-body">
+                <div class="row valign-wrapper">
+                    <div class="col s4 m3 input-field">
+                        <label for="tbxActionDependency.action">Action</label>
+                        <input id="tbxActionDependency.action" type="text" list="actions"
+                               ng-model="tbxActionDependency.action"/>
+                    </div>
+                    <div class="col s4 m3 input-field">
+                        <select id="tbxActionDependency.relation" type="text"
+                                ng-options="key as value for (key, value) in $actionDependenciesOptions"
+                                ng-model="tbxActionDependency.relation">
+                            <option value="" disabled>Choose a relation</option>
+                        </select>
+                        <label>Relation</label>
+                    </div>
+                    <div class="col s4 m3 input-field">
+                        <label for="tbxActionDependency.dependentAction">Dependent Action</label>
+                        <input id="tbxActionDependency.dependentAction" type="text" list="actions"
+                               ng-model="tbxActionDependency.dependentAction"/>
+                    </div>
+                    <div class="col s4 m3 valign">
+                        <button class="btn waves-effect waves-light col s12 m12" ng-click="addActionDependency()">Add
+                        </button>
+                    </div>
+                    <datalist id="actions">
+                        <option ng-repeat="action in project.domainData.actions" value="{{ action }}"
+                                ng-bind="action"></option>
+                    </datalist>
+                </div>
+                <div class="row" ng-if="project.functionalConstraintData.actionDependencies.length > 0">
+                    <table class="highlight">
+                        <thead>
+                        <tr>
+                            <td>Action</td>
+                            <td>Relation</td>
+                            <td>Dependent Action</td>
+                            <td></td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="actionDependency in project.functionalConstraintData.actionDependencies track by $index">
+                            <td ng-bind="actionDependency.action"></td>
+                            <td ng-bind="$actionDependenciesOptions[actionDependency.relation]"></td>
+                            <td ng-bind="actionDependency.dependentAction"></td>
+                            <td>
+                                <a class="waves-effect waves-light btn red" ng-click="deleteActionDependency($index)">
+                                    <i class="material-icons left">delete</i>Delete
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </li>
+        <li>
+            <div class="collapsible-header">
+                <h5>
+                    <span>Action Rules</span>
+                    <span class="badge white-text light-green" ng-bind="getActionRuleCount()"></span>
+                </h5>
+            </div>
+            <div class="collapsible-body">
+                <div class="row valign-wrapper">
+                    <div class="col s4 m3 input-field">
+                        <label for="tbxActionRule.action">Action</label>
+                        <input id="tbxActionRule.action" type="text" list="actions"
+                               ng-model="tbxActionRule.action"/>
+                    </div>
+                    <div class="col s4 m3 input-field">
+                        <select id="tbxActionRule.relation" type="text"
+                                ng-options="key as value for (key, value) in $actionRulesOptions"
+                                ng-model="tbxActionRule.relation">
+                            <option value="" disabled>Choose a relation</option>
+                        </select>
+                        <label>Relation</label>
+                    </div>
+                    <div class="col s4 m3 input-field">
+                        <label for="tbxActionRule.rule">Rules/Standard/Formulae</label>
+                        <input id="tbxActionRule.rule" type="text"
+                               ng-model="tbxActionRule.rule"/>
+                    </div>
+                    <div class="col s4 m3 valign">
+                        <button class="btn waves-effect waves-light col s12 m12" ng-click="addActionRule()">Add
+                        </button>
+                    </div>
+                </div>
+                <div class="row" ng-if="project.functionalConstraintData.actionRules.length > 0">
+                    <table class="highlight">
+                        <thead>
+                        <tr>
+                            <td>Action</td>
+                            <td>Relation</td>
+                            <td>Rules/Standard/Formulae</td>
+                            <td></td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="actionRule in project.functionalConstraintData.actionRules track by $index">
+                            <td ng-bind="actionRule.action"></td>
+                            <td ng-bind="$actionRulesOptions[actionRule.relation]"></td>
+                            <td ng-bind="actionRule.rule"></td>
+                            <td>
+                                <a class="waves-effect waves-light btn red" ng-click="deleteActionRule($index)">
+                                    <i class="material-icons left">delete</i>Delete
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </li>
+    </ul>
+</div>
+<script>
+    setTimeout(function () {
+        $('.collapsible').collapsible({
+            accordion: false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
+        });
+        $('select').material_select();
+        Materialize.updateTextFields();
+    }, 500);
+</script>

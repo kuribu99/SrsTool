@@ -1,0 +1,232 @@
+<div class="row valign-wrapper">
+    <h4 class=" col s12 m8 valign">Configure Compatibility</h4>
+    <div class="valign col s8 m4">
+        <div class="col s12 m6 input-field">
+            <a class="btn waves-effect waves-light green col s12 m12" ng-click="saveProject()">
+                <i class="material-icons left">done</i>Save
+            </a>
+        </div>
+        <div class="col s12 m6 input-field">
+            <a class="btn waves-effect waves-light red col s12 m12" ng-click="back()">
+                <i class="material-icons left">power_settings_new</i>Back
+            </a>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <ul class="collapsible collapsible-accordion" data-collapsible="accordion">
+        <li>
+            <div class="collapsible-header active blue white-text">
+                Instructions<i class="material-icons right">announcement</i>
+            </div>
+            <div class="collapsible-body">
+                <div class="row">
+                    <p>
+                        Compatibility refers to the non-functional aspect of the system, such as:
+                    </p>
+                    <ol>
+                        <li>
+                            1. Whether the system can be executed and installed in certain operating system
+                            (Windows, Linux, Mac)
+                        </li>
+                        <li>
+                            2. Whether the system can compile and run in different execution environments (Java, .NET,
+                            PHP)
+                        </li>
+                        <li>
+                            3. Whether the output of the system of different version are compatible with each other
+                            (save file, generated file, image)
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </li>
+        <li>
+            <div class="collapsible-header">
+                <h5>
+                    <span>Operating System</span>
+                    <span class="badge white-text light-green" ng-bind="getOperatingSystemCount()"></span>
+                </h5>
+            </div>
+            <div class="collapsible-body">
+                <div class="row valign-wrapper">
+                    <div class="col s4 m3 input-field">
+                        <label for="tbxOperatingSystem.operatingSystem">Operating System</label>
+                        <input id="tbxOperatingSystem.operatingSystem" type="text"
+                               ng-model="tbxOperatingSystem.operatingSystem"/>
+                    </div>
+                    <div class="col s4 m3 input-field">
+                        <label for="tbxOperatingSystem.version">Version (optional)</label>
+                        <input id="tbxOperatingSystem.version" type="text"
+                               ng-model="tbxOperatingSystem.version"/>
+                    </div>
+                    <div class="col s4 m3 input-field">
+                        <label for="tbxOperatingSystem.issue">Issue (optional)</label>
+                        <input id="tbxOperatingSystem.issue" type="text"
+                               ng-model="tbxOperatingSystem.issue"/>
+                    </div>
+                    <div class="col s4 m3 valign">
+                        <button class="btn waves-effect waves-light col s12 m12" ng-click="addOperatingSystem()">Add
+                        </button>
+                    </div>
+                </div>
+                <div class="row" ng-if="project.compatibilityData.operatingSystem.length > 0">
+                    <table class="highlight">
+                        <thead>
+                        <tr>
+                            <td>Operating System</td>
+                            <td>Version</td>
+                            <td>Issue</td>
+                            <td></td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="item in project.compatibilityData.operatingSystem track by $index">
+                            <td ng-bind="item.operatingSystem"></td>
+                            <td ng-bind="item.version"></td>
+                            <td ng-bind="item.issue"></td>
+                            <td>
+                                <a class="waves-effect waves-light btn red" ng-click="deleteOperatingSystem($index)">
+                                    <i class="material-icons left">delete</i>Delete
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </li>
+        <li>
+            <div class="collapsible-header">
+                <h5>
+                    <span>Execution Environment</span>
+                    <span class="badge white-text light-green" ng-bind="getExecutionEnvironmentCount()"></span>
+                </h5>
+            </div>
+            <div class="collapsible-body">
+                <div class="row valign-wrapper">
+                    <div class="col s4 m3 input-field">
+                        <label for="tbxExecutionEnvironment.software">Software Name</label>
+                        <input id="tbxExecutionEnvironment.software" type="text"
+                               ng-model="tbxExecutionEnvironment.software"/>
+                    </div>
+                    <div class="col s4 m3 input-field">
+                        <label for="tbxExecutionEnvironment.version">Version (optional)</label>
+                        <input id="tbxExecutionEnvironment.version" type="text"
+                               ng-model="tbxExecutionEnvironment.version"/>
+                    </div>
+                    <div class="col s4 m3 input-field">
+                        <label for="tbxExecutionEnvironment.issue">Issue (optional)</label>
+                        <input id="tbxExecutionEnvironment.issue" type="text"
+                               ng-model="tbxExecutionEnvironment.issue"/>
+                    </div>
+                    <div class="col s4 m3 valign">
+                        <button class="btn waves-effect waves-light col s12 m12" ng-click="addExecutionEnvironment()">
+                            Add
+                        </button>
+                    </div>
+                </div>
+                <div class="row" ng-if="project.compatibilityData.executionEnvironment.length > 0">
+                    <table class="highlight">
+                        <thead>
+                        <tr>
+                            <td>Software Name</td>
+                            <td>Version</td>
+                            <td>Issue</td>
+                            <td></td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="item in project.compatibilityData.executionEnvironment track by $index">
+                            <td ng-bind="item.software"></td>
+                            <td ng-bind="item.version"></td>
+                            <td ng-bind="item.issue"></td>
+                            <td>
+                                <a class="waves-effect waves-light btn red"
+                                   ng-click="deleteExecutionEnvironment($index)">
+                                    <i class="material-icons left">delete</i>Delete
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </li>
+        <li>
+            <div class="collapsible-header">
+                <h5>
+                    <span>Output Compatibility</span>
+                    <span class="badge white-text light-green" ng-bind="getOutputCompatibilityCount()"></span>
+                </h5>
+            </div>
+            <div class="collapsible-body">
+                <div class="row valign-wrapper">
+                    <div class="col s4 m2 input-field">
+                        <label for="tbxOutputCompatibility.output">Output Name</label>
+                        <input id="tbxOutputCompatibility.output" type="text"
+                               ng-model="tbxOutputCompatibility.output"/>
+                    </div>
+                    <div class="col s4 m2 input-field">
+                        <label for="tbxOutputCompatibility.newVersion">New Version</label>
+                        <input id="tbxOutputCompatibility.newVersion" type="text"
+                               ng-model="tbxOutputCompatibility.newVersion"/>
+                    </div>
+                    <div class="col s4 m2 input-field">
+                        <label for="tbxOutputCompatibility.oldVersion">Old Version</label>
+                        <input id="tbxOutputCompatibility.oldVersion" type="text"
+                               ng-model="tbxOutputCompatibility.oldVersion"/>
+                    </div>
+                    <div class="col s4 m3 input-field">
+                        <select id="tbxOutputCompatibility.compatibility" type="text"
+                                ng-options="key as value for (key, value) in $compatibilityOptions"
+                                ng-model="tbxOutputCompatibility.compatibility">
+                            <option value="" disabled>Choose an option</option>
+                        </select>
+                        <label>Compatibility</label>
+                    </div>
+                    <div class="col s4 m3 valign">
+                        <button class="btn waves-effect waves-light col s12 m12" ng-click="addOutputCompatibility()">Add
+                        </button>
+                    </div>
+                </div>
+                <div class="row" ng-if="project.compatibilityData.outputCompatibility.length > 0">
+                    <table class="highlight">
+                        <thead>
+                        <tr>
+                            <td>Output Name</td>
+                            <td>New Version</td>
+                            <td>Old Version</td>
+                            <td>Compatibility</td>
+                            <td></td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="item in project.compatibilityData.outputCompatibility track by $index">
+                            <td ng-bind="item.output"></td>
+                            <td ng-bind="item.newVersion"></td>
+                            <td ng-bind="item.oldVersion"></td>
+                            <td ng-bind="$compatibilityOptions[item.compatibility]"></td>
+                            <td>
+                                <a class="waves-effect waves-light btn red"
+                                   ng-click="deleteOutputCompatibility($index)">
+                                    <i class="material-icons left">delete</i>Delete
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </li>
+    </ul>
+</div>
+<script>
+    setTimeout(function () {
+        $('.collapsible').collapsible({
+            accordion: false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
+        });
+        $('select').material_select();
+        Materialize.updateTextFields();
+    }, 500);
+</script>

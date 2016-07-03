@@ -80,3 +80,17 @@ exports.performanceConstraint = function () {
         templateUrl: './templates/performance_constraint.html'
     };
 };
+
+exports.functionalConstraint = function () {
+    return {
+        controller: 'FunctionalConstraintController',
+        templateUrl: './templates/functional_constraint.html'
+    };
+};
+
+exports.configureCompatibility = function () {
+    return {
+        controller: 'ConfigureCompatibilityController',
+        templateUrl: './templates/configure_compatibility.html'
+    };
+};

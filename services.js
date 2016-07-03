@@ -77,6 +77,18 @@ exports.$formatter = function () {
 };
 
 exports.$template = function () {
+    this.modules = {
+        Functional: [
+            'Action Control'
+        ],
+        NonFunctional: [
+            'Access Control',
+            'Performance Constraint',
+            'Functional Constraint',
+            'Compatibility'
+        ]
+    };
+
     this.boilerplateTemplates = {
         accessControl: {
             true: "<actor> shall be able to access to <module> module",
@@ -95,10 +107,110 @@ exports.$template = function () {
             'minimum': 'The minimum <constraint> of <action> shall be <value>',
             'maximum': 'The maximum <constraint> of <action> shall be <value>',
             'within': 'The <constraint> of <action> shall be within <value>'
+        },
+        functionalConstraint: {
+            interface: {
+                0: "The <system> shall provide <interface>",
+                1: "The <system> shall provide <interface> required by <dependency>",
+                2: "The <system> shall provide <interface> if <condition>",
+                3: "The <system> shall provide <interface> required by <dependency> if <condition>"
+            },
+            actionDependencies: {
+                true: "The <system> shall <dependentAction> when <action>",
+                false: "The <system> shall not <dependentAction> when <action>"
+            },
+            actionRules: {
+                true: "The <system> shall <action> based on <rule>",
+                false: "The <system> shall not <action> based on  <rule>"
+            }
+        },
+        compatibility: {
+            operatingSystem: {
+                0: "The <system> shall be able to execute in <operatingSystem> with no compatibility issue",
+                1: "The <system> shall be able to execute in <operatingSystem> <version> and above with no compatibility issue",
+                2: "The <system> shall be able to execute in <operatingSystem> with <issue>",
+                3: "The <system> shall be able to execute in <operatingSystem> <version> and above with <issue>"
+            },
+            executionEnvironment: {
+                0: "The <system> shall be able to execute with <software> with no compatibility issue",
+                1: "The <system> shall be able to execute with <software> <version> and above with no compatibility issue",
+                2: "The <system> shall be able to execute with <software> with <issue>",
+                3: "The <system> shall be able to execute with <software> <version> and above with <issue>"
+            },
+            outputCompatibility: {
+                true: "The <output> of the <system> <newVersion> shall be compatible with <oldVersion>",
+                false: "The <output> of the <system> <newVersion> shall not be compatible with <oldVersion>"
+            }
+        }
+    };
+
+    this.boilerplateValues = {
+        accessControl: {
+            '<actor>': 'lecturer',
+            '<module>': 'user authentication'
+        },
+        actionControl: {
+            '<actor>': 'lecturer',
+            '<action>': 'register account'
+        },
+        performanceConstraint: {
+            '<action>': 'register account',
+            '<constraint>': 'response time',
+            '<value>': '1 seconds'
+        },
+        functionalConstraint: {
+            interface: {
+                '<system>': 'system',
+                '<interface>': 'REST API',
+                '<dependency>': 'login module',
+                '<condition>': 'the user is logged in'
+            },
+            actionDependencies: {
+                '<system>': 'system',
+                '<action>': 'user finish registering account',
+                '<dependentAction>': 'login to the system'
+            },
+            actionRules: {
+                '<system>': 'system',
+                '<action>': 'calculate GST charge',
+                '<rule>': 'GST rate of Malaysia'
+            }
+        },
+        compatibility: {
+            operatingSystem: {
+                '<system>': 'system',
+                '<operatingSystem>': 'Microsoft Windows',
+                '<version>': '10',
+                '<issue>': 'no GPU acceleration'
+            },
+            executionEnvironment: {
+                '<system>': 'system',
+                '<software>': 'Java',
+                '<version>': '1.8',
+                '<issue>': 'higher heap size'
+            },
+            outputCompatibility: {
+                '<output>': 'save file',
+                '<system>': 'system',
+                '<newVersion>': 'v1.4',
+                '<oldVersion>': 'v1.3'
+            }
         }
     };
 
     this.performanceConstraintOptions = Object.keys(this.boilerplateTemplates.performanceConstraint);
+    this.actionDependenciesOptions = {
+        true: 'shall perform dependent action',
+        false: 'shall not perform dependent action'
+    };
+    this.actionRulesOptions = {
+        true: 'based on',
+        false: 'not based on'
+    };
+    this.compatibilityOptions = {
+        true: 'Yes',
+        false: 'No'
+    };
 
     return this;
 };
