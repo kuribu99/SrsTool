@@ -39,8 +39,16 @@
     </div>
     <div id="INSTRUCTIONS" class="row active">
         <div class="card blue-grey darken-1 hoverable">
-            <div class="card-content white-text">
-                Flowchart here
+            <div class="card-content white-text row">
+                <h5 class="card-title">Q: How are these requirement generated?</h5>
+                <p>
+                    A: From all the domain attributes you had added, all the requirement specification you had
+                    entered, our system has generated all the requirement based on predefined boilerplates or
+                    boilerplates that you had changed. These requirements can be added into you Software Requirement
+                    Specification (SRS) in this project to be exported for further refinements.
+                </p>
+                <img class="materialboxed margin-top-10" width="800px" src="./images/generate_requirements.png"
+                     data-caption="Flowchart on how requirements are generated">
             </div>
         </div>
     </div>
@@ -120,5 +128,6 @@
             accordion: false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
         });
         $('ul.tabs').tabs();
+        $('.materialboxed').materialbox();
     }, 500);
 </script>

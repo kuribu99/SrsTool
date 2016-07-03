@@ -92,10 +92,6 @@
         </a>
     </div>
 </div>
-<div class="col s12 m12 card card-panel waves-light waves-effect center-align green"
-     ng-if="Object.keys(project.generatedRequirements).length == 0">
-    <h5 class="header">No requirement found</h5>
-</div>
 <div class="row">
     <div class="row">
         <ul class="tabs blue lighten-2">
@@ -109,13 +105,30 @@
     <div id="INSTRUCTIONS" class="row active">
         <div class="card blue-grey darken-1 hoverable">
             <div class="card-content white-text">
-                Flowchart here
+                <h5 class="card-title">Q: How to use Software Requirement Specification Tool?<br/></h5>
+                <div>
+                    <p>A: The answer is simple. Simply follow the following steps</p>
+                    <ol>
+                        <li>Create your project</li>
+                        <li>Edit your domain to add in modules, actors and actions</li>
+                        <li>Specify your requirements using our custom built forms</li>
+                        <li>Generate your requirements automatically</li>
+                        <li>Lastly, export your requirements to your desired format</li>
+                        <li>
+                            Optionally, configure your boilerplates, a.k.a. requirement templates to suit your needs
+                        </li>
+                    </ol>
+                    <img class="materialboxed"
+                         data-caption="Flowchart on how to use Software Requirement Specification tool" width="800px"
+                         src="./images/project_view.png">
+                </div>
             </div>
         </div>
     </div>
     <div id="fr" class="row">
         <div class="row">
-            <ul class="collapsible collapsible-accordion" data-collapsible="accordion">
+            <ul class="collapsible collapsible-accordion" data-collapsible="accordion"
+                ng-if="numberFunctionalRequirement > 0">
                 <li ng-repeat="(moduleName, requirements) in project.generatedRequirements"
                     ng-if="$modules.Functional.indexOf(moduleName) >= 0">
                     <div class="collapsible-header active">
@@ -158,11 +171,17 @@
                     </div>
                 </li>
             </ul>
+            <div class="card-panel hoverable" ng-if="numberFunctionalRequirement == 0">
+                <h5 class="card-title">
+                    Ooops, no functional requirement saved yet!
+                </h5>
+            </div>
         </div>
     </div>
     <div id="nfr" class="row">
         <div class="row">
-            <ul class="collapsible collapsible-accordion" data-collapsible="accordion">
+            <ul class="collapsible collapsible-accordion" data-collapsible="accordion"
+                ng-if="numberNonFunctionalRequirement > 0">
                 <li ng-repeat="(moduleName, requirements) in project.generatedRequirements"
                     ng-if="$modules.NonFunctional.indexOf(moduleName) >= 0">
                     <div class="collapsible-header active">
@@ -206,6 +225,11 @@
                 </li>
             </ul>
         </div>
+        <div class="card-panel hoverable" ng-if="numberNonFunctionalRequirement == 0">
+            <h5 class="card-title">
+                Ooops, no non-functional requirement saved yet!
+            </h5>
+        </div>
     </div>
 </div>
 <script>
@@ -223,5 +247,6 @@
             alignment: 'left' // Displays dropdown with edge aligned to the left of button
         });
         $('ul.tabs').tabs();
+        $('.materialboxed').materialbox();
     }, 500);
 </script>
