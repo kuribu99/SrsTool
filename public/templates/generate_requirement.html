@@ -22,9 +22,9 @@
 </div>
 <div class="row">
     <h6 class="col">
-        <span ng-bind="numberRequirements || 0"></span> generated requirements from <span
-            ng-bind="numberModules || 0"></span> modules.
-        <span ng-bind="numberNewRequirements || 0"></span> requirements added.
+        <span ng-bind="numberRequirements || 0"></span> generated requirement(s) are from <span
+            ng-bind="numberModules || 0"></span> module(s).
+        <span ng-bind="numberNewRequirements || 0"></span> requirement(s) are added.
     </h6>
 </div>
 <div class="row">
@@ -58,9 +58,12 @@
                 <li ng-repeat="(moduleName, requirements) in generatedRequirements"
                     ng-if="$modules.Functional.indexOf(moduleName) >= 0">
                     <div class="collapsible-header active">
-                        <h5><span ng-bind="moduleName"></span>
+                        <h5>
+                            <span ng-bind="moduleName"></span>
                             <span class="new badge" ng-bind="requirements.length"
-                                  ng-if="requirements.length > 0"></span></h5>
+                                  ng-if="requirements.length > 0"></span>
+                            <span class="badge white-text light-green" ng-if="requirements.length == 0">None</span>
+                        </h5>
                     </div>
                     <div class="collapsible-body">
                         <div class="row" ng-if="requirements.length > 0">
@@ -77,7 +80,7 @@
                         </div>
                         <div class="row" ng-if="requirements.length == 0">
                             <div class="center-align">
-                                <h5 class="header">No more requirements can be generated</h5>
+                                <h5 class="header">No requirements can be generated</h5>
                             </div>
                         </div>
                     </div>
@@ -113,7 +116,7 @@
                         </div>
                         <div class="row" ng-if="requirements.length == 0">
                             <div class="center-align">
-                                <h5 class="header">No more requirements can be generated</h5>
+                                <h5 class="header">No requirements can be generated</h5>
                             </div>
                         </div>
                     </div>

@@ -126,9 +126,8 @@
         </div>
     </div>
     <div id="fr" class="row">
-        <div class="row">
-            <ul class="collapsible collapsible-accordion" data-collapsible="accordion"
-                ng-if="numberFunctionalRequirement > 0">
+        <div class="row" ng-if="numberFunctionalRequirement > 0">
+            <ul class="collapsible collapsible-accordion" data-collapsible="accordion">
                 <li ng-repeat="(moduleName, requirements) in project.generatedRequirements"
                     ng-if="$modules.Functional.indexOf(moduleName) >= 0">
                     <div class="collapsible-header active">
@@ -171,17 +170,16 @@
                     </div>
                 </li>
             </ul>
-            <div class="card-panel hoverable" ng-if="numberFunctionalRequirement == 0">
-                <h5 class="card-title">
-                    Ooops, no functional requirement saved yet!
-                </h5>
-            </div>
+        </div>
+        <div class="card-panel hoverable" ng-if="numberFunctionalRequirement == 0">
+            <h5 class="card-title">
+                Ooops, no functional requirement are added yet!
+            </h5>
         </div>
     </div>
     <div id="nfr" class="row">
-        <div class="row">
-            <ul class="collapsible collapsible-accordion" data-collapsible="accordion"
-                ng-if="numberNonFunctionalRequirement > 0">
+        <div class="row" ng-if="numberNonFunctionalRequirement > 0">
+            <ul class="collapsible collapsible-accordion" data-collapsible="accordion">
                 <li ng-repeat="(moduleName, requirements) in project.generatedRequirements"
                     ng-if="$modules.NonFunctional.indexOf(moduleName) >= 0">
                     <div class="collapsible-header active">
@@ -227,7 +225,7 @@
         </div>
         <div class="card-panel hoverable" ng-if="numberNonFunctionalRequirement == 0">
             <h5 class="card-title">
-                Ooops, no non-functional requirement saved yet!
+                Ooops, no non-functional requirement are added yet!
             </h5>
         </div>
     </div>

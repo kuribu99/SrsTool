@@ -136,7 +136,7 @@ exports.ProjectViewController = function ($scope, $routeParams, $http, $location
             else
                 $location.path('/');
         }, failCallBack);
-    
+
     $scope.saveProject = function () {
         $http.patch('/api/v1/projects/' + projectID + '/generated-requirements', {
             generatedRequirements: $scope.project.generatedRequirements
@@ -338,6 +338,29 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
 
                 if ($scope.project.generatedRequirements == null)
                     $scope.project.generatedRequirements = {};
+
+                if ($scope.project.accessControlData == null)
+                    $scope.project.accessControlData = {};
+
+                if ($scope.project.actionControlData == null)
+                    $scope.project.actionControlData = {};
+
+                if ($scope.project.performanceConstraintData == null)
+                    $scope.project.performanceConstraintData = {};
+
+                if ($scope.project.functionalConstraintData == null)
+                    $scope.project.functionalConstraintData = {
+                        interfaces: [],
+                        actionDependencies: [],
+                        actionRules: []
+                    };
+
+                if ($scope.project.compatibilityData == null)
+                    $scope.project.compatibilityData = {
+                        operatingSystem: [],
+                        executionEnvironment: [],
+                        outputCompatibility: []
+                    };
 
                 for (var key in $scope.$boilerplateTemplates)
                     if ($scope.project.boilerplateData[key] == null)
