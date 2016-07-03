@@ -182,9 +182,9 @@
                                ng-model="tbxOutputCompatibility.oldVersion"/>
                     </div>
                     <div class="col s4 m3 input-field">
-                        <select id="tbxOutputCompatibility.compatible" type="text"
+                        <select id="tbxOutputCompatibility.compatibility" type="text"
                                 ng-options="key as value for (key, value) in $compatibilityOptions"
-                                ng-model="tbxOutputCompatibility.compatible">
+                                ng-model="tbxOutputCompatibility.compatibility">
                             <option value="" disabled>Choose an option</option>
                         </select>
                         <label>Compatibility</label>
@@ -210,7 +210,7 @@
                             <td ng-bind="item.output"></td>
                             <td ng-bind="item.newVersion"></td>
                             <td ng-bind="item.oldVersion"></td>
-                            <td ng-bind="$compatibilityOptions[item.compatible]"></td>
+                            <td ng-bind="$compatibilityOptions[item.compatibility]"></td>
                             <td>
                                 <a class="waves-effect waves-light btn red"
                                    ng-click="deleteOutputCompatibility($index)">

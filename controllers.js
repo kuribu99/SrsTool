@@ -345,7 +345,8 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
             'Access Control': [],
             'Action Control': [],
             'Performance Constraint': [],
-            'Functional Constraint': []
+            'Functional Constraint': [],
+            'Compatibility': []
         };
 
         var moduleName = 'Access Control';
@@ -431,6 +432,51 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
                 '<system>': $scope.project.projectName,
                 '<action>': item.action,
                 '<rule>': item.rule
+            };
+
+            if (!$scope.hasRequirement(moduleName, values))
+                $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
+        }
+
+        moduleName = 'Compatibility';
+        for (var index in $scope.project.compatibilityData.operatingSystem) {
+            var item = $scope.project.compatibilityData.operatingSystem[index];
+            var boilerplateNo = (item.version == '' ? 0 : 1) + (item.issue == '' ? 0 : 2);
+            var boilerplate = $scope.project.boilerplateData.compatibility.operatingSystem[boilerplateNo];
+            var values = {
+                '<system>': $scope.project.projectName,
+                '<operatingSystem>': item.operatingSystem,
+                '<version>': item.version,
+                '<issue>': item.issue
+            };
+
+            if (!$scope.hasRequirement(moduleName, values))
+                $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
+        }
+
+        for (var index in $scope.project.compatibilityData.executionEnvironment) {
+            var item = $scope.project.compatibilityData.executionEnvironment[index];
+            var boilerplateNo = (item.version == '' ? 0 : 1) + (item.issue == '' ? 0 : 2);
+            var boilerplate = $scope.project.boilerplateData.compatibility.executionEnvironment[boilerplateNo];
+            var values = {
+                '<system>': $scope.project.projectName,
+                '<software>': item.software,
+                '<version>': item.version,
+                '<issue>': item.issue
+            };
+
+            if (!$scope.hasRequirement(moduleName, values))
+                $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
+        }
+
+        for (var index in $scope.project.compatibilityData.outputCompatibility) {
+            var item = $scope.project.compatibilityData.outputCompatibility[index];
+            var boilerplate = $scope.project.boilerplateData.compatibility.outputCompatibility[item.compatibility];
+            var values = {
+                '<system>': $scope.project.projectName,
+                '<output>': item.output,
+                '<oldVersion>': item.oldVersion,
+                '<newVersion>': item.newVersion
             };
 
             if (!$scope.hasRequirement(moduleName, values))
@@ -662,7 +708,6 @@ exports.ConfigureBoilerplateController = function ($scope, $routeParams, $http, 
     $scope.$formatter = $formatter;
     $scope.$boilerplateTemplates = $template.boilerplateTemplates;
     $scope.$values = $template.boilerplateValues;
-    $scope._ = _;
     $scope.toast = toast;
     $scope.changed = false;
 
@@ -714,7 +759,7 @@ exports.ConfigureBoilerplateController = function ($scope, $routeParams, $http, 
     };
 
     $scope.restore = function (key) {
-        $scope.project.boilerplateData[key] = _.clone($scope.$boilerplateTemplates[key]);
+        $scope.project.boilerplateData[key] = JSON.parse(JSON.stringify($scope.$boilerplateTemplates[key]));
         toast('Default boilerplate restored');
         $scope.change();
     };
@@ -1069,7 +1114,7 @@ exports.ConfigureCompatibilityController = function ($scope, $routeParams, $http
     };
 
     $scope.getOperatingSystemCount = function () {
-        var count = $scope.project.compatibilityData.operatingSystem.length;
+        var count = $scope.project ? $scope.project.compatibilityData.operatingSystem.length : 0;
         switch (count) {
             case 0:
                 return 'None';
@@ -1110,7 +1155,7 @@ exports.ConfigureCompatibilityController = function ($scope, $routeParams, $http
     };
 
     $scope.getExecutionEnvironmentCount = function () {
-        var count = $scope.project.compatibilityData.executionEnvironment.length;
+        var count = $scope.project ? $scope.project.compatibilityData.executionEnvironment.length : 0;
         switch (count) {
             case 0:
                 return 'None';
@@ -1124,7 +1169,7 @@ exports.ConfigureCompatibilityController = function ($scope, $routeParams, $http
             output: '',
             newVersion: '',
             oldVersion: '',
-            compatible: ''
+            compatibility: ''
         };
     };
 
@@ -1133,7 +1178,7 @@ exports.ConfigureCompatibilityController = function ($scope, $routeParams, $http
             toast('Output is required');
         else if ($scope.tbxOutputCompatibility.oldVersion == '' || $scope.tbxOutputCompatibility.newVersion == '')
             toast('Software versions are required');
-        else if ($scope.tbxOutputCompatibility.compatible == '')
+        else if ($scope.tbxOutputCompatibility.compatibility == '')
             toast('Compatibility option is required');
         else if ($scope.hasOutputCompatibility($scope.tbxOutputCompatibility))
             toast('Output or software version already exist');
@@ -1141,7 +1186,7 @@ exports.ConfigureCompatibilityController = function ($scope, $routeParams, $http
             var newData = $scope.tbxOutputCompatibility;
             $scope.project.compatibilityData.outputCompatibility.push(newData);
             $scope.tbxOutputCompatibility = $scope.newOutputCompatibility();
-            $scope.tbxOutputCompatibility.compatible = newData.compatible;
+            $scope.tbxOutputCompatibility.compatibility = newData.compatibility;
             $scope.changed = true;
         }
     };
@@ -1156,7 +1201,7 @@ exports.ConfigureCompatibilityController = function ($scope, $routeParams, $http
     };
 
     $scope.getOutputCompatibilityCount = function () {
-        var count = $scope.project.compatibilityData.outputCompatibility.length;
+        var count = $scope.project ? $scope.project.compatibilityData.outputCompatibility.length : 0;
         switch (count) {
             case 0:
                 return 'None';

@@ -292,6 +292,171 @@
                     </div>
                 </div>
             </li>
+            <li>
+                <div class="collapsible-header active"><h5>Compatibility Module</h5></div>
+                <div class="collapsible-body">
+                    <div class="row margin-top-10">
+                        <div class="col s6 m8"
+                             ng-bind="'Available placeholders: <system>, <operatingSystem>, <version>, <issue>, <software>, <output>, <newVersion>, <oldVersion>'"></div>
+                        <div class="col s6 m4">
+                            <button class="btn waves-effect waves-light col s12 m12"
+                                    ng-click="restore('compatibility')">
+                                Restore Default Boilerplate
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="compatibility.operatingSystem.0">
+                                Operating system compatibility with no version or issue
+                            </label>
+                            <input id="compatibility.operatingSystem.0" ng-change="change()"
+                                   ng-model="project.boilerplateData.compatibility.operatingSystem[0]"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="compatibility.operatingSystem.0.example">Example</label>
+                            <input id="compatibility.operatingSystem.0.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.compatibility.operatingSystem[0],
+                                       $values.compatibility.operatingSystem) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="compatibility.operatingSystem.1">
+                                Operating system compatibility with version but no issue
+                            </label>
+                            <input id="compatibility.operatingSystem.1" ng-change="change()"
+                                   ng-model="project.boilerplateData.compatibility.operatingSystem[1]"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="compatibility.operatingSystem.1.example">Example</label>
+                            <input id="compatibility.operatingSystem.1.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.compatibility.operatingSystem[1],
+                                       $values.compatibility.operatingSystem) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="compatibility.operatingSystem.2">
+                                Operating system compatibility with issue but no version
+                            </label>
+                            <input id="compatibility.operatingSystem.2" ng-change="change()"
+                                   ng-model="project.boilerplateData.compatibility.operatingSystem[2]"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="compatibility.operatingSystem.2.example">Example</label>
+                            <input id="compatibility.operatingSystem.2.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.compatibility.operatingSystem[2],
+                                       $values.compatibility.operatingSystem) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="compatibility.operatingSystem.3">
+                                Operating system compatibility with version and issue
+                            </label>
+                            <input id="compatibility.operatingSystem.3" ng-change="change()"
+                                   ng-model="project.boilerplateData.compatibility.operatingSystem[3]"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="compatibility.operatingSystem.3.example">Example</label>
+                            <input id="compatibility.operatingSystem.3.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.compatibility.operatingSystem[3],
+                                       $values.compatibility.operatingSystem) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="compatibility.executionEnvironment.0">
+                                Execution environment compatibility with no version or issue
+                            </label>
+                            <input id="compatibility.executionEnvironment.0" ng-change="change()"
+                                   ng-model="project.boilerplateData.compatibility.executionEnvironment[0]"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="compatibility.executionEnvironment.0.example">Example</label>
+                            <input id="compatibility.executionEnvironment.0.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.compatibility.executionEnvironment[0],
+                                       $values.compatibility.executionEnvironment) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="compatibility.executionEnvironment.1">
+                                Execution environment compatibility with version but no issue
+                            </label>
+                            <input id="compatibility.executionEnvironment.1" ng-change="change()"
+                                   ng-model="project.boilerplateData.compatibility.executionEnvironment[1]"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="compatibility.executionEnvironment.1.example">Example</label>
+                            <input id="compatibility.executionEnvironment.1.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.compatibility.executionEnvironment[1],
+                                       $values.compatibility.executionEnvironment) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="compatibility.executionEnvironment.2">
+                                Execution environment compatibility with issue but no version
+                            </label>
+                            <input id="compatibility.executionEnvironment.2" ng-change="change()"
+                                   ng-model="project.boilerplateData.compatibility.executionEnvironment[2]"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="compatibility.executionEnvironment.2.example">Example</label>
+                            <input id="compatibility.executionEnvironment.2.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.compatibility.executionEnvironment[2],
+                                       $values.compatibility.executionEnvironment) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="compatibility.executionEnvironment.3">
+                                Execution environment compatibility with version and issue
+                            </label>
+                            <input id="compatibility.executionEnvironment.3" ng-change="change()"
+                                   ng-model="project.boilerplateData.compatibility.operatingSystem[3]"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="compatibility.executionEnvironment.3.example">Example</label>
+                            <input id="compatibility.executionEnvironment.3.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.compatibility.executionEnvironment[3],
+                                       $values.compatibility.executionEnvironment) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="compatibility.outputCompatibility.true">
+                                Compatible output with new version
+                            </label>
+                            <input id="compatibility.outputCompatibility.true" ng-change="change()"
+                                   ng-model="project.boilerplateData.compatibility.outputCompatibility.true"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="compatibility.outputCompatibility.true.example">Example</label>
+                            <input id="compatibility.outputCompatibility.true.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.compatibility.outputCompatibility.true,
+                                       $values.compatibility.outputCompatibility) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="compatibility.outputCompatibility.false">
+                                Incompatible output with new version
+                            </label>
+                            <input id="compatibility.outputCompatibility.false" ng-change="change()"
+                                   ng-model="project.boilerplateData.compatibility.outputCompatibility.false"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="compatibility.outputCompatibility.false.example">Example</label>
+                            <input id="compatibility.outputCompatibility.false.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.compatibility.outputCompatibility.false,
+                                       $values.compatibility.outputCompatibility) }}"/>
+                        </div>
+                    </div>
+                </div>
+            </li>
         </ul>
     </div>
 </div>

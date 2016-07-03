@@ -84,7 +84,8 @@ exports.$template = function () {
         NonFunctional: [
             'Access Control',
             'Performance Constraint',
-            'Functional Constraint'
+            'Functional Constraint',
+            'Compatibility'
         ]
     };
 
@@ -189,7 +190,7 @@ exports.$template = function () {
                 '<issue>': 'higher heap size'
             },
             outputCompatibility: {
-                '<output>': 'PDF generated',
+                '<output>': 'save file',
                 '<system>': 'system',
                 '<newVersion>': 'v1.4',
                 '<oldVersion>': 'v1.3'
