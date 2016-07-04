@@ -74,6 +74,11 @@ app.config(function ($routeProvider) {
         .when('/projects/:id/boilerplate', {
             title: 'Configure Boilerplate',
             template: '<configure-boilerplate></configure-boilerplate>'
+        })
+
+        .when('/projects/:id/export', {
+            title: 'Preview Export',
+            template: '<preview-export></preview-export>'
         });
 });
 

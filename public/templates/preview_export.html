@@ -1,0 +1,134 @@
+<div class="row no-print">
+    <div class="col s8 m9 input-field">
+        <a class="col s12 m12 dropdown-button btn blue" data-activates="dropdown">
+            <i class="material-icons left">play_for_work</i>Export as
+        </a>
+        <ul id="dropdown" class="dropdown-content">
+            <li id="exportDocx">
+                <a>
+                    <i class="material-icons left">play_for_work</i>Microsoft Word (.doc)
+                </a>
+            </li>
+            <li id="exportHTML">
+                <a>
+                    <i class="material-icons left">play_for_work</i>HTML (.html)
+                </a>
+            </li>
+            <li id="exportPDF">
+                <a>
+                    <i class="material-icons left">play_for_work</i>Portable Document Format (.pdf)
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="col s4 m3 input-field">
+        <a class="btn waves-effect waves-light red col s12 m12" ng-href="/#/projects/{{ project._id }}">
+            <i class="material-icons left">power_settings_new</i>Back
+        </a>
+    </div>
+</div>
+<div id="content" class="row">
+    <h1 id="projectName" ng-bind="project.projectName"></h1>
+    <br/>
+    <br/>
+    <h2>Project Domain: <span ng-bind="project.domainData.domainName"></span></h2>
+    <br/>
+    <h2>Functional Requirements</h2>
+    <div id="fr" class="row">
+        <div class="row" ng-if="numberFunctionalRequirement > 0">
+            <div ng-repeat="(moduleName, requirements) in project.generatedRequirements"
+                 ng-if="$modules.Functional.indexOf(moduleName) >= 0">
+                <h3 ng-bind="moduleName"></h3>
+                <ol ng-if="requirements.length > 0">
+                    <li ng-repeat="requirement in requirements"
+                        ng-bind="$formatter.requirementToString(requirement)"></li>
+                </ol>
+                <p ng-if="requirements.length == 0">
+                    No requirements specified for this module.
+                </p>
+            </div>
+        </div>
+        <p ng-if="numberFunctionalRequirement == 0">
+            No functional requirements specified.
+        </p>
+    </div>
+    <br/>
+    <h2>Non-Functional Requirements</h2>
+    <div id="nfr" class="row">
+        <div class="row" ng-if="numberNonFunctionalRequirement > 0">
+            <div ng-repeat="(moduleName, requirements) in project.generatedRequirements"
+                 ng-if="$modules.NonFunctional.indexOf(moduleName) >= 0">
+                <h3 ng-bind="moduleName"></h3>
+                <ol ng-if="requirements.length > 0">
+                    <li ng-repeat="requirement in requirements"
+                        ng-bind="$formatter.requirementToString(requirement)"></li>
+                </ol>
+                <p ng-if="requirements.length == 0">
+                    No requirements specified for this module.
+                </p>
+            </div>
+        </div>
+        <p ng-if="numberNonFunctionalRequirement == 0">
+            No non-functional requirements specified.
+        </p>
+    </div>
+</div>
+<script>
+    setTimeout(function () {
+        $('.dropdown-button').dropdown({
+            inDuration: 300,
+            outDuration: 225,
+            constrain_width: true, // Does not change width of dropdown to that of the activator
+            hover: true,
+            gutter: 0, // Spacing from edge
+            belowOrigin: false, // Displays dropdown below the button
+            alignment: 'left' // Displays dropdown with edge aligned to the left of button
+        });
+
+        $('#exportDocx').click(function () {
+            var projectName = $('#projectName').text();
+            $('#content').wordExport(projectName);
+        });
+
+        $('#exportPDF').click(function () {
+            var projectName = $('#projectName').text();
+            var doc = new jsPDF();
+
+            // We'll make our own renderer to skip this editor
+            var specialElementHandlers = {
+                '#editor': function (element, renderer) {
+                    return true;
+                }
+            };
+
+            // All units are in the set measurement for the document
+            // This can be changed to "pt" (points), "mm" (Default), "cm", "in"
+            doc.fromHTML($('#content').get(0), 15, 15, {
+                'width': 170,
+                'elementHandlers': specialElementHandlers
+            });
+
+            doc.save(projectName + '.pdf');
+        });
+
+        $('#exportHTML').click(function () {
+            var projectName = $('#projectName').text();
+            var print = window.open();
+
+            print.document.write('<html><head><title>Timetable</title>');
+            print.document.write('<title>' + projectName + '</title>');
+            print.document.write('</head><body >');
+            print.document.write($('div#content').html());
+            print.document.write('</body></html>');
+
+            print.document.close(); // necessary for IE >= 10
+            print.focus(); // necessary for IE >= 10
+
+            // Wait a while for document.write to complete
+            setTimeout(function () {
+                print.print();
+                print.close();
+            }, 100);
+        });
+    }, 500);
+</script>

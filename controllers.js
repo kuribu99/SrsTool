@@ -1275,3 +1275,35 @@ exports.ConfigureCompatibilityController = function ($scope, $routeParams, $http
         $scope.$emit('ConfigureCompatibilityController');
     }, 0);
 };
+
+exports.PreviewExportController = function ($scope, $routeParams, $http, $location, $formatter, $template) {
+    var projectID = encodeURIComponent($routeParams.id);
+
+    $scope.$formatter = $formatter;
+    $scope.$modules = $template.modules;
+    $scope.toast = toast;
+    $scope.numberFunctionalRequirement = 0;
+    $scope.numberNonFunctionalRequirement = 0;
+
+    $http.get('/api/v1/projects/' + projectID + '/view')
+        .then(function (json) {
+            if (json.data.result) {
+                $scope.project = json.data.project;
+                if ($scope.project.generatedRequirements == null)
+                    $scope.project.generatedRequirements = {};
+
+                for (var key in $scope.project.generatedRequirements) {
+                    if ($scope.$modules.Functional.indexOf(key) >= 0)
+                        $scope.numberFunctionalRequirement += $scope.project.generatedRequirements[key].length;
+                    else if ($scope.$modules.NonFunctional.indexOf(key) >= 0)
+                        $scope.numberNonFunctionalRequirement += $scope.project.generatedRequirements[key].length;
+                }
+            }
+            else
+                $location.path('/');
+        }, failCallBack);
+
+    setTimeout(function () {
+        $scope.$emit('PreviewExportController');
+    }, 0);
+};

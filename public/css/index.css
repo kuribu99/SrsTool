@@ -45,8 +45,14 @@
     font-size: 1.64rem;
 }
 
-.dropdown-content li.disabled>a,
-.dropdown-content li.disabled>a:hover {
+.dropdown-content li.disabled > a,
+.dropdown-content li.disabled > a:hover {
     background-color: #FFFFFF;
     color: #555555;
+}
+
+@media print {
+    .no-print, .no-print * {
+        display: none !important;
+    }
 }

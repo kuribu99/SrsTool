@@ -94,3 +94,10 @@ exports.configureCompatibility = function () {
         templateUrl: './templates/configure_compatibility.html'
     };
 };
+
+exports.previewExport = function () {
+    return {
+        controller: 'PreviewExportController',
+        templateUrl: './templates/preview_export.html'
+    };
+};
