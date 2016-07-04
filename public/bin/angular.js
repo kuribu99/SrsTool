@@ -1277,6 +1277,37 @@ exports.ConfigureCompatibilityController = function ($scope, $routeParams, $http
     }, 0);
 };
 
+exports.PreviewExportController = function ($scope, $routeParams, $http, $location, $formatter, $template) {
+    var projectID = encodeURIComponent($routeParams.id);
+
+    $scope.$formatter = $formatter;
+    $scope.$modules = $template.modules;
+    $scope.toast = toast;
+    $scope.numberFunctionalRequirement = 0;
+    $scope.numberNonFunctionalRequirement = 0;
+
+    $http.get('/api/v1/projects/' + projectID + '/view')
+        .then(function (json) {
+            if (json.data.result) {
+                $scope.project = json.data.project;
+                if ($scope.project.generatedRequirements == null)
+                    $scope.project.generatedRequirements = {};
+
+                for (var key in $scope.project.generatedRequirements) {
+                    if ($scope.$modules.Functional.indexOf(key) >= 0)
+                        $scope.numberFunctionalRequirement += $scope.project.generatedRequirements[key].length;
+                    else if ($scope.$modules.NonFunctional.indexOf(key) >= 0)
+                        $scope.numberNonFunctionalRequirement += $scope.project.generatedRequirements[key].length;
+                }
+            }
+            else
+                $location.path('/');
+        }, failCallBack);
+
+    setTimeout(function () {
+        $scope.$emit('PreviewExportController');
+    }, 0);
+};
 },{"underscore":5}],2:[function(require,module,exports){
 exports.home = function () {
     return {
@@ -1375,6 +1406,13 @@ exports.configureCompatibility = function () {
     };
 };
 
+exports.previewExport = function () {
+    return {
+        controller: 'PreviewExportController',
+        templateUrl: './templates/preview_export.html'
+    };
+};
+
 },{}],3:[function(require,module,exports){
 var controllers = require('./controllers');
 var directives = require('./directives');
@@ -1452,6 +1490,11 @@ app.config(function ($routeProvider) {
         .when('/projects/:id/boilerplate', {
             title: 'Configure Boilerplate',
             template: '<configure-boilerplate></configure-boilerplate>'
+        })
+
+        .when('/projects/:id/export', {
+            title: 'Preview Export',
+            template: '<preview-export></preview-export>'
         });
 });
 
