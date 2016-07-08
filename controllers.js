@@ -650,7 +650,7 @@ exports.FunctionalConstraintController = function ($scope, $routeParams, $http, 
         else if ($scope.hasActionDependency($scope.tbxActionDependency))
             toast('Action/Dependency pair already exist');
         else {
-            var newData = $scope.tbxActionDependency
+            var newData = $scope.tbxActionDependency;
             $scope.project.functionalConstraintData.actionDependencies.push(newData);
             $scope.tbxActionDependency = $scope.newActionDependency();
             $scope.tbxActionDependency.relation = newData.relation;
@@ -1015,7 +1015,7 @@ exports.ConfigureReliabilityController = function ($scope, $routeParams, $http, 
     $scope.newRedundancyOption = function () {
         return {
             name: '',
-            prevention: ''
+            failure: ''
         };
     };
 
@@ -1023,7 +1023,7 @@ exports.ConfigureReliabilityController = function ($scope, $routeParams, $http, 
         if ($scope.tbxRedundancyOption.name == '')
             toast('Redundancy name is required');
         else if ($scope.hasRedundancyOption($scope.tbxRedundancyOption))
-            toast('Redundancy or prevention already exist');
+            toast('Redundancy or failure already exist');
         else {
             $scope.project.reliabilityData.redundancyOption.push($scope.tbxRedundancyOption);
             $scope.tbxRedundancyOption = $scope.newRedundancyOption();
@@ -1053,7 +1053,8 @@ exports.ConfigureReliabilityController = function ($scope, $routeParams, $http, 
     $scope.newRecoveryItem = function () {
         return {
             failure: '',
-            item: ''
+            item: '',
+            source: ''
         };
     };
 
@@ -1166,6 +1167,22 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
                         outputCompatibility: []
                     };
 
+                if ($scope.project.reliabilityData == null)
+                    $scope.project.reliabilityData = {
+                        availability: {
+                            enabled: false,
+                            value: 99
+                        },
+                        maintenance: {
+                            enabled: false,
+                            value: '1 hour',
+                            period: 'week'
+                        },
+                        recoveryPeriod: [],
+                        redundancyOption: [],
+                        recoveryItem: []
+                    }
+
                 for (var key in $scope.$boilerplateTemplates)
                     if ($scope.project.boilerplateData[key] == null)
                         $scope.project.boilerplateData[key] = $scope.$boilerplateTemplates[key];
@@ -1182,7 +1199,8 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
             'Action Control': [],
             'Performance Constraint': [],
             'Functional Constraint': [],
-            'Compatibility': []
+            'Compatibility': [],
+            'Reliability': []
         };
 
         var moduleName = 'Access Control';
@@ -1319,6 +1337,72 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
                 $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
         }
 
+        moduleName = 'Reliability';
+        if($scope.project.reliabilityData.availability.enabled) {
+            var boilerplate = $scope.project.boilerplateData.reliability.availability;
+            var values = {
+                '<system>': $scope.project.projectName,
+                '<value>': $scope.project.reliabilityData.availability.value
+            };
+
+            if (!$scope.hasRequirement(moduleName, values))
+                $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
+        }
+
+        if($scope.project.reliabilityData.maintenance.enabled) {
+            var boilerplate = $scope.project.boilerplateData.reliability.maintenance;
+            var values = {
+                '<system>': $scope.project.projectName,
+                '<value>': $scope.project.reliabilityData.maintenance.value,
+                '<period>': $scope.project.reliabilityData.maintenance.period
+            };
+
+            if (!$scope.hasRequirement(moduleName, values))
+                $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
+        }
+
+        for (var index in $scope.project.reliabilityData.recoveryPeriod) {
+            var item = $scope.project.reliabilityData.recoveryPeriod[index];
+            var boilerplate = $scope.project.boilerplateData.reliability.recoveryPeriod[item.action != ''];
+            var values = {
+                '<system>': $scope.project.projectName,
+                '<time>': item.time,
+                '<failure>': item.failure,
+                '<action>': item.action
+            };
+
+            if (!$scope.hasRequirement(moduleName, values))
+                $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
+        }
+
+        for (var index in $scope.project.reliabilityData.redundancyOption) {
+            var item = $scope.project.reliabilityData.redundancyOption[index];
+            var boilerplate = $scope.project.boilerplateData.reliability.redundancyOption[item.failure != ''];
+            var values = {
+                '<system>': $scope.project.projectName,
+                '<name>': item.name,
+                '<failure>': item.failure
+            };
+
+            if (!$scope.hasRequirement(moduleName, values))
+                $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
+        }
+
+        for (var index in $scope.project.reliabilityData.recoveryItem) {
+            var item = $scope.project.reliabilityData.recoveryItem[index];
+            var boilerplate = $scope.project.boilerplateData.reliability.recoveryItem[item.source != ''];
+            var values = {
+                '<system>': $scope.project.projectName,
+                '<item>': item.item,
+                '<failure>': item.failure,
+                '<source>': item.source
+            };
+
+            if (!$scope.hasRequirement(moduleName, values))
+                $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
+        }
+
+        
         $scope.numberRequirements = _.flatten($scope.generatedRequirements).length;
         $scope.numberModules = Object.keys($scope.generatedRequirements).length;
         $scope.numberNewRequirements = 0;
@@ -1412,7 +1496,7 @@ exports.ConfigureBoilerplateController = function ($scope, $routeParams, $http, 
 
                 for (var key in $scope.$boilerplateTemplates)
                     if ($scope.project.boilerplateData[key] == null)
-                        $scope.project.boilerplateData[key] = _.clone($scope.$boilerplateTemplates[key]);
+                        $scope.project.boilerplateData[key] = JSON.parse(JSON.stringify($scope.$boilerplateTemplates[key]));
             }
             else
                 $location.path('/');

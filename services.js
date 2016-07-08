@@ -85,7 +85,8 @@ exports.$template = function () {
             'Access Control',
             'Performance Constraint',
             'Functional Constraint',
-            'Compatibility'
+            'Compatibility',
+            'Reliability'
         ]
     };
 
@@ -141,6 +142,22 @@ exports.$template = function () {
                 true: "The <output> of the <system> <newVersion> shall be compatible with <oldVersion>",
                 false: "The <output> of the <system> <newVersion> shall not be compatible with <oldVersion>"
             }
+        },
+        reliability: {
+            availability: "The <system> shall be available <value>% of the time",
+            maintenance: "The <system> shall be down for maintenance for <value> every <period>",
+            recoveryPeriod: {
+                true: "The <system> shall be able to <action> within <time> in case of <failure>",
+                false: "The <system> shall be able to restart and continue operation as usual within <time> in case of <failure>"
+            },
+            redundancyOption: {
+                true: "The <system> shall be provide <name> to prevent <failure>",
+                false: "The <system> shall be provide <name>"
+            },
+            recoveryItem: {
+                true: "The <system> shall be able to recover <item> from <source> in case of <failure>",
+                false: "The <system> shall be able to recover <item> in case of <failure>"
+            }
         }
     };
 
@@ -194,6 +211,34 @@ exports.$template = function () {
                 '<system>': 'system',
                 '<newVersion>': 'v1.4',
                 '<oldVersion>': 'v1.3'
+            }
+        },
+        reliability: {
+            availability: {
+                '<system>': 'system',
+                '<value>': '99.9999'
+            },
+            maintenance: {
+                '<system>': 'system',
+                '<value>': '1 hour',
+                '<period>': 'week'
+            },
+            recoveryPeriod: {
+                '<system>': 'system',
+                '<time>': '1 hour',
+                '<failure>': 'power failure',
+                '<action>': 'restore database'
+            },
+            redundancyOption: {
+                '<system>': 'system',
+                '<name>': 'database redundancy',
+                '<failure>': 'database corruption'
+            },
+            recoveryItem: {
+                '<system>': 'system',
+                '<item>': 'database',
+                '<source>': 'backup disc',
+                '<failure>': 'database corruption'
             }
         }
     };

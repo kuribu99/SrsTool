@@ -167,9 +167,9 @@
                                ng-model="tbxRedundancyOption.name"/>
                     </div>
                     <div class="col s4 m4 input-field">
-                        <label for="tbxRedundancyOption.prevention">To prevent (optional)</label>
-                        <input id="tbxRedundancyOption.prevention" type="text"
-                               ng-model="tbxRedundancyOption.prevention"/>
+                        <label for="tbxRedundancyOption.failure">To prevent failure (optional)</label>
+                        <input id="tbxRedundancyOption.failure" type="text"
+                               ng-model="tbxRedundancyOption.failure"/>
                     </div>
                     <div class="col s4 m4 valign">
                         <button class="btn waves-effect waves-light col s12 m12" ng-click="addRedundancyOption()">
@@ -189,7 +189,7 @@
                         <tbody>
                         <tr ng-repeat="item in project.reliabilityData.redundancyOption track by $index">
                             <td ng-bind="item.name"></td>
-                            <td ng-bind="item.prevention"></td>
+                            <td ng-bind="item.failure"></td>
                             <td>
                                 <a class="waves-effect waves-light btn red"
                                    ng-click="deleteRedundancyOption($index)">
@@ -211,17 +211,22 @@
             </div>
             <div class="collapsible-body">
                 <div class="row valign-wrapper">
-                    <div class="col s4 m4 input-field">
+                    <div class="col s4 m3 input-field">
                         <label for="tbxRecoveryItem.failure">Failure/Case Name</label>
                         <input id="tbxRecoveryItem.failure" type="text"
                                ng-model="tbxRecoveryItem.failure"/>
                     </div>
-                    <div class="col s4 m4 input-field">
+                    <div class="col s4 m3 input-field">
                         <label for="tbxRecoveryItem.item">Recovered Item Name</label>
                         <input id="tbxRecoveryItem.item" type="text"
                                ng-model="tbxRecoveryItem.item"/>
                     </div>
-                    <div class="col s4 m4 valign">
+                    <div class="col s4 m3 input-field">
+                        <label for="tbxRecoveryItem.source">Recovered Source (Optional)</label>
+                        <input id="tbxRecoveryItem.source" type="text"
+                               ng-model="tbxRecoveryItem.source"/>
+                    </div>
+                    <div class="col s4 m3 valign">
                         <button class="btn waves-effect waves-light col s12 m12" ng-click="addRecoveryItem()">
                             Add
                         </button>
@@ -233,6 +238,7 @@
                         <tr>
                             <td>Failure/Case Name</td>
                             <td>Recovered Item Name</td>
+                            <td>Recovery Source</td>
                             <td></td>
                         </tr>
                         </thead>
@@ -240,6 +246,7 @@
                         <tr ng-repeat="item in project.reliabilityData.recoveryItem track by $index">
                             <td ng-bind="item.failure"></td>
                             <td ng-bind="item.item"></td>
+                            <td ng-bind="item.source"></td>
                             <td>
                                 <a class="waves-effect waves-light btn red"
                                    ng-click="deleteRecoveryItem($index)">

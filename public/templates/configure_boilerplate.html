@@ -466,6 +466,141 @@
                     </div>
                 </div>
             </li>
+            <li>
+                <div class="collapsible-header active"><h5>Compatibility Module</h5></div>
+                <div class="collapsible-body">
+                    <div class="row margin-top-10 valign-wrapper">
+                        <div class="col s6 m8 valign"
+                             ng-bind="'Available placeholders: <system>, <value>, <period>, <time>, <failure>, <action>, <name>, <item>, <source>'"></div>
+                        <div class="col s6 m4 valign">
+                            <button class="btn waves-effect waves-light col s12 m12"
+                                    ng-click="restore('reliability')">
+                                Restore Default Boilerplate
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="reliability.availability">
+                                Availability
+                            </label>
+                            <input id="reliability.availability" ng-change="change()"
+                                   ng-model="project.boilerplateData.reliability.availability"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="reliability.availability.example">Example</label>
+                            <input id="reliability.availability.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.reliability.availability,
+                                       $values.reliability.availability) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="reliability.availability">
+                                Maintenance
+                            </label>
+                            <input id="reliability.maintenance" ng-change="change()"
+                                   ng-model="project.boilerplateData.reliability.maintenance"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="reliability.maintenance.example">Example</label>
+                            <input id="reliability.maintenance.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.reliability.maintenance,
+                                       $values.reliability.maintenance) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="reliability.recoveryPeriod.true">
+                                Recovery period from failure with action
+                            </label>
+                            <input id="reliability.recoveryPeriod.true" ng-change="change()"
+                                   ng-model="project.boilerplateData.reliability.recoveryPeriod.true"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="reliability.recoveryPeriod.true.example">Example</label>
+                            <input id="reliability.recoveryPeriod.true.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.reliability.recoveryPeriod.true,
+                                       $values.reliability.recoveryPeriod) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="reliability.recoveryPeriod.false">
+                                Recovery period from failure without action
+                            </label>
+                            <input id="reliability.recoveryPeriod.false" ng-change="change()"
+                                   ng-model="project.boilerplateData.reliability.recoveryPeriod.false"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="reliability.recoveryPeriod.false.example">Example</label>
+                            <input id="reliability.recoveryPeriod.false.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.reliability.recoveryPeriod.false,
+                                       $values.reliability.recoveryPeriod) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="reliability.redundancyOption.true">
+                                Redundancy option with failure reason
+                            </label>
+                            <input id="reliability.redundancyOption.true" ng-change="change()"
+                                   ng-model="project.boilerplateData.reliability.redundancyOption.true"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="reliability.redundancyOption.true.example">Example</label>
+                            <input id="reliability.redundancyOption.true.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.reliability.redundancyOption.true,
+                                       $values.reliability.redundancyOption) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="reliability.redundancyOption.false">
+                                Redundancy option without failure reason
+                            </label>
+                            <input id="reliability.redundancyOption.false" ng-change="change()"
+                                   ng-model="project.boilerplateData.reliability.redundancyOption.false"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="reliability.redundancyOption.false.example">Example</label>
+                            <input id="reliability.redundancyOption.false.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.reliability.redundancyOption.false,
+                                       $values.reliability.redundancyOption) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="reliability.recoveryItem.true">
+                                Item recovery from failure with source
+                            </label>
+                            <input id="reliability.recoveryItem.true" ng-change="change()"
+                                   ng-model="project.boilerplateData.reliability.recoveryItem.true"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="reliability.recoveryItem.true.example">Example</label>
+                            <input id="reliability.recoveryItem.true.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.reliability.recoveryItem.true,
+                                       $values.reliability.recoveryItem) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="reliability.recoveryItem.false">
+                                Item recovery from failure without source
+                            </label>
+                            <input id="reliability.recoveryItem.false" ng-change="change()"
+                                   ng-model="project.boilerplateData.reliability.recoveryItem.false"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="reliability.recoveryItem.false.example">Example</label>
+                            <input id="reliability.recoveryItem.false.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.reliability.recoveryItem.false,
+                                       $values.reliability.recoveryItem) }}"/>
+                        </div>
+                    </div>
+                </div>
+            </li>
         </ul>
     </div>
 </div>
