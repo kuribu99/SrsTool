@@ -51,6 +51,14 @@
     color: #555555;
 }
 
+.fit-height {
+    height: 3.5em;
+}
+
+h5.col {
+    padding: 0 !important;
+}
+
 @media print {
     .no-print, .no-print * {
         display: none !important;

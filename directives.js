@@ -46,20 +46,6 @@ exports.editDomain = function () {
     };
 };
 
-exports.generateRequirement = function () {
-    return {
-        controller: 'GenerateRequirementController',
-        templateUrl: './templates/generate_requirement.html'
-    };
-};
-
-exports.accessControl = function () {
-    return {
-        controller: 'AccessControlController',
-        templateUrl: './templates/access_control.html'
-    };
-};
-
 exports.actionControl = function () {
     return {
         controller: 'ActionControlController',
@@ -67,10 +53,10 @@ exports.actionControl = function () {
     };
 };
 
-exports.configureBoilerplate = function () {
+exports.accessControl = function () {
     return {
-        controller: 'ConfigureBoilerplateController',
-        templateUrl: './templates/configure_boilerplate.html'
+        controller: 'AccessControlController',
+        templateUrl: './templates/access_control.html'
     };
 };
 
@@ -92,6 +78,27 @@ exports.configureCompatibility = function () {
     return {
         controller: 'ConfigureCompatibilityController',
         templateUrl: './templates/configure_compatibility.html'
+    };
+};
+
+exports.configureReliability = function () {
+    return {
+        controller: 'ConfigureReliabilityController',
+        templateUrl: './templates/configure_reliability.html'
+    };
+};
+
+exports.generateRequirement = function () {
+    return {
+        controller: 'GenerateRequirementController',
+        templateUrl: './templates/generate_requirement.html'
+    };
+};
+
+exports.configureBoilerplate = function () {
+    return {
+        controller: 'ConfigureBoilerplateController',
+        templateUrl: './templates/configure_boilerplate.html'
     };
 };
 

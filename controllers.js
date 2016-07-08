@@ -952,15 +952,145 @@ exports.ConfigureReliabilityController = function ($scope, $routeParams, $http, 
 
                 if (!$scope.project.reliabilityData)
                     $scope.project.reliabilityData = {
-                        operatingSystem: [],
-                        executionEnvironment: [],
-                        outputCompatibility: []
+                        availability: {
+                            enabled: false,
+                            value: 99
+                        },
+                        maintenance: {
+                            enabled: false,
+                            value: '1 hour',
+                            period: 'week'
+                        },
+                        recoveryPeriod: [],
+                        redundancyOption: [],
+                        recoveryItem: []
                     };
 
             } else
                 $location.path('/projects/' + $scope.project._id);
 
         }, failCallBack);
+
+    $scope.newRecoveryPeriod = function () {
+        return {
+            failure: '',
+            time: '',
+            action: ''
+        };
+    };
+
+    $scope.addRecoveryPeriod = function () {
+        if ($scope.tbxRecoveryPeriod.failure == '')
+            toast('Failure/case name is required');
+        else if ($scope.tbxRecoveryPeriod.time == '')
+            toast('Time taken for recovery is required');
+        else if ($scope.hasRecoveryPeriod($scope.tbxRecoveryPeriod))
+            toast('Failure/case or time or action already exist');
+        else {
+            $scope.project.reliabilityData.recoveryPeriod.push($scope.tbxRecoveryPeriod);
+            $scope.tbxRecoveryPeriod = $scope.newRecoveryPeriod();
+            $scope.changed = true;
+        }
+    };
+
+    $scope.hasRecoveryPeriod = function (newRecoveryPeriod) {
+        return arrayHasObject($scope.project.reliabilityData.recoveryPeriod, newRecoveryPeriod);
+    };
+
+    $scope.deleteRecoveryPeriod = function (index) {
+        $scope.project.reliabilityData.recoveryPeriod.splice(index, 1);
+        $scope.changed = true;
+    };
+
+    $scope.getRecoveryPeriodCount = function () {
+        var count = $scope.project ? $scope.project.reliabilityData.recoveryPeriod.length : 0;
+        switch (count) {
+            case 0:
+                return 'None';
+            default:
+                return count + ' defined';
+        }
+    };
+
+    $scope.newRedundancyOption = function () {
+        return {
+            name: '',
+            prevention: ''
+        };
+    };
+
+    $scope.addRedundancyOption = function () {
+        if ($scope.tbxRedundancyOption.name == '')
+            toast('Redundancy name is required');
+        else if ($scope.hasRedundancyOption($scope.tbxRedundancyOption))
+            toast('Redundancy or prevention already exist');
+        else {
+            $scope.project.reliabilityData.redundancyOption.push($scope.tbxRedundancyOption);
+            $scope.tbxRedundancyOption = $scope.newRedundancyOption();
+            $scope.changed = true;
+        }
+    };
+
+    $scope.hasRedundancyOption = function (newRedundancyOption) {
+        return arrayHasObject($scope.project.reliabilityData.redundancyOption, newRedundancyOption);
+    };
+
+    $scope.deleteRedundancyOption = function (index) {
+        $scope.project.reliabilityData.redundancyOption.splice(index, 1);
+        $scope.changed = true;
+    };
+
+    $scope.getRedundancyOptionCount = function () {
+        var count = $scope.project ? $scope.project.reliabilityData.redundancyOption.length : 0;
+        switch (count) {
+            case 0:
+                return 'None';
+            default:
+                return count + ' defined';
+        }
+    };
+
+    $scope.newRecoveryItem = function () {
+        return {
+            failure: '',
+            item: ''
+        };
+    };
+
+    $scope.addRecoveryItem = function () {
+        if ($scope.tbxRecoveryItem.failure == '')
+            toast('Failure/Case name is required');
+        else if ($scope.tbxRecoveryItem.item == '')
+            toast('Item name is required');
+        else if ($scope.hasRecoveryItem($scope.tbxRecoveryItem))
+            toast('Failure/Case or item already exist');
+        else {
+            $scope.project.reliabilityData.recoveryItem.push($scope.tbxRecoveryItem);
+            $scope.tbxRecoveryItem = $scope.newRecoveryItem();
+            $scope.changed = true;
+        }
+    };
+
+    $scope.hasRecoveryItem = function (newRecoveryItem) {
+        return arrayHasObject($scope.project.reliabilityData.recoveryItem, newRecoveryItem);
+    };
+
+    $scope.deleteRecoveryItem = function (index) {
+        $scope.project.reliabilityData.recoveryItem.splice(index, 1);
+        $scope.changed = true;
+    };
+
+    $scope.getRecoveryItemCount = function () {
+        var count = $scope.project ? $scope.project.reliabilityData.recoveryItem.length : 0;
+        switch (count) {
+            case 0:
+                return 'None';
+            case 1:
+                return count + ' item';
+            default:
+                return count + ' items';
+        }
+    };
 
     $scope.saveProject = function () {
         $http.patch('/api/v1/projects/' + projectID + '/reliability-data', {
@@ -984,6 +1114,10 @@ exports.ConfigureReliabilityController = function ($scope, $routeParams, $http, 
     $scope.change = function () {
         $scope.changed = true;
     };
+
+    $scope.tbxRecoveryPeriod = $scope.newRecoveryPeriod();
+    $scope.tbxRedundancyOption = $scope.newRedundancyOption();
+    $scope.tbxRecoveryItem = $scope.newRecoveryItem();
 
     setTimeout(function () {
         $scope.$emit('ConfigureReliabilityController');
