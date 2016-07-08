@@ -41,14 +41,9 @@ app.config(function ($routeProvider) {
             template: '<edit-domain></edit-domain>'
         })
 
-        .when('/projects/:id/generate', {
-            title: 'Generate Requirements',
-            template: '<generate-requirement></generate-requirement>'
-        })
-
-        .when('/projects/:id/performance-constraint', {
-            title: 'Configure Performance Constraint',
-            template: '<performance-constraint></performance-constraint>'
+        .when('/projects/:id/action-control', {
+            title: 'Configure Action Control',
+            template: '<action-control></action-control>'
         })
 
         .when('/projects/:id/access-control', {
@@ -56,9 +51,9 @@ app.config(function ($routeProvider) {
             template: '<access-control></access-control>'
         })
 
-        .when('/projects/:id/action-control', {
-            title: 'Configure Action Control',
-            template: '<action-control></action-control>'
+        .when('/projects/:id/performance-constraint', {
+            title: 'Configure Performance Constraint',
+            template: '<performance-constraint></performance-constraint>'
         })
 
         .when('/projects/:id/functional-constraint', {
@@ -69,6 +64,16 @@ app.config(function ($routeProvider) {
         .when('/projects/:id/configure-compatibility', {
             title: 'Configure Compatibility',
             template: '<configure-compatibility></configure-compatibility>'
+        })
+
+        .when('/projects/:id/configure-reliability', {
+            title: 'Configure Reliability',
+            template: '<configure-reliability></configure-reliability>'
+        })
+
+        .when('/projects/:id/generate', {
+            title: 'Generate Requirements',
+            template: '<generate-requirement></generate-requirement>'
         })
 
         .when('/projects/:id/boilerplate', {
@@ -82,7 +87,7 @@ app.config(function ($routeProvider) {
         });
 });
 
-app.run(['$rootScope', function ($rootScope) {
+app.run(['$rootScope', function ($rootScope, $timeout) {
     $rootScope.$on('$routeChangeSuccess', function (event, current, previous) {
         try {
             $rootScope.title = current.$$route.title;
