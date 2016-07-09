@@ -86,7 +86,8 @@ exports.$template = function () {
             'Performance Constraint',
             'Functional Constraint',
             'Compatibility',
-            'Reliability'
+            'Reliability',
+            'Security'
         ]
     };
 
@@ -158,6 +159,22 @@ exports.$template = function () {
                 true: "The <system> shall be able to recover <item> from <source> in case of <failure>",
                 false: "The <system> shall be able to recover <item> in case of <failure>"
             }
+        },
+        security: {
+            itemAccess: {
+                true: {
+                    0: "The <item> shall only be accessible by <actor>",
+                    1: "The <item> shall only be accessible if <condition>",
+                    2: "The <item> shall only be accessible by <actor> if <condition>"
+                },
+                false: {
+                    0: "The <item> shall not be accessible by <actor>",
+                    1: "The <item> shall not be accessible if <condition>",
+                    2: "The <item> shall not be accessible by <actor> if <condition>"
+                }
+            },
+            validation: "The <system> shall validate <item> by <algorithm>",
+            encryption: "The <system> shall use <encryption> to <action>"
         }
     };
 
@@ -240,6 +257,30 @@ exports.$template = function () {
                 '<source>': 'backup disc',
                 '<failure>': 'database corruption'
             }
+        },
+        security: {
+            itemAccess: {
+                true: {
+                    '<item>': 'project',
+                    '<actor>': 'owner',
+                    '<condition>': 'they are logged in'
+                },
+                false: {
+                    '<item>': 'project',
+                    '<actor>': 'other user',
+                    '<condition>': 'not are logged in'
+                }
+            },
+            validation: {
+                '<system>': 'system',
+                '<item>': 'patch file',
+                '<algorithm>': 'MD5 checksum'
+            },
+            encryption: {
+                '<system>': 'system',
+                '<encryption>': 'HTTPS protocol',
+                '<action>': 'transfer data over Internet'
+            }
         }
     };
 
@@ -255,6 +296,10 @@ exports.$template = function () {
     this.compatibilityOptions = {
         true: 'Yes',
         false: 'No'
+    };
+    this.itemAccessOptions = {
+        true: "Accessible",
+        false: "Inaccessible"
     };
 
     return this;

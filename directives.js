@@ -88,6 +88,13 @@ exports.configureReliability = function () {
     };
 };
 
+exports.configureSecurity = function () {
+    return {
+        controller: 'ConfigureSecurityController',
+        templateUrl: './templates/configure_security.html'
+    };
+};
+
 exports.generateRequirement = function () {
     return {
         controller: 'GenerateRequirementController',

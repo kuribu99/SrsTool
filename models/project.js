@@ -80,6 +80,11 @@ var projectSchema = {
             redundancyOption: [],
             recoveryItem: []
         }
+    },
+    securityData: {
+        itemAccess: [],
+        validation: [],
+        encryption: []
     }
 };
 

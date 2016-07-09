@@ -939,10 +939,9 @@ exports.ConfigureCompatibilityController = function ($scope, $routeParams, $http
     }, 0);
 };
 
-exports.ConfigureReliabilityController = function ($scope, $routeParams, $http, $location, $template) {
+exports.ConfigureReliabilityController = function ($scope, $routeParams, $http, $location) {
     var projectID = encodeURIComponent($routeParams.id);
 
-    $scope.$compatibilityOptions = $template.compatibilityOptions;
     $scope.changed = false;
 
     $http.get('/api/v1/projects/' + projectID + '/reliability-data')
@@ -1125,6 +1124,189 @@ exports.ConfigureReliabilityController = function ($scope, $routeParams, $http, 
     }, 0);
 };
 
+exports.ConfigureSecurityController = function ($scope, $routeParams, $http, $location, $template) {
+    var projectID = encodeURIComponent($routeParams.id);
+
+    $scope.$itemAccessOptions = $template.itemAccessOptions;
+    $scope.changed = false;
+
+    $http.get('/api/v1/projects/' + projectID + '/security-data')
+        .then(function (json) {
+            if (json.data.result) {
+                $scope.project = json.data.project;
+
+                if (!$scope.project.securityData)
+                    $scope.project.securityData = {
+                        itemAccess: [],
+                        validation: [],
+                        encryption: []
+                    };
+
+            } else
+                $location.path('/projects/' + $scope.project._id);
+
+        }, failCallBack);
+
+    $scope.newItemAccess = function () {
+        return {
+            item: '',
+            actor: '',
+            condition: '',
+            allowed: ''
+        };
+    };
+
+    $scope.addItemAccess = function () {
+        if ($scope.tbxItemAccess.item == '')
+            toast('Item name is required');
+        else if ($scope.tbxItemAccess.actor == '')
+            toast('Actor name is required');
+        else if ($scope.tbxItemAccess.allowed == '')
+            toast('Item accessible is required');
+        else if ($scope.hasItemAccess($scope.tbxItemAccess))
+            toast('Item or actor or item accessible already exist');
+        else {
+            var newData = $scope.tbxItemAccess;
+            $scope.project.securityData.itemAccess.push(newData);
+            $scope.tbxItemAccess = $scope.newItemAccess();
+            $scope.tbxItemAccess.allowed = newData.allowed;
+            $scope.change();
+        }
+    };
+
+    $scope.hasItemAccess = function (newItemAccess) {
+        return arrayHasObject($scope.project.securityData.itemAccess, newItemAccess);
+    };
+
+    $scope.deleteItemAccess = function (index) {
+        $scope.project.securityData.itemAccess.splice(index, 1);
+        $scope.changed = true;
+    };
+
+    $scope.getItemAccessCount = function () {
+        var count = $scope.project ? $scope.project.securityData.itemAccess.length : 0;
+        switch (count) {
+            case 0:
+                return 'None';
+            case 1:
+                return count + ' item';
+            default:
+                return count + ' items';
+        }
+    };
+
+    $scope.newValidation = function () {
+        return {
+            item: '',
+            algorithm: ''
+        };
+    };
+
+    $scope.addValidation = function () {
+        if ($scope.tbxValidation.item == '')
+            toast('Item name is required');
+        else if ($scope.tbxValidation.algorithm == '')
+            toast('Algorithm is required');
+        else if ($scope.hasValidation($scope.tbxValidation))
+            toast('Item or validation already exist');
+        else {
+            $scope.project.securityData.validation.push($scope.tbxValidation);
+            $scope.tbxValidation = $scope.newValidation();
+            $scope.changed = true;
+        }
+    };
+
+    $scope.hasValidation = function (newValidation) {
+        return arrayHasObject($scope.project.securityData.validation, newValidation);
+    };
+
+    $scope.deleteValidation = function (index) {
+        $scope.project.securityData.validation.splice(index, 1);
+        $scope.changed = true;
+    };
+
+    $scope.getValidationCount = function () {
+        var count = $scope.project ? $scope.project.securityData.validation.length : 0;
+        switch (count) {
+            case 0:
+                return 'None';
+            default:
+                return count + ' defined';
+        }
+    };
+
+    $scope.newEncryption = function () {
+        return {
+            encryption: '',
+            action: ''
+        };
+    };
+
+    $scope.addEncryption = function () {
+        if ($scope.tbxEncryption.encryption == '')
+            toast('Encryption name is required');
+        else if ($scope.tbxEncryption.action == '')
+            toast('Action is required');
+        else if ($scope.hasEncryption($scope.tbxEncryption))
+            toast('Encryption or action already exist');
+        else {
+            $scope.project.securityData.encryption.push($scope.tbxEncryption);
+            $scope.tbxEncryption = $scope.newEncryption();
+            $scope.changed = true;
+        }
+    };
+
+    $scope.hasEncryption = function (newEncryption) {
+        return arrayHasObject($scope.project.securityData.encryption, newEncryption);
+    };
+
+    $scope.deleteEncryption = function (index) {
+        $scope.project.securityData.encryption.splice(index, 1);
+        $scope.changed = true;
+    };
+
+    $scope.getEncryptionCount = function () {
+        var count = $scope.project ? $scope.project.securityData.encryption.length : 0;
+        switch (count) {
+            case 0:
+                return 'None';
+            default:
+                return count + ' defined';
+        }
+    };
+
+    $scope.saveProject = function () {
+        $http.patch('/api/v1/projects/' + projectID + '/security-data', {
+            securityData: $scope.project.securityData
+        }).then(function (json) {
+            if (json.data.result) {
+                $scope.changed = false;
+                toast("Saved successfully");
+            }
+            else
+                console.log(json.data);
+        }, failCallBack);
+    };
+
+    $scope.back = function () {
+        if ($scope.changed && confirmBack())
+            $scope.saveProject();
+        $location.path('/projects/' + $scope.project._id);
+    };
+
+    $scope.change = function () {
+        $scope.changed = true;
+    };
+
+    $scope.tbxItemAccess = $scope.newItemAccess();
+    $scope.tbxValidation = $scope.newValidation();
+    $scope.tbxEncryption = $scope.newEncryption();
+
+    setTimeout(function () {
+        $scope.$emit('ConfigureSecurityController');
+    }, 0);
+};
+
 exports.GenerateRequirementController = function ($scope, $routeParams, $http, $location, $formatter, $template) {
     var projectID = encodeURIComponent($routeParams.id);
 
@@ -1200,7 +1382,8 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
             'Performance Constraint': [],
             'Functional Constraint': [],
             'Compatibility': [],
-            'Reliability': []
+            'Reliability': [],
+            'Security': []
         };
 
         var moduleName = 'Access Control';
@@ -1338,7 +1521,7 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
         }
 
         moduleName = 'Reliability';
-        if($scope.project.reliabilityData.availability.enabled) {
+        if ($scope.project.reliabilityData.availability.enabled) {
             var boilerplate = $scope.project.boilerplateData.reliability.availability;
             var values = {
                 '<system>': $scope.project.projectName,
@@ -1349,7 +1532,7 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
                 $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
         }
 
-        if($scope.project.reliabilityData.maintenance.enabled) {
+        if ($scope.project.reliabilityData.maintenance.enabled) {
             var boilerplate = $scope.project.boilerplateData.reliability.maintenance;
             var values = {
                 '<system>': $scope.project.projectName,
@@ -1402,7 +1585,47 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
                 $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
         }
 
-        
+        moduleName = 'Security';
+        for (var index in $scope.project.securityData.itemAccess) {
+            var item = $scope.project.securityData.itemAccess[index];
+            var boilerplateNo = (item.condition == '' ? 0 : item.actor == '' ? 1 : 2);
+            var boilerplate = $scope.project.boilerplateData.security.itemAccess[item.allowed][boilerplateNo];
+            var values = {
+                '<item>': item.item,
+                '<actor>': item.actor,
+                '<condition>': item.condition
+            };
+
+            if (!$scope.hasRequirement(moduleName, values))
+                $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
+        }
+
+        for (var index in $scope.project.securityData.validation) {
+            var item = $scope.project.securityData.validation[index];
+            var boilerplate = $scope.project.boilerplateData.security.validation;
+            var values = {
+                '<system>': $scope.project.projectName,
+                '<item>': item.item,
+                '<algorithm>': item.algorithm
+            };
+
+            if (!$scope.hasRequirement(moduleName, values))
+                $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
+        }
+
+        for (var index in $scope.project.securityData.encryption) {
+            var item = $scope.project.securityData.encryption[index];
+            var boilerplate = $scope.project.boilerplateData.security.encryption;
+            var values = {
+                '<system>': $scope.project.projectName,
+                '<encryption>': item.encryption,
+                '<action>': item.action
+            };
+
+            if (!$scope.hasRequirement(moduleName, values))
+                $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
+        }
+
         $scope.numberRequirements = _.flatten($scope.generatedRequirements).length;
         $scope.numberModules = Object.keys($scope.generatedRequirements).length;
         $scope.numberNewRequirements = 0;

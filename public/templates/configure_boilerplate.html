@@ -601,6 +601,141 @@
                     </div>
                 </div>
             </li>
+            <li>
+                <div class="collapsible-header active"><h5>Security Module</h5></div>
+                <div class="collapsible-body">
+                    <div class="row margin-top-10 valign-wrapper">
+                        <div class="col s6 m8 valign"
+                             ng-bind="'Available placeholders: <system>, <item>, <actor>, <condition>, <algorithm>, <encryption>, <action>'"></div>
+                        <div class="col s6 m4 valign">
+                            <button class="btn waves-effect waves-light col s12 m12"
+                                    ng-click="restore('security')">
+                                Restore Default Boilerplate
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="security.itemAccess.true.0">
+                                Accessible item with actor
+                            </label>
+                            <input id="security.itemAccess.true.0" ng-change="change()"
+                                   ng-model="project.boilerplateData.security.itemAccess.true[0]"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="security.itemAccess.true.0.example">Example</label>
+                            <input id="security.itemAccess.true.0.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.security.itemAccess.true[0],
+                                       $values.security.itemAccess.true) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="security.itemAccess.true.1">
+                                Accessible item with condition
+                            </label>
+                            <input id="security.itemAccess.true.1" ng-change="change()"
+                                   ng-model="project.boilerplateData.security.itemAccess.true[1]"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="security.itemAccess.true.1.example">Example</label>
+                            <input id="security.itemAccess.true.1.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.security.itemAccess.true[1],
+                                       $values.security.itemAccess.true) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="security.itemAccess.true.2">
+                                Accessible item with actor and condition
+                            </label>
+                            <input id="security.itemAccess.true.2" ng-change="change()"
+                                   ng-model="project.boilerplateData.security.itemAccess.true[2]"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="security.itemAccess.true.2.example">Example</label>
+                            <input id="security.itemAccess.true.2.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.security.itemAccess.true[2],
+                                       $values.security.itemAccess.true) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="security.itemAccess.false.0">
+                                Inaccessible item with actor
+                            </label>
+                            <input id="security.itemAccess.false.0" ng-change="change()"
+                                   ng-model="project.boilerplateData.security.itemAccess.false[0]"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="security.itemAccess.false.0.example">Example</label>
+                            <input id="security.itemAccess.false.0.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.security.itemAccess.false[0],
+                                       $values.security.itemAccess.false) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="security.itemAccess.false.1">
+                                Inaccessible item with condition
+                            </label>
+                            <input id="security.itemAccess.false.1" ng-change="change()"
+                                   ng-model="project.boilerplateData.security.itemAccess.false[1]"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="security.itemAccess.false.1.example">Example</label>
+                            <input id="security.itemAccess.false.1.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.security.itemAccess.false[1],
+                                       $values.security.itemAccess.false) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="security.itemAccess.false.2">
+                                Inaccessible item with actor and condition
+                            </label>
+                            <input id="security.itemAccess.false.2" ng-change="change()"
+                                   ng-model="project.boilerplateData.security.itemAccess.false[2]"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="security.itemAccess.false.2.example">Example</label>
+                            <input id="security.itemAccess.false.2.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.security.itemAccess.false[2],
+                                       $values.security.itemAccess.false) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="security.validation">
+                                Item Validation
+                            </label>
+                            <input id="security.validation" ng-change="change()"
+                                   ng-model="project.boilerplateData.security.validation"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="security.validation.example">Example</label>
+                            <input id="security.validation.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.security.validation,
+                                       $values.security.validation) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="security.encryption">
+                                Encryption
+                            </label>
+                            <input id="security.encryption" ng-change="change()"
+                                   ng-model="project.boilerplateData.security.encryption"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="security.encryption.example">Example</label>
+                            <input id="security.encryption.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.security.encryption,
+                                       $values.security.encryption) }}"/>
+                        </div>
+                    </div>
+                </div>
+            </li>
         </ul>
     </div>
 </div>
