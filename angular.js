@@ -31,6 +31,11 @@ app.config(function ($routeProvider) {
             template: '<project-view></project-view>'
         })
 
+        .when('/projects/:id/specify-nfr', {
+            title: 'Specify Non-Functional Requirement',
+            template: '<specify-nfr></specify-nfr>'
+        })
+
         .when('/projects/:id/edit', {
             title: 'Edit Project',
             template: '<edit-project></edit-project>'

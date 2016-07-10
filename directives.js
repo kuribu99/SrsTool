@@ -32,6 +32,13 @@ exports.projectView = function () {
     };
 };
 
+exports.specifyNfr = function () {
+    return {
+        controller: 'SpecifyNonFunctionalRequirementController',
+        templateUrl: './templates/specify_nfr.html'
+    };
+};
+
 exports.editProject = function () {
     return {
         controller: 'EditProjectController',

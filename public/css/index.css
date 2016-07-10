@@ -59,6 +59,14 @@ h5.col {
     padding: 0 !important;
 }
 
+.card {
+    height: auto !important;
+}
+
+.max-width-25 {
+    max-width: 25%;
+}
+
 @media print {
     .no-print, .no-print * {
         display: none !important;

@@ -1,10 +1,6 @@
 <div class="row">
-    <div class="col s12 m8 valign-wrapper">
-        <h4 class="col valign" ng-bind="project.projectName"></h4>
-        <div class="col valign">
-            <a class="btn waves-effect waves-light" ng-href="/#/projects/{{ project._id }}/edit">
-                <i class="material-icons left">mode_edit</i>Edit</a>
-        </div>
+    <div class="col s12 m8">
+        <h4 ng-bind="project.projectName"></h4>
     </div>
     <div class="col s8 m4">
         <div class="col s12 m6 input-field">
@@ -20,93 +16,57 @@
     </div>
 </div>
 <div class="row">
-    <div class="col input-field">
-        <a class="btn waves-effect waves-light blue" ng-href="/#/projects/{{ project._id }}/domain">
-            <i class="material-icons left">code</i>Edit Domain
+    <div class="col s12 m3 input-field">
+        <a class="col s12 m12 dropdown-button btn blue" data-activates="dropdown-edit">
+            <i class="material-icons left">edit</i>Edit
         </a>
-    </div>
-    <div class="col s12 m4 input-field">
-        <a class="col s12 m12 dropdown-button btn blue" data-activates="dropdown">
-            <i class="material-icons left">view_module</i>Specify Requirements
-        </a>
-        <ul id="dropdown" class="dropdown-content">
-            <li class="disabled">
-                <a>
-                    <i class="material-icons left">view_list</i>Functional Requirement
+        <ul id="dropdown-edit" class="dropdown-content">
+            <li>
+                <a class="waves-effect waves-light" ng-href="/#/projects/{{ project._id }}/edit">
+                    Project Name and Domain
                 </a>
             </li>
-            <li class="divider"></li>
+            <li>
+                <a class="waves-effect waves-light" ng-href="/#/projects/{{ project._id }}/domain">
+                    Domain Attributes (<span ng-bind="project.domainData.domainName"></span>)
+                </a>
+            </li>
+            <li>
+                <a class="waves-effect waves-light" ng-href="/#/projects/{{ project._id }}/boilerplate">
+                    Boilerplates
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="col s12 m4 input-field">
+        <a class="col s12 m12 dropdown-button btn blue" data-activates="dropdown-specify">
+            <i class="material-icons left">view_module</i>Specify Requirements
+        </a>
+        <ul id="dropdown-specify" class="dropdown-content">
             <li ng-if="project.domainData.actions.length > 0 && project.domainData.actors.length > 0">
                 <a class="waves-effect waves-light" ng-href="/#/projects/{{ project._id }}/action-control">
-                    Configure Action Control
+                    Specify Functional Requirement
                 </a>
             </li>
             <li ng-if="project.domainData.actions.length == 0 || project.domainData.actors.length == 0">
                 <a class="waves-effect waves-light"
                    ng-click="toast('Please add at least one actor and one action to do so', 2000)">
-                    Configure Action Control
-                </a>
-            </li>
-            <li class="disabled">
-                <a>
-                    <i class="material-icons left">view_list</i>Non-Functional Requirement
-                </a>
-            </li>
-            <li class="divider"></li>
-            <li ng-if="project.domainData.modules.length > 0 && project.domainData.actors.length > 0">
-                <a class="waves-effect waves-light" ng-href="/#/projects/{{ project._id }}/access-control">
-                    Configure Access Control
-                </a>
-            </li>
-            <li ng-if="project.domainData.modules.length == 0 || project.domainData.actors.length == 0">
-                <a class="waves-effect waves-light"
-                   ng-click="toast('Please add at least one module and one actor to do so', 2000)">
-                    Configure Access Control
-                </a>
-            </li>
-            <li ng-if="project.domainData.actions.length > 0">
-                <a class="waves-effect waves-light" ng-href="/#/projects/{{ project._id }}/performance-constraint">
-                    Configure Performance Constraint
+                    Specify Functional Requirement
                 </a>
             </li>
             <li>
-                <a class="waves-effect waves-light" ng-href="/#/projects/{{ project._id }}/functional-constraint">
-                    Configure Functional Constraint
+                <a class="waves-effect waves-light" ng-href="/#/projects/{{ project._id }}/specify-nfr">
+                    Specify Non-Functional Requirement
                 </a>
             </li>
             <li>
-                <a class="waves-effect waves-light" ng-href="/#/projects/{{ project._id }}/configure-compatibility">
-                    Configure Compatibility
-                </a>
-            </li>
-            <li>
-                <a class="waves-effect waves-light" ng-href="/#/projects/{{ project._id }}/configure-reliability">
-                    Configure Reliability
-                </a>
-            </li>
-            <li>
-                <a class="waves-effect waves-light" ng-href="/#/projects/{{ project._id }}/configure-security">
-                    Configure Security
-                </a>
-            </li>
-            <li>
-                <a class="waves-effect waves-light" ng-href="/#/projects/{{ project._id }}/configure-usability">
-                    Configure Usability
+                <a class="waves-effect waves-light" ng-href="/#/projects/{{ project._id }}/generate">
+                    Generate Requirement
                 </a>
             </li>
         </ul>
     </div>
-    <div class="col input-field">
-        <a class="btn waves-effect waves-light blue" ng-href="/#/projects/{{ project._id }}/generate">
-            <i class="material-icons left">note_add</i>Generate Requirements
-        </a>
-    </div>
-    <div class="col input-field">
-        <a class="btn waves-effect waves-light blue" ng-href="/#/projects/{{ project._id }}/boilerplate">
-            <i class="material-icons left">settings</i>Configure Boilerplate
-        </a>
-    </div>
-    <div class="col input-field">
+    <div class="col s12 m3 input-field">
         <a class="btn waves-effect waves-light blue" ng-href="/#/projects/{{ project._id }}/export">
             <i class="material-icons left">play_for_work</i>Export Requirements
         </a>

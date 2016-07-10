@@ -1,0 +1,25 @@
+<div class="row valign-wrapper">
+    <h4 class=" col s12 m8 valign">Specify Non-Functional Requirement</h4>
+    <div class="valign col s8 m4">
+        <div class="col right input-field">
+            <a class="btn waves-effect waves-light red col s12 m12" ng-href="/#/projects/{{ project._id }}">
+                <i class="material-icons left">power_settings_new</i>Back
+            </a>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col max-width-25" ng-repeat="module in modules">
+        <div class="card hoverable waves-effect" ng-click="module.show? goto(module.path): toast(module.errorMessage)">
+            <div class="card-content">
+                <div class="card-title" ng-bind="module.name"></div>
+                <div ng-bind="module.description"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    setTimeout(function () {
+        $('.materialboxed').materialbox();
+    }, 500);
+</script>

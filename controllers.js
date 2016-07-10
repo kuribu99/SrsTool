@@ -166,6 +166,81 @@ exports.ProjectViewController = function ($scope, $routeParams, $http, $location
     }, 0);
 };
 
+exports.SpecifyNonFunctionalRequirementController = function ($scope, $routeParams, $http, $location) {
+    var projectID = encodeURIComponent($routeParams.id);
+
+    $scope.toast = toast;
+    $scope.modules = [];
+
+    $http.get('/api/v1/projects/' + projectID + '/view')
+        .then(function (json) {
+            if (json.data.result) {
+                $scope.project = json.data.project;
+
+                $scope.modules = [
+                    {
+                        name: 'Access Control',
+                        description: 'Decide who can access to which module',
+                        path: 'access-control',
+                        show: $scope.project.domainData.modules.length > 0 && $scope.project.domainData.actors.length > 0,
+                        errorMessage: 'Please add at least one module and one actor to do so'
+                    },
+                    {
+                        name: 'Performance Constraint',
+                        description: 'Take into consideration of performance, time behaviour or resource usage',
+                        path: 'performance-constraint',
+                        show: $scope.project.domainData.actions.length > 0,
+                        errorMessage: 'Please add at least one action to do so'
+                    },
+                    {
+                        name: 'Functional Constraint',
+                        description: 'Define interfaces that should be provided although not performed by user explicitly and stating rules',
+                        path: 'functional-constraint',
+                        show: true
+                    },
+                    {
+                        name: 'Compatibility',
+                        description: 'Making a system that is compatible with most operating system and environment, as well as backward compatibility of system output',
+                        path: 'configure-compatibility',
+                        show: true
+                    },
+                    {
+                        name: 'Reliability',
+                        description: 'Ensure a system that has high availability, fault tolerant and fast recovery from error',
+                        path: 'configure-reliability',
+                        show: true
+                    },
+                    {
+                        name: 'Security',
+                        description: 'Protect the system by limiting accessible items, checking file integrity and encrypt data',
+                        path: 'configure-security',
+                        show: true
+                    },
+                    {
+                        name: 'Usability',
+                        description: 'Provide best user experience and imply user interface requirements',
+                        path: 'configure-usability',
+                        show: true
+                    }
+                ];
+            }
+            else
+                $location.path('/');
+        }, failCallBack);
+
+    $scope.goto = function (path) {
+        $location.path('/projects/' + $scope.project._id + '/' + path);
+    }
+
+    $scope.back = function () {
+        $location.path('/projects/' + $scope.project._id);
+    };
+
+    setTimeout(function () {
+        $scope.$emit('SpecifyNonFunctionalRequirementController');
+    }, 0);
+};
+
 exports.EditProjectController = function ($scope, $routeParams, $http, $location) {
     var projectID = encodeURIComponent($routeParams.id);
 
@@ -448,7 +523,7 @@ exports.AccessControlController = function ($scope, $routeParams, $http, $locati
     $scope.back = function () {
         if ($scope.changed && confirmBack())
             $scope.saveProject();
-        $location.path('/projects/' + $scope.project._id);
+        $location.path('/projects/' + $scope.project._id + '/specify-nfr');
     };
 
     $scope.change = function () {
@@ -555,7 +630,7 @@ exports.PerformanceConstraintController = function ($scope, $routeParams, $http,
     $scope.back = function () {
         if ($scope.changed && confirmBack())
             $scope.saveProject();
-        $location.path('/projects/' + $scope.project._id);
+        $location.path('/projects/' + $scope.project._id + '/specify-nfr');
     };
 
     $scope.change = function () {
@@ -740,7 +815,7 @@ exports.FunctionalConstraintController = function ($scope, $routeParams, $http, 
     $scope.back = function () {
         if ($scope.changed && confirmBack())
             $scope.saveProject();
-        $location.path('/projects/' + $scope.project._id);
+        $location.path('/projects/' + $scope.project._id + '/specify-nfr');
     };
 
     $scope.change = function () {
@@ -923,7 +998,7 @@ exports.ConfigureCompatibilityController = function ($scope, $routeParams, $http
     $scope.back = function () {
         if ($scope.changed && confirmBack())
             $scope.saveProject();
-        $location.path('/projects/' + $scope.project._id);
+        $location.path('/projects/' + $scope.project._id + '/specify-nfr');
     };
 
     $scope.change = function () {
@@ -1108,7 +1183,7 @@ exports.ConfigureReliabilityController = function ($scope, $routeParams, $http, 
     $scope.back = function () {
         if ($scope.changed && confirmBack())
             $scope.saveProject();
-        $location.path('/projects/' + $scope.project._id);
+        $location.path('/projects/' + $scope.project._id + '/specify-nfr');
     };
 
     $scope.change = function () {
@@ -1291,7 +1366,7 @@ exports.ConfigureSecurityController = function ($scope, $routeParams, $http, $lo
     $scope.back = function () {
         if ($scope.changed && confirmBack())
             $scope.saveProject();
-        $location.path('/projects/' + $scope.project._id);
+        $location.path('/projects/' + $scope.project._id + '/specify-nfr');
     };
 
     $scope.change = function () {
@@ -1547,7 +1622,7 @@ exports.ConfigureUsabilityController = function ($scope, $routeParams, $http, $l
     $scope.back = function () {
         if ($scope.changed && confirmBack())
             $scope.saveProject();
-        $location.path('/projects/' + $scope.project._id);
+        $location.path('/projects/' + $scope.project._id + '/specify-nfr');
     };
 
     $scope.change = function () {
