@@ -85,6 +85,13 @@ var projectSchema = {
         itemAccess: [],
         validation: [],
         encryption: []
+    },
+    usabilityData: {
+        userInterface: [],
+        tutorial: [],
+        inputValidation: [],
+        errorPrevention: [],
+        accessibility: []
     }
 };
 

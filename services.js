@@ -87,7 +87,8 @@ exports.$template = function () {
             'Functional Constraint',
             'Compatibility',
             'Reliability',
-            'Security'
+            'Security',
+            'Usability'
         ]
     };
 
@@ -175,6 +176,25 @@ exports.$template = function () {
             },
             validation: "The <system> shall validate <item> by <algorithm>",
             encryption: "The <system> shall use <encryption> to <action>"
+        },
+        usability: {
+            userInterface: {
+                true: "The user interface of the <system> shall <attribute> so that <reason>",
+                false: "The user interface of the <system> shall <attribute>"
+            },
+            tutorial: {
+                true: "The <system> shall provide tutorial to teach <actor> how to <action>",
+                false: "The <system> shall provide tutorial on how to <action>"
+            },
+            inputValidation: {
+                true: "The <system> shall validate user input for <field> to prevent <error>",
+                false: "The <system> shall validate user input for <field>"
+            },
+            errorPrevention: {
+                true: "The <system> shall prevent user from <action> to <reason>",
+                false: "The <system> shall prevent user from <action>"
+            },
+            accessibility: "The <system> shall <accessibilityOption> for <target>"
         }
     };
 
@@ -280,6 +300,33 @@ exports.$template = function () {
                 '<system>': 'system',
                 '<encryption>': 'HTTPS protocol',
                 '<action>': 'transfer data over Internet'
+            }
+        },
+        usability: {
+            userInterface: {
+                '<system>': 'system',
+                '<attribute>': 'be consistent',
+                '<reason>': 'user will not confuse'
+            },
+            tutorial: {
+                '<system>': 'system',
+                '<actor>': 'user',
+                '<action>': 'create new project'
+            },
+            inputValidation: {
+                '<system>': 'system',
+                '<field>': 'email address',
+                '<error>': 'invalid email addresses'
+            },
+            errorPrevention: {
+                '<system>': 'system',
+                '<action>': 'using invalid email address',
+                '<reason>': 'ensure they receive important emails'
+            },
+            accessibility: {
+                '<system>': 'system',
+                '<accessibilityOption>': 'use contrasting color',
+                '<target>': 'colour blind user'
             }
         }
     };

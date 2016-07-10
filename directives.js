@@ -95,6 +95,13 @@ exports.configureSecurity = function () {
     };
 };
 
+exports.configureUsability = function () {
+    return {
+        controller: 'ConfigureUsabilityController',
+        templateUrl: './templates/configure_usability.html'
+    };
+};
+
 exports.generateRequirement = function () {
     return {
         controller: 'GenerateRequirementController',

@@ -1307,6 +1307,264 @@ exports.ConfigureSecurityController = function ($scope, $routeParams, $http, $lo
     }, 0);
 };
 
+exports.ConfigureUsabilityController = function ($scope, $routeParams, $http, $location) {
+    var projectID = encodeURIComponent($routeParams.id);
+
+    $scope.changed = false;
+
+    $http.get('/api/v1/projects/' + projectID + '/usability-data')
+        .then(function (json) {
+            if (json.data.result) {
+                $scope.project = json.data.project;
+
+                if (!$scope.project.usabilityData)
+                    $scope.project.usabilityData = {
+                        userInterface: [],
+                        tutorial: [],
+                        inputValidation: [],
+                        errorPrevention: [],
+                        accessibility: []
+                    };
+
+            } else
+                $location.path('/projects/' + $scope.project._id);
+
+        }, failCallBack);
+
+    $scope.newUserInterface = function () {
+        return {
+            attribute: '',
+            reason: ''
+        };
+    };
+
+    $scope.addUserInterface = function () {
+        if ($scope.tbxUserInterface.attribute == '')
+            toast('Attribute name is required');
+        else if ($scope.hasUserInterface($scope.tbxUserInterface))
+            toast('Attribute name or reason already exist');
+        else {
+            $scope.project.usabilityData.userInterface.push($scope.tbxUserInterface);
+            $scope.tbxUserInterface = $scope.newUserInterface();
+            $scope.changed = true;
+        }
+    };
+
+    $scope.hasUserInterface = function (newData) {
+        return arrayHasObject($scope.project.usabilityData.userInterface, newData);
+    };
+
+    $scope.deleteUserInterface = function (index) {
+        $scope.project.usabilityData.userInterface.splice(index, 1);
+        $scope.changed = true;
+    };
+
+    $scope.getUserInterfaceCount = function () {
+        var count = $scope.project ? $scope.project.usabilityData.userInterface.length : 0;
+        switch (count) {
+            case 0:
+                return 'None';
+            case 1:
+                return count + ' attribute';
+            default:
+                return count + ' attributes';
+        }
+    };
+
+    $scope.newTutorial = function () {
+        return {
+            actor: '',
+            action: ''
+        };
+    };
+
+    $scope.addTutorial = function () {
+        if ($scope.tbxTutorial.action == '')
+            toast('Action name is required');
+        else if ($scope.hasTutorial($scope.tbxTutorial))
+            toast('Actor or action already exist');
+        else {
+            $scope.project.usabilityData.tutorial.push($scope.tbxTutorial);
+            $scope.tbxTutorial = $scope.newTutorial();
+            $scope.changed = true;
+        }
+    };
+
+    $scope.hasTutorial = function (newData) {
+        return arrayHasObject($scope.project.usabilityData.tutorial, newData);
+    };
+
+    $scope.deleteTutorial = function (index) {
+        $scope.project.usabilityData.tutorial.splice(index, 1);
+        $scope.changed = true;
+    };
+
+    $scope.getTutorialCount = function () {
+        var count = $scope.project ? $scope.project.usabilityData.tutorial.length : 0;
+        switch (count) {
+            case 0:
+                return 'None';
+            case 1:
+                return count + ' tutorial';
+            default:
+                return count + ' tutorials';
+        }
+    };
+
+    $scope.newInputValidation = function () {
+        return {
+            field: '',
+            error: ''
+        };
+    };
+
+    $scope.addInputValidation = function () {
+        if ($scope.tbxInputValidation.field == '')
+            toast('Input field is required');
+        else if ($scope.hasInputValidation($scope.tbxInputValidation))
+            toast('Input field or error already exist');
+        else {
+            $scope.project.usabilityData.inputValidation.push($scope.tbxInputValidation);
+            $scope.tbxInputValidation = $scope.newInputValidation();
+            $scope.changed = true;
+        }
+    };
+
+    $scope.hasInputValidation = function (newData) {
+        return arrayHasObject($scope.project.usabilityData.inputValidation, newData);
+    };
+
+    $scope.deleteInputValidation = function (index) {
+        $scope.project.usabilityData.inputValidation.splice(index, 1);
+        $scope.changed = true;
+    };
+
+    $scope.getInputValidationCount = function () {
+        var count = $scope.project ? $scope.project.usabilityData.inputValidation.length : 0;
+        switch (count) {
+            case 0:
+                return 'None';
+            case 1:
+                return count + ' input';
+            default:
+                return count + ' inputs';
+        }
+    };
+
+    $scope.newErrorPrevention = function () {
+        return {
+            action: '',
+            reason: ''
+        };
+    };
+
+    $scope.addErrorPrevention = function () {
+        if ($scope.tbxErrorPrevention.action == '')
+            toast('Action name is required');
+        else if ($scope.hasErrorPrevention($scope.tbxErrorPrevention))
+            toast('Action name or reason already exist');
+        else {
+            $scope.project.usabilityData.errorPrevention.push($scope.tbxErrorPrevention);
+            $scope.tbxErrorPrevention = $scope.newErrorPrevention();
+            $scope.changed = true;
+        }
+    };
+
+    $scope.hasErrorPrevention = function (newData) {
+        return arrayHasObject($scope.project.usabilityData.errorPrevention, newData);
+    };
+
+    $scope.deleteErrorPrevention = function (index) {
+        $scope.project.usabilityData.errorPrevention.splice(index, 1);
+        $scope.changed = true;
+    };
+
+    $scope.getErrorPreventionCount = function () {
+        var count = $scope.project ? $scope.project.usabilityData.errorPrevention.length : 0;
+        switch (count) {
+            case 0:
+                return 'None';
+            case 1:
+                return count + ' prevention';
+            default:
+                return count + ' preventions';
+        }
+    };
+
+    $scope.newAccessibility = function () {
+        return {
+            accessibilityOption: '',
+            target: ''
+        };
+    };
+
+    $scope.addAccessibility = function () {
+        if ($scope.tbxAccessibility.accessibilityOption == '')
+            toast('Accessibility option is required');
+        if ($scope.tbxAccessibility.target == '')
+            toast('Target name is required');
+        else if ($scope.hasAccessibility($scope.tbxAccessibility))
+            toast('Accessibility option or target name already exist');
+        else {
+            $scope.project.usabilityData.accessibility.push($scope.tbxAccessibility);
+            $scope.tbxAccessibility = $scope.newAccessibility();
+            $scope.changed = true;
+        }
+    };
+
+    $scope.hasAccessibility = function (newData) {
+        return arrayHasObject($scope.project.usabilityData.accessibility, newData);
+    };
+
+    $scope.deleteAccessibility = function (index) {
+        $scope.project.usabilityData.accessibility.splice(index, 1);
+        $scope.changed = true;
+    };
+
+    $scope.getAccessibilityCount = function () {
+        var count = $scope.project ? $scope.project.usabilityData.accessibility.length : 0;
+        switch (count) {
+            case 0:
+                return 'None';
+            default:
+                return count + ' defined';
+        }
+    };
+
+    $scope.saveProject = function () {
+        $http.patch('/api/v1/projects/' + projectID + '/usability-data', {
+            usabilityData: $scope.project.usabilityData
+        }).then(function (json) {
+            if (json.data.result) {
+                $scope.changed = false;
+                toast("Saved successfully");
+            }
+            else
+                console.log(json.data);
+        }, failCallBack);
+    };
+
+    $scope.back = function () {
+        if ($scope.changed && confirmBack())
+            $scope.saveProject();
+        $location.path('/projects/' + $scope.project._id);
+    };
+
+    $scope.change = function () {
+        $scope.changed = true;
+    };
+
+    $scope.tbxUserInterface = $scope.newUserInterface();
+    $scope.tbxTutorial = $scope.newTutorial();
+    $scope.tbxInputValidation = $scope.newInputValidation();
+    $scope.tbxErrorPrevention = $scope.newErrorPrevention();
+    $scope.tbxAccessibility = $scope.newAccessibility();
+
+    setTimeout(function () {
+        $scope.$emit('ConfigureSecurityController');
+    }, 0);
+};
+
 exports.GenerateRequirementController = function ($scope, $routeParams, $http, $location, $formatter, $template) {
     var projectID = encodeURIComponent($routeParams.id);
 
@@ -1365,6 +1623,15 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
                         recoveryItem: []
                     }
 
+                if ($scope.project.usabilityData == null)
+                    $scope.project.usabilityData = {
+                        userInterface: [],
+                        tutorial: [],
+                        inputValidation: [],
+                        errorPrevention: [],
+                        accessibility: []
+                    };
+
                 for (var key in $scope.$boilerplateTemplates)
                     if ($scope.project.boilerplateData[key] == null)
                         $scope.project.boilerplateData[key] = $scope.$boilerplateTemplates[key];
@@ -1383,7 +1650,8 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
             'Functional Constraint': [],
             'Compatibility': [],
             'Reliability': [],
-            'Security': []
+            'Security': [],
+            'Usability': []
         };
 
         var moduleName = 'Access Control';
@@ -1620,6 +1888,72 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
                 '<system>': $scope.project.projectName,
                 '<encryption>': item.encryption,
                 '<action>': item.action
+            };
+
+            if (!$scope.hasRequirement(moduleName, values))
+                $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
+        }
+
+        moduleName = 'Usability';
+        for (var index in $scope.project.usabilityData.userInterface) {
+            var item = $scope.project.usabilityData.userInterface[index];
+            var boilerplate = $scope.project.boilerplateData.usability.userInterface[item.reason != ''];
+            var values = {
+                '<system>': $scope.project.projectName,
+                '<attribute>': item.attribute,
+                '<reason>': item.reason
+            };
+
+            if (!$scope.hasRequirement(moduleName, values))
+                $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
+        }
+
+        for (var index in $scope.project.usabilityData.tutorial) {
+            var item = $scope.project.usabilityData.tutorial[index];
+            var boilerplate = $scope.project.boilerplateData.usability.tutorial[item.actor != ''];
+            var values = {
+                '<system>': $scope.project.projectName,
+                '<actor>': item.actor,
+                '<action>': item.action
+            };
+
+            if (!$scope.hasRequirement(moduleName, values))
+                $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
+        }
+
+        for (var index in $scope.project.usabilityData.inputValidation) {
+            var item = $scope.project.usabilityData.inputValidation[index];
+            var boilerplate = $scope.project.boilerplateData.usability.inputValidation[item.error != ''];
+            var values = {
+                '<system>': $scope.project.projectName,
+                '<field>': item.field,
+                '<error>': item.error
+            };
+
+            if (!$scope.hasRequirement(moduleName, values))
+                $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
+        }
+
+        for (var index in $scope.project.usabilityData.errorPrevention) {
+            var item = $scope.project.usabilityData.errorPrevention[index];
+            var boilerplate = $scope.project.boilerplateData.usability.errorPrevention[item.reason != ''];
+            var values = {
+                '<system>': $scope.project.projectName,
+                '<action>': item.action,
+                '<reason>': item.reason
+            };
+
+            if (!$scope.hasRequirement(moduleName, values))
+                $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
+        }
+
+        for (var index in $scope.project.usabilityData.accessibility) {
+            var item = $scope.project.usabilityData.accessibility[index];
+            var boilerplate = $scope.project.boilerplateData.usability.accessibility;
+            var values = {
+                '<system>': $scope.project.projectName,
+                '<accessibilityOption>': item.accessibilityOption,
+                '<target>': item.target
             };
 
             if (!$scope.hasRequirement(moduleName, values))

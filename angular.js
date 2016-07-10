@@ -76,6 +76,11 @@ app.config(function ($routeProvider) {
             template: '<configure-security></configure-security>'
         })
 
+        .when('/projects/:id/configure-usability', {
+            title: 'Configure Usability',
+            template: '<configure-usability></configure-usability>'
+        })
+
         .when('/projects/:id/generate', {
             title: 'Generate Requirements',
             template: '<generate-requirement></generate-requirement>'

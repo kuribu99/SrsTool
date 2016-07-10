@@ -736,6 +736,156 @@
                     </div>
                 </div>
             </li>
+            <li>
+                <div class="collapsible-header active"><h5>Usability Module</h5></div>
+                <div class="collapsible-body">
+                    <div class="row margin-top-10 valign-wrapper">
+                        <div class="col s6 m8 valign"
+                             ng-bind="'Available placeholders: <system>, <attribute>, <reason>, <actor>, <action>, <field>, <error>, <reason>, <accessibilityOption>, <target>'"></div>
+                        <div class="col s6 m4 valign">
+                            <button class="btn waves-effect waves-light col s12 m12"
+                                    ng-click="restore('usability')">
+                                Restore Default Boilerplate
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="usability.userInterface.true">
+                                User interface attribute with reason
+                            </label>
+                            <input id="usability.userInterface.true" ng-change="change()"
+                                   ng-model="project.boilerplateData.usability.userInterface.true"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="usability.userInterface.true.example">Example</label>
+                            <input id="usability.userInterface.true.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.usability.userInterface.true,
+                                       $values.usability.userInterface) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="usability.userInterface.false">
+                                User interface attribute without reason
+                            </label>
+                            <input id="usability.userInterface.false" ng-change="change()"
+                                   ng-model="project.boilerplateData.usability.userInterface.false"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="usability.userInterface.false.example">Example</label>
+                            <input id="usability.userInterface.false.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.usability.userInterface.false,
+                                       $values.usability.userInterface) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="usability.tutorial.true">
+                                Tutorial with actor
+                            </label>
+                            <input id="usability.tutorial.true" ng-change="change()"
+                                   ng-model="project.boilerplateData.usability.tutorial.true"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="usability.tutorial.true.example">Example</label>
+                            <input id="usability.tutorial.true.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.usability.tutorial.true,
+                                       $values.usability.tutorial) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="usability.tutorial.false">
+                                Tutorial without actor
+                            </label>
+                            <input id="usability.tutorial.false" ng-change="change()"
+                                   ng-model="project.boilerplateData.usability.tutorial.false"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="usability.tutorial.false.example">Example</label>
+                            <input id="usability.tutorial.false.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.usability.tutorial.false,
+                                       $values.usability.tutorial) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="usability.inputValidation.true">
+                                Input validation with error stated
+                            </label>
+                            <input id="usability.inputValidation.true" ng-change="change()"
+                                   ng-model="project.boilerplateData.usability.inputValidation.true"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="usability.inputValidation.true.example">Example</label>
+                            <input id="usability.inputValidation.true.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.usability.inputValidation.true,
+                                       $values.usability.inputValidation) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="usability.inputValidation.false">
+                                Input validation without error stated
+                            </label>
+                            <input id="usability.inputValidation.false" ng-change="change()"
+                                   ng-model="project.boilerplateData.usability.inputValidation.false"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="usability.inputValidation.false.example">Example</label>
+                            <input id="usability.inputValidation.false.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.usability.inputValidation.false,
+                                       $values.usability.inputValidation) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="usability.errorPrevention.true">
+                                Error prevention with reason
+                            </label>
+                            <input id="usability.errorPrevention.true" ng-change="change()"
+                                   ng-model="project.boilerplateData.usability.errorPrevention.true"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="usability.errorPrevention.true.example">Example</label>
+                            <input id="usability.errorPrevention.true.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.usability.errorPrevention.true,
+                                       $values.usability.errorPrevention) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="usability.errorPrevention.false">
+                                Error prevention without reason
+                            </label>
+                            <input id="usability.errorPrevention.false" ng-change="change()"
+                                   ng-model="project.boilerplateData.usability.errorPrevention.false"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="usability.errorPrevention.false.example">Example</label>
+                            <input id="usability.errorPrevention.false.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.usability.errorPrevention.false,
+                                       $values.usability.errorPrevention) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="usability.accessibility">
+                                Accessibility Option
+                            </label>
+                            <input id="usability.accessibility" ng-change="change()"
+                                   ng-model="project.boilerplateData.usability.accessibility"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="usability.accessibility.example">Example</label>
+                            <input id="usability.accessibility.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.usability.accessibility,
+                                       $values.usability.accessibility) }}"/>
+                        </div>
+                    </div>
+                </div>
+            </li>
         </ul>
     </div>
 </div>
