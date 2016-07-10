@@ -32,6 +32,13 @@ exports.projectView = function () {
     };
 };
 
+exports.specifyNfr = function () {
+    return {
+        controller: 'SpecifyNonFunctionalRequirementController',
+        templateUrl: './templates/specify_nfr.html'
+    };
+};
+
 exports.editProject = function () {
     return {
         controller: 'EditProjectController',
@@ -46,20 +53,6 @@ exports.editDomain = function () {
     };
 };
 
-exports.generateRequirement = function () {
-    return {
-        controller: 'GenerateRequirementController',
-        templateUrl: './templates/generate_requirement.html'
-    };
-};
-
-exports.accessControl = function () {
-    return {
-        controller: 'AccessControlController',
-        templateUrl: './templates/access_control.html'
-    };
-};
-
 exports.actionControl = function () {
     return {
         controller: 'ActionControlController',
@@ -67,10 +60,10 @@ exports.actionControl = function () {
     };
 };
 
-exports.configureBoilerplate = function () {
+exports.accessControl = function () {
     return {
-        controller: 'ConfigureBoilerplateController',
-        templateUrl: './templates/configure_boilerplate.html'
+        controller: 'AccessControlController',
+        templateUrl: './templates/access_control.html'
     };
 };
 
@@ -92,6 +85,41 @@ exports.configureCompatibility = function () {
     return {
         controller: 'ConfigureCompatibilityController',
         templateUrl: './templates/configure_compatibility.html'
+    };
+};
+
+exports.configureReliability = function () {
+    return {
+        controller: 'ConfigureReliabilityController',
+        templateUrl: './templates/configure_reliability.html'
+    };
+};
+
+exports.configureSecurity = function () {
+    return {
+        controller: 'ConfigureSecurityController',
+        templateUrl: './templates/configure_security.html'
+    };
+};
+
+exports.configureUsability = function () {
+    return {
+        controller: 'ConfigureUsabilityController',
+        templateUrl: './templates/configure_usability.html'
+    };
+};
+
+exports.generateRequirement = function () {
+    return {
+        controller: 'GenerateRequirementController',
+        templateUrl: './templates/generate_requirement.html'
+    };
+};
+
+exports.configureBoilerplate = function () {
+    return {
+        controller: 'ConfigureBoilerplateController',
+        templateUrl: './templates/configure_boilerplate.html'
     };
 };
 

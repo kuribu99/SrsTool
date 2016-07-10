@@ -1,0 +1,308 @@
+<div class="row valign-wrapper">
+    <h4 class=" col s12 m8 valign">Configure Usability</h4>
+    <div class="valign col s8 m4">
+        <div class="col s12 m6 input-field">
+            <a class="btn waves-effect waves-light green col s12 m12" ng-click="saveProject()">
+                <i class="material-icons left">done</i>Save
+            </a>
+        </div>
+        <div class="col s12 m6 input-field">
+            <a class="btn waves-effect waves-light red col s12 m12" ng-click="back()">
+                <i class="material-icons left">power_settings_new</i>Back
+            </a>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <ul class="collapsible collapsible-accordion" data-collapsible="accordion">
+        <li>
+            <div class="collapsible-header active blue white-text">
+                Instructions<i class="material-icons right">announcement</i>
+            </div>
+            <div class="collapsible-body">
+                <div class="row">
+                    <p>
+                        Usability refers to the effort of the system in giving the user best experience. There are few
+                        things that we can consider about usability:
+                    </p>
+                    <ol>
+                        <li>
+                            1. The user interface attributes, such as the consistency of user interface
+                        </li>
+                        <li>
+                            2. Providing tutorial on certain actions or features that is hard to use
+                        </li>
+                        <li>
+                            3. Validating input from user to prevent user entering invalid values, such as validating email addresses
+                        </li>
+                        <li>
+                            4. Preventing user from doing certain action that is error prone
+                        </li>
+                        <li>
+                            5. Providing accessibility options for certain user group, such as colour blind users
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </li>
+        <li>
+            <div class="collapsible-header">
+                <h5>
+                    <span>User Interface Attributes</span>
+                    <span class="badge white-text light-green" ng-bind="getUserInterfaceCount()"></span>
+                </h5>
+            </div>
+            <div class="collapsible-body">
+                <div class="row valign-wrapper">
+                    <div class="col s4 m4 input-field">
+                        <label for="tbxUserInterface.attribute">Attribute Name</label>
+                        <input id="tbxUserInterface.attribute" type="text"
+                               ng-model="tbxUserInterface.attribute"/>
+                    </div>
+                    <div class="col s4 m4 input-field">
+                        <label for="tbxUserInterface.reason">Reason (Optional)</label>
+                        <input id="tbxUserInterface.reason" type="text"
+                               ng-model="tbxUserInterface.reason"/>
+                    </div>
+                    <div class="col s4 m4 valign">
+                        <button class="btn waves-effect waves-light col s12 m12" ng-click="addUserInterface()">
+                            Add
+                        </button>
+                    </div>
+                </div>
+                <div class="row" ng-if="project.usabilityData.userInterface.length > 0">
+                    <table class="highlight">
+                        <thead>
+                        <tr>
+                            <td>Attribute Name</td>
+                            <td>Reason</td>
+                            <td></td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="item in project.usabilityData.userInterface track by $index">
+                            <td ng-bind="item.attribute"></td>
+                            <td ng-bind="item.reason"></td>
+                            <td>
+                                <a class="waves-effect waves-light btn red"
+                                   ng-click="deleteUserInterface($index)">
+                                    <i class="material-icons left">delete</i>Delete
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </li>
+        <li>
+            <div class="collapsible-header">
+                <h5>
+                    <span>Tutorials</span>
+                    <span class="badge white-text light-green" ng-bind="getTutorialCount()"></span>
+                </h5>
+            </div>
+            <div class="collapsible-body">
+                <div class="row valign-wrapper">
+                    <div class="col s4 m4 input-field">
+                        <label for="tbxTutorial.action">Action Name</label>
+                        <input id="tbxTutorial.action" type="text"
+                               ng-model="tbxTutorial.action"/>
+                    </div>
+                    <div class="col s4 m4 input-field">
+                        <label for="tbxTutorial.actor">Actor (Optional)</label>
+                        <input id="tbxTutorial.actor" type="text"
+                               ng-model="tbxTutorial.actor"/>
+                    </div>
+                    <div class="col s4 m4 valign">
+                        <button class="btn waves-effect waves-light col s12 m12" ng-click="addTutorial()">
+                            Add
+                        </button>
+                    </div>
+                </div>
+                <div class="row" ng-if="project.usabilityData.tutorial.length > 0">
+                    <table class="highlight">
+                        <thead>
+                        <tr>
+                            <td>Action Name</td>
+                            <td>Actor</td>
+                            <td></td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="item in project.usabilityData.tutorial track by $index">
+                            <td ng-bind="item.action"></td>
+                            <td ng-bind="item.actor"></td>
+                            <td>
+                                <a class="waves-effect waves-light btn red"
+                                   ng-click="deleteTutorial($index)">
+                                    <i class="material-icons left">delete</i>Delete
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </li>
+        <li>
+            <div class="collapsible-header">
+                <h5>
+                    <span>Input Validation</span>
+                    <span class="badge white-text light-green" ng-bind="getInputValidationCount()"></span>
+                </h5>
+            </div>
+            <div class="collapsible-body">
+                <div class="row valign-wrapper">
+                    <div class="col s4 m4 input-field">
+                        <label for="tbxInputValidation.field">Field Name</label>
+                        <input id="tbxInputValidation.field" type="text"
+                               ng-model="tbxInputValidation.field"/>
+                    </div>
+                    <div class="col s4 m4 input-field">
+                        <label for="tbxInputValidation.error">Error that may occur (Optional)</label>
+                        <input id="tbxInputValidation.error" type="text"
+                               ng-model="tbxInputValidation.error"/>
+                    </div>
+                    <div class="col s4 m4 valign">
+                        <button class="btn waves-effect waves-light col s12 m12" ng-click="addInputValidation()">
+                            Add
+                        </button>
+                    </div>
+                </div>
+                <div class="row" ng-if="project.usabilityData.inputValidation.length > 0">
+                    <table class="highlight">
+                        <thead>
+                        <tr>
+                            <td>Field Name</td>
+                            <td>Error</td>
+                            <td></td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="item in project.usabilityData.inputValidation track by $index">
+                            <td ng-bind="item.field"></td>
+                            <td ng-bind="item.error"></td>
+                            <td>
+                                <a class="waves-effect waves-light btn red"
+                                   ng-click="deleteInputValidation($index)">
+                                    <i class="material-icons left">delete</i>Delete
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </li>
+        <li>
+            <div class="collapsible-header">
+                <h5>
+                    <span>Error Prevention</span>
+                    <span class="badge white-text light-green" ng-bind="getErrorPreventionCount()"></span>
+                </h5>
+            </div>
+            <div class="collapsible-body">
+                <div class="row valign-wrapper">
+                    <div class="col s4 m4 input-field">
+                        <label for="tbxErrorPrevention.action">Error Prone Action</label>
+                        <input id="tbxErrorPrevention.action" type="text"
+                               ng-model="tbxErrorPrevention.action"/>
+                    </div>
+                    <div class="col s4 m4 input-field">
+                        <label for="tbxErrorPrevention.reason">Reason (Optional)</label>
+                        <input id="tbxErrorPrevention.reason" type="text"
+                               ng-model="tbxErrorPrevention.reason"/>
+                    </div>
+                    <div class="col s4 m4 valign">
+                        <button class="btn waves-effect waves-light col s12 m12" ng-click="addErrorPrevention()">
+                            Add
+                        </button>
+                    </div>
+                </div>
+                <div class="row" ng-if="project.usabilityData.errorPrevention.length > 0">
+                    <table class="highlight">
+                        <thead>
+                        <tr>
+                            <td>Action Name</td>
+                            <td>Reason</td>
+                            <td></td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="item in project.usabilityData.errorPrevention track by $index">
+                            <td ng-bind="item.action"></td>
+                            <td ng-bind="item.reason"></td>
+                            <td>
+                                <a class="waves-effect waves-light btn red"
+                                   ng-click="deleteErrorPrevention($index)">
+                                    <i class="material-icons left">delete</i>Delete
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </li>
+        <li>
+            <div class="collapsible-header">
+                <h5>
+                    <span>Accessibility</span>
+                    <span class="badge white-text light-green" ng-bind="getAccessibilityCount()"></span>
+                </h5>
+            </div>
+            <div class="collapsible-body">
+                <div class="row valign-wrapper">
+                    <div class="col s4 m4 input-field">
+                        <label for="tbxAccessibility.accessibilityOption">Accessibility Option</label>
+                        <input id="tbxAccessibility.accessibilityOption" type="text"
+                               ng-model="tbxAccessibility.accessibilityOption"/>
+                    </div>
+                    <div class="col s4 m4 input-field">
+                        <label for="tbxAccessibility.target">Target group</label>
+                        <input id="tbxAccessibility.target" type="text"
+                               ng-model="tbxAccessibility.target"/>
+                    </div>
+                    <div class="col s4 m4 valign">
+                        <button class="btn waves-effect waves-light col s12 m12" ng-click="addAccessibility()">
+                            Add
+                        </button>
+                    </div>
+                </div>
+                <div class="row" ng-if="project.usabilityData.accessibility.length > 0">
+                    <table class="highlight">
+                        <thead>
+                        <tr>
+                            <td>Accessibility Option</td>
+                            <td>Target group</td>
+                            <td></td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="item in project.usabilityData.accessibility track by $index">
+                            <td ng-bind="item.accessibilityOption"></td>
+                            <td ng-bind="item.target"></td>
+                            <td>
+                                <a class="waves-effect waves-light btn red"
+                                   ng-click="deleteAccessibility($index)">
+                                    <i class="material-icons left">delete</i>Delete
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </li>
+    </ul>
+</div>
+<script>
+    setTimeout(function () {
+        $('.collapsible').collapsible({
+            accordion: false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
+        });
+        $('select').material_select();
+        Materialize.updateTextFields();
+    }, 500);
+</script>

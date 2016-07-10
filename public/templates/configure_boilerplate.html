@@ -466,6 +466,426 @@
                     </div>
                 </div>
             </li>
+            <li>
+                <div class="collapsible-header active"><h5>Compatibility Module</h5></div>
+                <div class="collapsible-body">
+                    <div class="row margin-top-10 valign-wrapper">
+                        <div class="col s6 m8 valign"
+                             ng-bind="'Available placeholders: <system>, <value>, <period>, <time>, <failure>, <action>, <name>, <item>, <source>'"></div>
+                        <div class="col s6 m4 valign">
+                            <button class="btn waves-effect waves-light col s12 m12"
+                                    ng-click="restore('reliability')">
+                                Restore Default Boilerplate
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="reliability.availability">
+                                Availability
+                            </label>
+                            <input id="reliability.availability" ng-change="change()"
+                                   ng-model="project.boilerplateData.reliability.availability"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="reliability.availability.example">Example</label>
+                            <input id="reliability.availability.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.reliability.availability,
+                                       $values.reliability.availability) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="reliability.availability">
+                                Maintenance
+                            </label>
+                            <input id="reliability.maintenance" ng-change="change()"
+                                   ng-model="project.boilerplateData.reliability.maintenance"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="reliability.maintenance.example">Example</label>
+                            <input id="reliability.maintenance.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.reliability.maintenance,
+                                       $values.reliability.maintenance) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="reliability.recoveryPeriod.true">
+                                Recovery period from failure with action
+                            </label>
+                            <input id="reliability.recoveryPeriod.true" ng-change="change()"
+                                   ng-model="project.boilerplateData.reliability.recoveryPeriod.true"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="reliability.recoveryPeriod.true.example">Example</label>
+                            <input id="reliability.recoveryPeriod.true.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.reliability.recoveryPeriod.true,
+                                       $values.reliability.recoveryPeriod) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="reliability.recoveryPeriod.false">
+                                Recovery period from failure without action
+                            </label>
+                            <input id="reliability.recoveryPeriod.false" ng-change="change()"
+                                   ng-model="project.boilerplateData.reliability.recoveryPeriod.false"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="reliability.recoveryPeriod.false.example">Example</label>
+                            <input id="reliability.recoveryPeriod.false.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.reliability.recoveryPeriod.false,
+                                       $values.reliability.recoveryPeriod) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="reliability.redundancyOption.true">
+                                Redundancy option with failure reason
+                            </label>
+                            <input id="reliability.redundancyOption.true" ng-change="change()"
+                                   ng-model="project.boilerplateData.reliability.redundancyOption.true"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="reliability.redundancyOption.true.example">Example</label>
+                            <input id="reliability.redundancyOption.true.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.reliability.redundancyOption.true,
+                                       $values.reliability.redundancyOption) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="reliability.redundancyOption.false">
+                                Redundancy option without failure reason
+                            </label>
+                            <input id="reliability.redundancyOption.false" ng-change="change()"
+                                   ng-model="project.boilerplateData.reliability.redundancyOption.false"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="reliability.redundancyOption.false.example">Example</label>
+                            <input id="reliability.redundancyOption.false.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.reliability.redundancyOption.false,
+                                       $values.reliability.redundancyOption) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="reliability.recoveryItem.true">
+                                Item recovery from failure with source
+                            </label>
+                            <input id="reliability.recoveryItem.true" ng-change="change()"
+                                   ng-model="project.boilerplateData.reliability.recoveryItem.true"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="reliability.recoveryItem.true.example">Example</label>
+                            <input id="reliability.recoveryItem.true.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.reliability.recoveryItem.true,
+                                       $values.reliability.recoveryItem) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="reliability.recoveryItem.false">
+                                Item recovery from failure without source
+                            </label>
+                            <input id="reliability.recoveryItem.false" ng-change="change()"
+                                   ng-model="project.boilerplateData.reliability.recoveryItem.false"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="reliability.recoveryItem.false.example">Example</label>
+                            <input id="reliability.recoveryItem.false.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.reliability.recoveryItem.false,
+                                       $values.reliability.recoveryItem) }}"/>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="collapsible-header active"><h5>Security Module</h5></div>
+                <div class="collapsible-body">
+                    <div class="row margin-top-10 valign-wrapper">
+                        <div class="col s6 m8 valign"
+                             ng-bind="'Available placeholders: <system>, <item>, <actor>, <condition>, <algorithm>, <encryption>, <action>'"></div>
+                        <div class="col s6 m4 valign">
+                            <button class="btn waves-effect waves-light col s12 m12"
+                                    ng-click="restore('security')">
+                                Restore Default Boilerplate
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="security.itemAccess.true.0">
+                                Accessible item with actor
+                            </label>
+                            <input id="security.itemAccess.true.0" ng-change="change()"
+                                   ng-model="project.boilerplateData.security.itemAccess.true[0]"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="security.itemAccess.true.0.example">Example</label>
+                            <input id="security.itemAccess.true.0.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.security.itemAccess.true[0],
+                                       $values.security.itemAccess.true) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="security.itemAccess.true.1">
+                                Accessible item with condition
+                            </label>
+                            <input id="security.itemAccess.true.1" ng-change="change()"
+                                   ng-model="project.boilerplateData.security.itemAccess.true[1]"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="security.itemAccess.true.1.example">Example</label>
+                            <input id="security.itemAccess.true.1.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.security.itemAccess.true[1],
+                                       $values.security.itemAccess.true) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="security.itemAccess.true.2">
+                                Accessible item with actor and condition
+                            </label>
+                            <input id="security.itemAccess.true.2" ng-change="change()"
+                                   ng-model="project.boilerplateData.security.itemAccess.true[2]"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="security.itemAccess.true.2.example">Example</label>
+                            <input id="security.itemAccess.true.2.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.security.itemAccess.true[2],
+                                       $values.security.itemAccess.true) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="security.itemAccess.false.0">
+                                Inaccessible item with actor
+                            </label>
+                            <input id="security.itemAccess.false.0" ng-change="change()"
+                                   ng-model="project.boilerplateData.security.itemAccess.false[0]"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="security.itemAccess.false.0.example">Example</label>
+                            <input id="security.itemAccess.false.0.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.security.itemAccess.false[0],
+                                       $values.security.itemAccess.false) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="security.itemAccess.false.1">
+                                Inaccessible item with condition
+                            </label>
+                            <input id="security.itemAccess.false.1" ng-change="change()"
+                                   ng-model="project.boilerplateData.security.itemAccess.false[1]"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="security.itemAccess.false.1.example">Example</label>
+                            <input id="security.itemAccess.false.1.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.security.itemAccess.false[1],
+                                       $values.security.itemAccess.false) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="security.itemAccess.false.2">
+                                Inaccessible item with actor and condition
+                            </label>
+                            <input id="security.itemAccess.false.2" ng-change="change()"
+                                   ng-model="project.boilerplateData.security.itemAccess.false[2]"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="security.itemAccess.false.2.example">Example</label>
+                            <input id="security.itemAccess.false.2.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.security.itemAccess.false[2],
+                                       $values.security.itemAccess.false) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="security.validation">
+                                Item Validation
+                            </label>
+                            <input id="security.validation" ng-change="change()"
+                                   ng-model="project.boilerplateData.security.validation"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="security.validation.example">Example</label>
+                            <input id="security.validation.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.security.validation,
+                                       $values.security.validation) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="security.encryption">
+                                Encryption
+                            </label>
+                            <input id="security.encryption" ng-change="change()"
+                                   ng-model="project.boilerplateData.security.encryption"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="security.encryption.example">Example</label>
+                            <input id="security.encryption.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.security.encryption,
+                                       $values.security.encryption) }}"/>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="collapsible-header active"><h5>Usability Module</h5></div>
+                <div class="collapsible-body">
+                    <div class="row margin-top-10 valign-wrapper">
+                        <div class="col s6 m8 valign"
+                             ng-bind="'Available placeholders: <system>, <attribute>, <reason>, <actor>, <action>, <field>, <error>, <reason>, <accessibilityOption>, <target>'"></div>
+                        <div class="col s6 m4 valign">
+                            <button class="btn waves-effect waves-light col s12 m12"
+                                    ng-click="restore('usability')">
+                                Restore Default Boilerplate
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="usability.userInterface.true">
+                                User interface attribute with reason
+                            </label>
+                            <input id="usability.userInterface.true" ng-change="change()"
+                                   ng-model="project.boilerplateData.usability.userInterface.true"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="usability.userInterface.true.example">Example</label>
+                            <input id="usability.userInterface.true.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.usability.userInterface.true,
+                                       $values.usability.userInterface) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="usability.userInterface.false">
+                                User interface attribute without reason
+                            </label>
+                            <input id="usability.userInterface.false" ng-change="change()"
+                                   ng-model="project.boilerplateData.usability.userInterface.false"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="usability.userInterface.false.example">Example</label>
+                            <input id="usability.userInterface.false.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.usability.userInterface.false,
+                                       $values.usability.userInterface) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="usability.tutorial.true">
+                                Tutorial with actor
+                            </label>
+                            <input id="usability.tutorial.true" ng-change="change()"
+                                   ng-model="project.boilerplateData.usability.tutorial.true"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="usability.tutorial.true.example">Example</label>
+                            <input id="usability.tutorial.true.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.usability.tutorial.true,
+                                       $values.usability.tutorial) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="usability.tutorial.false">
+                                Tutorial without actor
+                            </label>
+                            <input id="usability.tutorial.false" ng-change="change()"
+                                   ng-model="project.boilerplateData.usability.tutorial.false"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="usability.tutorial.false.example">Example</label>
+                            <input id="usability.tutorial.false.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.usability.tutorial.false,
+                                       $values.usability.tutorial) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="usability.inputValidation.true">
+                                Input validation with error stated
+                            </label>
+                            <input id="usability.inputValidation.true" ng-change="change()"
+                                   ng-model="project.boilerplateData.usability.inputValidation.true"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="usability.inputValidation.true.example">Example</label>
+                            <input id="usability.inputValidation.true.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.usability.inputValidation.true,
+                                       $values.usability.inputValidation) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="usability.inputValidation.false">
+                                Input validation without error stated
+                            </label>
+                            <input id="usability.inputValidation.false" ng-change="change()"
+                                   ng-model="project.boilerplateData.usability.inputValidation.false"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="usability.inputValidation.false.example">Example</label>
+                            <input id="usability.inputValidation.false.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.usability.inputValidation.false,
+                                       $values.usability.inputValidation) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="usability.errorPrevention.true">
+                                Error prevention with reason
+                            </label>
+                            <input id="usability.errorPrevention.true" ng-change="change()"
+                                   ng-model="project.boilerplateData.usability.errorPrevention.true"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="usability.errorPrevention.true.example">Example</label>
+                            <input id="usability.errorPrevention.true.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.usability.errorPrevention.true,
+                                       $values.usability.errorPrevention) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="usability.errorPrevention.false">
+                                Error prevention without reason
+                            </label>
+                            <input id="usability.errorPrevention.false" ng-change="change()"
+                                   ng-model="project.boilerplateData.usability.errorPrevention.false"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="usability.errorPrevention.false.example">Example</label>
+                            <input id="usability.errorPrevention.false.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.usability.errorPrevention.false,
+                                       $values.usability.errorPrevention) }}"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <label for="usability.accessibility">
+                                Accessibility Option
+                            </label>
+                            <input id="usability.accessibility" ng-change="change()"
+                                   ng-model="project.boilerplateData.usability.accessibility"/>
+                        </div>
+                        <div class="col s12 m6">
+                            <label for="usability.accessibility.example">Example</label>
+                            <input id="usability.accessibility.example" readonly
+                                   value="{{ requirementToString(project.boilerplateData.usability.accessibility,
+                                       $values.usability.accessibility) }}"/>
+                        </div>
+                    </div>
+                </div>
+            </li>
         </ul>
     </div>
 </div>

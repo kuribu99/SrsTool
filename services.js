@@ -85,7 +85,10 @@ exports.$template = function () {
             'Access Control',
             'Performance Constraint',
             'Functional Constraint',
-            'Compatibility'
+            'Compatibility',
+            'Reliability',
+            'Security',
+            'Usability'
         ]
     };
 
@@ -141,6 +144,57 @@ exports.$template = function () {
                 true: "The <output> of the <system> <newVersion> shall be compatible with <oldVersion>",
                 false: "The <output> of the <system> <newVersion> shall not be compatible with <oldVersion>"
             }
+        },
+        reliability: {
+            availability: "The <system> shall be available <value>% of the time",
+            maintenance: "The <system> shall be down for maintenance for <value> every <period>",
+            recoveryPeriod: {
+                true: "The <system> shall be able to <action> within <time> in case of <failure>",
+                false: "The <system> shall be able to restart and continue operation as usual within <time> in case of <failure>"
+            },
+            redundancyOption: {
+                true: "The <system> shall be provide <name> to prevent <failure>",
+                false: "The <system> shall be provide <name>"
+            },
+            recoveryItem: {
+                true: "The <system> shall be able to recover <item> from <source> in case of <failure>",
+                false: "The <system> shall be able to recover <item> in case of <failure>"
+            }
+        },
+        security: {
+            itemAccess: {
+                true: {
+                    0: "The <item> shall only be accessible by <actor>",
+                    1: "The <item> shall only be accessible if <condition>",
+                    2: "The <item> shall only be accessible by <actor> if <condition>"
+                },
+                false: {
+                    0: "The <item> shall not be accessible by <actor>",
+                    1: "The <item> shall not be accessible if <condition>",
+                    2: "The <item> shall not be accessible by <actor> if <condition>"
+                }
+            },
+            validation: "The <system> shall validate <item> by <algorithm>",
+            encryption: "The <system> shall use <encryption> to <action>"
+        },
+        usability: {
+            userInterface: {
+                true: "The user interface of the <system> shall <attribute> so that <reason>",
+                false: "The user interface of the <system> shall <attribute>"
+            },
+            tutorial: {
+                true: "The <system> shall provide tutorial to teach <actor> how to <action>",
+                false: "The <system> shall provide tutorial on how to <action>"
+            },
+            inputValidation: {
+                true: "The <system> shall validate user input for <field> to prevent <error>",
+                false: "The <system> shall validate user input for <field>"
+            },
+            errorPrevention: {
+                true: "The <system> shall prevent user from <action> to <reason>",
+                false: "The <system> shall prevent user from <action>"
+            },
+            accessibility: "The <system> shall <accessibilityOption> for <target>"
         }
     };
 
@@ -195,6 +249,85 @@ exports.$template = function () {
                 '<newVersion>': 'v1.4',
                 '<oldVersion>': 'v1.3'
             }
+        },
+        reliability: {
+            availability: {
+                '<system>': 'system',
+                '<value>': '99.9999'
+            },
+            maintenance: {
+                '<system>': 'system',
+                '<value>': '1 hour',
+                '<period>': 'week'
+            },
+            recoveryPeriod: {
+                '<system>': 'system',
+                '<time>': '1 hour',
+                '<failure>': 'power failure',
+                '<action>': 'restore database'
+            },
+            redundancyOption: {
+                '<system>': 'system',
+                '<name>': 'database redundancy',
+                '<failure>': 'database corruption'
+            },
+            recoveryItem: {
+                '<system>': 'system',
+                '<item>': 'database',
+                '<source>': 'backup disc',
+                '<failure>': 'database corruption'
+            }
+        },
+        security: {
+            itemAccess: {
+                true: {
+                    '<item>': 'project',
+                    '<actor>': 'owner',
+                    '<condition>': 'they are logged in'
+                },
+                false: {
+                    '<item>': 'project',
+                    '<actor>': 'other user',
+                    '<condition>': 'not are logged in'
+                }
+            },
+            validation: {
+                '<system>': 'system',
+                '<item>': 'patch file',
+                '<algorithm>': 'MD5 checksum'
+            },
+            encryption: {
+                '<system>': 'system',
+                '<encryption>': 'HTTPS protocol',
+                '<action>': 'transfer data over Internet'
+            }
+        },
+        usability: {
+            userInterface: {
+                '<system>': 'system',
+                '<attribute>': 'be consistent',
+                '<reason>': 'user will not confuse'
+            },
+            tutorial: {
+                '<system>': 'system',
+                '<actor>': 'user',
+                '<action>': 'create new project'
+            },
+            inputValidation: {
+                '<system>': 'system',
+                '<field>': 'email address',
+                '<error>': 'invalid email addresses'
+            },
+            errorPrevention: {
+                '<system>': 'system',
+                '<action>': 'using invalid email address',
+                '<reason>': 'ensure they receive important emails'
+            },
+            accessibility: {
+                '<system>': 'system',
+                '<accessibilityOption>': 'use contrasting color',
+                '<target>': 'colour blind user'
+            }
         }
     };
 
@@ -210,6 +343,10 @@ exports.$template = function () {
     this.compatibilityOptions = {
         true: 'Yes',
         false: 'No'
+    };
+    this.itemAccessOptions = {
+        true: "Accessible",
+        false: "Inaccessible"
     };
 
     return this;

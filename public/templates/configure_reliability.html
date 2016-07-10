@@ -1,0 +1,272 @@
+<div class="row valign-wrapper">
+    <h4 class=" col s12 m8 valign">Configure Reliability</h4>
+    <div class="valign col s8 m4">
+        <div class="col s12 m6 input-field">
+            <a class="btn waves-effect waves-light green col s12 m12" ng-click="saveProject()">
+                <i class="material-icons left">done</i>Save
+            </a>
+        </div>
+        <div class="col s12 m6 input-field">
+            <a class="btn waves-effect waves-light red col s12 m12" ng-click="back()">
+                <i class="material-icons left">power_settings_new</i>Back
+            </a>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <ul class="collapsible collapsible-accordion" data-collapsible="accordion">
+        <li>
+            <div class="collapsible-header active blue white-text">
+                Instructions<i class="material-icons right">announcement</i>
+            </div>
+            <div class="collapsible-body">
+                <div class="row">
+                    <p>
+                        Reliability refers to the non-functional aspect of the system such that the system should:
+                    </p>
+                    <ol>
+                        <li>
+                            1. Available and providing service for user for most of the time (Availability)
+                        </li>
+                        <li>
+                            2. Able to recover from error and minimize the losses of data of user (Fault tolerance)
+                        </li>
+                        <li>
+                            3. Able to recover from error within shortest possible amount of time (Recoverability)
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </li>
+        <li>
+            <div class="collapsible-header fit-height">
+                <h5 class="col">Availability</h5>
+                <div class="col right switch">
+                    <label>
+                        Off
+                        <input type="checkbox" ng-model="project.reliabilityData.availability.enabled">
+                        <span class="lever"></span>
+                        On
+                    </label>
+                </div>
+            </div>
+            <div class="collapsible-body">
+                <div class="row valign-wrapper">
+                    <p class="col valign">Uptime of the system is </p>
+                    <div class="col range-field valign">
+                        <input type="range" min="0" max="100"
+                               ng-model="project.reliabilityData.availability.value"/>
+                    </div>
+                    <div class="col input-field valign">
+                        <label for="project.reliabilityData.availability.value">Uptime value</label>
+                        <input id="project.reliabilityData.availability.value" type="text"
+                               ng-model="project.reliabilityData.availability.value"/>
+                    </div>
+                    <p class="col valign">percent</p>
+                </div>
+            </div>
+        </li>
+        <li>
+            <div class="collapsible-header fit-height">
+                <h5 class="col">Maintenance</h5>
+                <div class="col right switch">
+                    <label>
+                        Off
+                        <input type="checkbox" ng-model="project.reliabilityData.maintenance.enabled">
+                        <span class="lever"></span>
+                        On
+                    </label>
+                </div>
+            </div>
+            <div class="collapsible-body">
+                <div class="row valign-wrapper">
+                    <p class="col valign">Maintenance of the system is </p>
+                    <div class="col input-field valign">
+                        <label for="project.reliabilityData.maintenance.value">Amount of time</label>
+                        <input id="project.reliabilityData.maintenance.value" type="text"
+                               ng-model="project.reliabilityData.maintenance.value"/>
+                    </div>
+                    <p class="col valign">for every</p>
+                    <div class="col input-field valign">
+                        <label for="project.reliabilityData.maintenance.period">Period of time</label>
+                        <input id="project.reliabilityData.maintenance.period" type="text"
+                               ng-model="project.reliabilityData.maintenance.period"/>
+                    </div>
+                </div>
+            </div>
+        </li>
+        <li>
+            <div class="collapsible-header">
+                <h5>
+                    <span>Recovery Period</span>
+                    <span class="badge white-text light-green" ng-bind="getRecoveryPeriodCount()"></span>
+                </h5>
+            </div>
+            <div class="collapsible-body">
+                <div class="row valign-wrapper">
+                    <div class="col s4 m3 input-field">
+                        <label for="tbxRecoveryPeriod.failure">Case/Failure</label>
+                        <input id="tbxRecoveryPeriod.failure" type="text"
+                               ng-model="tbxRecoveryPeriod.failure"/>
+                    </div>
+                    <div class="col s4 m3 input-field">
+                        <label for="tbxRecoveryPeriod.time">Recovery Time</label>
+                        <input id="tbxRecoveryPeriod.time" type="text"
+                               ng-model="tbxRecoveryPeriod.time"/>
+                    </div>
+                    <div class="col s4 m3 input-field">
+                        <label for="tbxRecoveryPeriod.action">Action Taken (optional)</label>
+                        <input id="tbxRecoveryPeriod.action" type="text"
+                               ng-model="tbxRecoveryPeriod.action"/>
+                    </div>
+                    <div class="col s4 m3 valign">
+                        <button class="btn waves-effect waves-light col s12 m12" ng-click="addRecoveryPeriod()">
+                            Add
+                        </button>
+                    </div>
+                </div>
+                <div class="row" ng-if="project.reliabilityData.recoveryPeriod.length > 0">
+                    <table class="highlight">
+                        <thead>
+                        <tr>
+                            <td>Case/Failure</td>
+                            <td>Recovery Time</td>
+                            <td>Action Taken</td>
+                            <td></td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="item in project.reliabilityData.recoveryPeriod track by $index">
+                            <td ng-bind="item.failure"></td>
+                            <td ng-bind="item.time"></td>
+                            <td ng-bind="item.action"></td>
+                            <td>
+                                <a class="waves-effect waves-light btn red"
+                                   ng-click="deleteRecoveryPeriod($index)">
+                                    <i class="material-icons left">delete</i>Delete
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </li>
+        <li>
+            <div class="collapsible-header">
+                <h5>
+                    <span>Redundancy Option</span>
+                    <span class="badge white-text light-green" ng-bind="getRedundancyOptionCount()"></span>
+                </h5>
+            </div>
+            <div class="collapsible-body">
+                <div class="row valign-wrapper">
+                    <div class="col s4 m4 input-field">
+                        <label for="tbxRedundancyOption.name">Redundancy Name</label>
+                        <input id="tbxRedundancyOption.name" type="text"
+                               ng-model="tbxRedundancyOption.name"/>
+                    </div>
+                    <div class="col s4 m4 input-field">
+                        <label for="tbxRedundancyOption.failure">To prevent failure (optional)</label>
+                        <input id="tbxRedundancyOption.failure" type="text"
+                               ng-model="tbxRedundancyOption.failure"/>
+                    </div>
+                    <div class="col s4 m4 valign">
+                        <button class="btn waves-effect waves-light col s12 m12" ng-click="addRedundancyOption()">
+                            Add
+                        </button>
+                    </div>
+                </div>
+                <div class="row" ng-if="project.reliabilityData.redundancyOption.length > 0">
+                    <table class="highlight">
+                        <thead>
+                        <tr>
+                            <td>Redundancy Option</td>
+                            <td>To prevent</td>
+                            <td></td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="item in project.reliabilityData.redundancyOption track by $index">
+                            <td ng-bind="item.name"></td>
+                            <td ng-bind="item.failure"></td>
+                            <td>
+                                <a class="waves-effect waves-light btn red"
+                                   ng-click="deleteRedundancyOption($index)">
+                                    <i class="material-icons left">delete</i>Delete
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </li>
+        <li>
+            <div class="collapsible-header">
+                <h5>
+                    <span>Recovery Item</span>
+                    <span class="badge white-text light-green" ng-bind="getRecoveryItemCount()"></span>
+                </h5>
+            </div>
+            <div class="collapsible-body">
+                <div class="row valign-wrapper">
+                    <div class="col s4 m3 input-field">
+                        <label for="tbxRecoveryItem.failure">Failure/Case Name</label>
+                        <input id="tbxRecoveryItem.failure" type="text"
+                               ng-model="tbxRecoveryItem.failure"/>
+                    </div>
+                    <div class="col s4 m3 input-field">
+                        <label for="tbxRecoveryItem.item">Recovered Item Name</label>
+                        <input id="tbxRecoveryItem.item" type="text"
+                               ng-model="tbxRecoveryItem.item"/>
+                    </div>
+                    <div class="col s4 m3 input-field">
+                        <label for="tbxRecoveryItem.source">Recovered Source (Optional)</label>
+                        <input id="tbxRecoveryItem.source" type="text"
+                               ng-model="tbxRecoveryItem.source"/>
+                    </div>
+                    <div class="col s4 m3 valign">
+                        <button class="btn waves-effect waves-light col s12 m12" ng-click="addRecoveryItem()">
+                            Add
+                        </button>
+                    </div>
+                </div>
+                <div class="row" ng-if="project.reliabilityData.recoveryItem.length > 0">
+                    <table class="highlight">
+                        <thead>
+                        <tr>
+                            <td>Failure/Case Name</td>
+                            <td>Recovered Item Name</td>
+                            <td>Recovery Source</td>
+                            <td></td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="item in project.reliabilityData.recoveryItem track by $index">
+                            <td ng-bind="item.failure"></td>
+                            <td ng-bind="item.item"></td>
+                            <td ng-bind="item.source"></td>
+                            <td>
+                                <a class="waves-effect waves-light btn red"
+                                   ng-click="deleteRecoveryItem($index)">
+                                    <i class="material-icons left">delete</i>Delete
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </li>
+    </ul>
+</div>
+<script>
+    setTimeout(function () {
+        $('.collapsible').collapsible({
+            accordion: false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
+        });
+        $('select').material_select();
+        Materialize.updateTextFields();
+    }, 500);
+</script>

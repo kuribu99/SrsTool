@@ -281,73 +281,6 @@ module.exports = function (wagner) {
         };
     }));
 
-    api.get('/:id/access-control-data', wagner.invoke(function (Project) {
-        return function (req, res) {
-            Project.findOne({
-                _id: req.params.id
-            }).select({
-                _id: true,
-                domainData: true,
-                accessControlData: true
-            }).then(function (project) {
-                return res.json({
-                    result: project != null,
-                    project: project
-                });
-            }, function (error) {
-                if (error) {
-                    return res.status(status.INTERNAL_SERVER_ERROR).json({
-                        result: false,
-                        projects: null,
-                        error: error.toString()
-                    });
-                }
-            });
-        };
-    }));
-
-    api.patch('/:id/access-control-data', wagner.invoke(function (Project) {
-        return function (req, res) {
-            try {
-                var accessControlData = req.body.accessControlData;
-
-                Project.findOne({_id: req.params.id})
-                    .then(function (project) {
-                        project.accessControlData = accessControlData;
-
-                        project.save()
-                            .then(function () {
-                                return res.json({
-                                    result: true
-                                });
-
-                            }, function (error) {
-                                console.log(error);
-                                if (error) {
-                                    return res.status(status.INTERNAL_SERVER_ERROR).json({
-                                        result: false,
-                                        error: error.toString()
-                                    });
-                                }
-                            });
-                    }, function (error) {
-                        if (error) {
-                            return res.status(status.INTERNAL_SERVER_ERROR).json({
-                                result: false,
-                                error: error.toString()
-                            });
-                        }
-                    });
-
-            } catch (e) {
-                return res.status(status.BAD_REQUEST).json({
-                    result: false,
-                    error: e.toString()
-                });
-            }
-        };
-    }));
-
     api.get('/:id/action-control-data', wagner.invoke(function (Project) {
         return function (req, res) {
             Project.findOne({
@@ -415,55 +348,14 @@ module.exports = function (wagner) {
         };
     }));
 
-    api.patch('/:id/generated-requirements', wagner.invoke(function (Project) {
-        return function (req, res) {
-            try {
-                var generatedRequirements = req.body.generatedRequirements;
-
-                Project.findOne({_id: req.params.id})
-                    .then(function (project) {
-                        project.generatedRequirements = generatedRequirements;
-
-                        project.save()
-                            .then(function () {
-                                return res.json({
-                                    result: true
-                                });
-
-                            }, function (error) {
-                                console.log(error);
-                                if (error) {
-                                    return res.status(status.INTERNAL_SERVER_ERROR).json({
-                                        result: false,
-                                        error: error.toString()
-                                    });
-                                }
-                            });
-                    }, function (error) {
-                        if (error) {
-                            return res.status(status.INTERNAL_SERVER_ERROR).json({
-                                result: false,
-                                error: error.toString()
-                            });
-                        }
-                    });
-
-            } catch (e) {
-                return res.status(status.BAD_REQUEST).json({
-                    result: false,
-                    error: e.toString()
-                });
-            }
-        };
-    }));
-
-    api.get('/:id/boilerplate-data', wagner.invoke(function (Project) {
+    api.get('/:id/access-control-data', wagner.invoke(function (Project) {
         return function (req, res) {
             Project.findOne({
                 _id: req.params.id
             }).select({
                 _id: true,
-                boilerplateData: true
+                domainData: true,
+                accessControlData: true
             }).then(function (project) {
                 return res.json({
                     result: project != null,
@@ -481,14 +373,14 @@ module.exports = function (wagner) {
         };
     }));
 
-    api.patch('/:id/boilerplate-data', wagner.invoke(function (Project) {
+    api.patch('/:id/access-control-data', wagner.invoke(function (Project) {
         return function (req, res) {
             try {
-                var boilerplateData = req.body.boilerplateData;
+                var accessControlData = req.body.accessControlData;
 
                 Project.findOne({_id: req.params.id})
                     .then(function (project) {
-                        project.boilerplateData = boilerplateData;
+                        project.accessControlData = accessControlData;
 
                         project.save()
                             .then(function () {
@@ -690,6 +582,313 @@ module.exports = function (wagner) {
                 Project.findOne({_id: req.params.id})
                     .then(function (project) {
                         project.compatibilityData = compatibilityData;
+
+                        project.save()
+                            .then(function () {
+                                return res.json({
+                                    result: true
+                                });
+
+                            }, function (error) {
+                                console.log(error);
+                                if (error) {
+                                    return res.status(status.INTERNAL_SERVER_ERROR).json({
+                                        result: false,
+                                        error: error.toString()
+                                    });
+                                }
+                            });
+                    }, function (error) {
+                        if (error) {
+                            return res.status(status.INTERNAL_SERVER_ERROR).json({
+                                result: false,
+                                error: error.toString()
+                            });
+                        }
+                    });
+
+            } catch (e) {
+                return res.status(status.BAD_REQUEST).json({
+                    result: false,
+                    error: e.toString()
+                });
+            }
+        };
+    }));
+
+    api.get('/:id/reliability-data', wagner.invoke(function (Project) {
+        return function (req, res) {
+            Project.findOne({
+                _id: req.params.id
+            }).select({
+                _id: true,
+                reliabilityData: true
+            }).then(function (project) {
+                return res.json({
+                    result: project != null,
+                    project: project
+                });
+            }, function (error) {
+                if (error) {
+                    return res.status(status.INTERNAL_SERVER_ERROR).json({
+                        result: false,
+                        projects: null,
+                        error: error.toString()
+                    });
+                }
+            });
+        };
+    }));
+
+    api.patch('/:id/reliability-data', wagner.invoke(function (Project) {
+        return function (req, res) {
+            try {
+                var reliabilityData = req.body.reliabilityData;
+
+                Project.findOne({_id: req.params.id})
+                    .then(function (project) {
+                        project.reliabilityData = reliabilityData;
+
+                        project.save()
+                            .then(function () {
+                                return res.json({
+                                    result: true
+                                });
+
+                            }, function (error) {
+                                console.log(error);
+                                if (error) {
+                                    return res.status(status.INTERNAL_SERVER_ERROR).json({
+                                        result: false,
+                                        error: error.toString()
+                                    });
+                                }
+                            });
+                    }, function (error) {
+                        if (error) {
+                            return res.status(status.INTERNAL_SERVER_ERROR).json({
+                                result: false,
+                                error: error.toString()
+                            });
+                        }
+                    });
+
+            } catch (e) {
+                return res.status(status.BAD_REQUEST).json({
+                    result: false,
+                    error: e.toString()
+                });
+            }
+        };
+    }));
+
+    api.get('/:id/security-data', wagner.invoke(function (Project) {
+        return function (req, res) {
+            Project.findOne({
+                _id: req.params.id
+            }).select({
+                _id: true,
+                securityData: true
+            }).then(function (project) {
+                return res.json({
+                    result: project != null,
+                    project: project
+                });
+            }, function (error) {
+                if (error) {
+                    return res.status(status.INTERNAL_SERVER_ERROR).json({
+                        result: false,
+                        projects: null,
+                        error: error.toString()
+                    });
+                }
+            });
+        };
+    }));
+
+    api.patch('/:id/security-data', wagner.invoke(function (Project) {
+        return function (req, res) {
+            try {
+                var securityData = req.body.securityData;
+
+                Project.findOne({_id: req.params.id})
+                    .then(function (project) {
+                        project.securityData = securityData;
+
+                        project.save()
+                            .then(function () {
+                                return res.json({
+                                    result: true
+                                });
+
+                            }, function (error) {
+                                console.log(error);
+                                if (error) {
+                                    return res.status(status.INTERNAL_SERVER_ERROR).json({
+                                        result: false,
+                                        error: error.toString()
+                                    });
+                                }
+                            });
+                    }, function (error) {
+                        if (error) {
+                            return res.status(status.INTERNAL_SERVER_ERROR).json({
+                                result: false,
+                                error: error.toString()
+                            });
+                        }
+                    });
+
+            } catch (e) {
+                return res.status(status.BAD_REQUEST).json({
+                    result: false,
+                    error: e.toString()
+                });
+            }
+        };
+    }));
+
+    api.get('/:id/usability-data', wagner.invoke(function (Project) {
+        return function (req, res) {
+            Project.findOne({
+                _id: req.params.id
+            }).select({
+                _id: true,
+                domainData: true,
+                usabilityData: true
+            }).then(function (project) {
+                return res.json({
+                    result: project != null,
+                    project: project
+                });
+            }, function (error) {
+                if (error) {
+                    return res.status(status.INTERNAL_SERVER_ERROR).json({
+                        result: false,
+                        projects: null,
+                        error: error.toString()
+                    });
+                }
+            });
+        };
+    }));
+
+    api.patch('/:id/usability-data', wagner.invoke(function (Project) {
+        return function (req, res) {
+            try {
+                var usabilityData = req.body.usabilityData;
+
+                Project.findOne({_id: req.params.id})
+                    .then(function (project) {
+                        project.usabilityData = usabilityData;
+
+                        project.save()
+                            .then(function () {
+                                return res.json({
+                                    result: true
+                                });
+
+                            }, function (error) {
+                                console.log(error);
+                                if (error) {
+                                    return res.status(status.INTERNAL_SERVER_ERROR).json({
+                                        result: false,
+                                        error: error.toString()
+                                    });
+                                }
+                            });
+                    }, function (error) {
+                        if (error) {
+                            return res.status(status.INTERNAL_SERVER_ERROR).json({
+                                result: false,
+                                error: error.toString()
+                            });
+                        }
+                    });
+
+            } catch (e) {
+                return res.status(status.BAD_REQUEST).json({
+                    result: false,
+                    error: e.toString()
+                });
+            }
+        };
+    }));
+
+    api.get('/:id/boilerplate-data', wagner.invoke(function (Project) {
+        return function (req, res) {
+            Project.findOne({
+                _id: req.params.id
+            }).select({
+                _id: true,
+                boilerplateData: true
+            }).then(function (project) {
+                return res.json({
+                    result: project != null,
+                    project: project
+                });
+            }, function (error) {
+                if (error) {
+                    return res.status(status.INTERNAL_SERVER_ERROR).json({
+                        result: false,
+                        projects: null,
+                        error: error.toString()
+                    });
+                }
+            });
+        };
+    }));
+
+    api.patch('/:id/boilerplate-data', wagner.invoke(function (Project) {
+        return function (req, res) {
+            try {
+                var boilerplateData = req.body.boilerplateData;
+
+                Project.findOne({_id: req.params.id})
+                    .then(function (project) {
+                        project.boilerplateData = boilerplateData;
+
+                        project.save()
+                            .then(function () {
+                                return res.json({
+                                    result: true
+                                });
+
+                            }, function (error) {
+                                console.log(error);
+                                if (error) {
+                                    return res.status(status.INTERNAL_SERVER_ERROR).json({
+                                        result: false,
+                                        error: error.toString()
+                                    });
+                                }
+                            });
+                    }, function (error) {
+                        if (error) {
+                            return res.status(status.INTERNAL_SERVER_ERROR).json({
+                                result: false,
+                                error: error.toString()
+                            });
+                        }
+                    });
+
+            } catch (e) {
+                return res.status(status.BAD_REQUEST).json({
+                    result: false,
+                    error: e.toString()
+                });
+            }
+        };
+    }));
+
+    api.patch('/:id/generated-requirements', wagner.invoke(function (Project) {
+        return function (req, res) {
+            try {
+                var generatedRequirements = req.body.generatedRequirements;
+
+                Project.findOne({_id: req.params.id})
+                    .then(function (project) {
+                        project.generatedRequirements = generatedRequirements;
 
                         project.save()
                             .then(function () {

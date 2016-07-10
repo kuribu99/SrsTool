@@ -166,6 +166,81 @@ exports.ProjectViewController = function ($scope, $routeParams, $http, $location
     }, 0);
 };
 
+exports.SpecifyNonFunctionalRequirementController = function ($scope, $routeParams, $http, $location) {
+    var projectID = encodeURIComponent($routeParams.id);
+
+    $scope.toast = toast;
+    $scope.modules = [];
+
+    $http.get('/api/v1/projects/' + projectID + '/view')
+        .then(function (json) {
+            if (json.data.result) {
+                $scope.project = json.data.project;
+
+                $scope.modules = [
+                    {
+                        name: 'Access Control',
+                        description: 'Decide who can access to which module',
+                        path: 'access-control',
+                        show: $scope.project.domainData.modules.length > 0 && $scope.project.domainData.actors.length > 0,
+                        errorMessage: 'Please add at least one module and one actor to do so'
+                    },
+                    {
+                        name: 'Performance Constraint',
+                        description: 'Take into consideration of performance, time behaviour or resource usage',
+                        path: 'performance-constraint',
+                        show: $scope.project.domainData.actions.length > 0,
+                        errorMessage: 'Please add at least one action to do so'
+                    },
+                    {
+                        name: 'Functional Constraint',
+                        description: 'Define interfaces that should be provided although not performed by user explicitly and stating rules',
+                        path: 'functional-constraint',
+                        show: true
+                    },
+                    {
+                        name: 'Compatibility',
+                        description: 'Making a system that is compatible with most operating system and environment, as well as backward compatibility of system output',
+                        path: 'configure-compatibility',
+                        show: true
+                    },
+                    {
+                        name: 'Reliability',
+                        description: 'Ensure a system that has high availability, fault tolerant and fast recovery from error',
+                        path: 'configure-reliability',
+                        show: true
+                    },
+                    {
+                        name: 'Security',
+                        description: 'Protect the system by limiting accessible items, checking file integrity and encrypt data',
+                        path: 'configure-security',
+                        show: true
+                    },
+                    {
+                        name: 'Usability',
+                        description: 'Provide best user experience and imply user interface requirements',
+                        path: 'configure-usability',
+                        show: true
+                    }
+                ];
+            }
+            else
+                $location.path('/');
+        }, failCallBack);
+
+    $scope.goto = function (path) {
+        $location.path('/projects/' + $scope.project._id + '/' + path);
+    }
+
+    $scope.back = function () {
+        $location.path('/projects/' + $scope.project._id);
+    };
+
+    setTimeout(function () {
+        $scope.$emit('SpecifyNonFunctionalRequirementController');
+    }, 0);
+};
+
 exports.EditProjectController = function ($scope, $routeParams, $http, $location) {
     var projectID = encodeURIComponent($routeParams.id);
 
@@ -320,347 +395,6 @@ exports.EditDomainController = function ($scope, $routeParams, $http, $location)
     }, 0);
 };
 
-exports.GenerateRequirementController = function ($scope, $routeParams, $http, $location, $formatter, $template) {
-    var projectID = encodeURIComponent($routeParams.id);
-
-    $scope.$formatter = $formatter;
-    $scope.$boilerplateTemplates = $template.boilerplateTemplates;
-    $scope.$modules = $template.modules;
-    $scope.generatedRequirements = [];
-    $scope.changed = false;
-
-    $http.get('/api/v1/projects/' + projectID)
-        .then(function (json) {
-            if (json.data.result) {
-                $scope.project = json.data.project;
-                if ($scope.project.boilerplateData == null)
-                    $scope.project.boilerplateData = {};
-
-                if ($scope.project.generatedRequirements == null)
-                    $scope.project.generatedRequirements = {};
-
-                if ($scope.project.accessControlData == null)
-                    $scope.project.accessControlData = {};
-
-                if ($scope.project.actionControlData == null)
-                    $scope.project.actionControlData = {};
-
-                if ($scope.project.performanceConstraintData == null)
-                    $scope.project.performanceConstraintData = {};
-
-                if ($scope.project.functionalConstraintData == null)
-                    $scope.project.functionalConstraintData = {
-                        interfaces: [],
-                        actionDependencies: [],
-                        actionRules: []
-                    };
-
-                if ($scope.project.compatibilityData == null)
-                    $scope.project.compatibilityData = {
-                        operatingSystem: [],
-                        executionEnvironment: [],
-                        outputCompatibility: []
-                    };
-
-                for (var key in $scope.$boilerplateTemplates)
-                    if ($scope.project.boilerplateData[key] == null)
-                        $scope.project.boilerplateData[key] = $scope.$boilerplateTemplates[key];
-
-                $scope.generateRequirements();
-            }
-            else
-                $location.path('/');
-        }, failCallBack);
-
-    $scope.generateRequirements = function () {
-        $scope.generatedRequirements = {
-            'Access Control': [],
-            'Action Control': [],
-            'Performance Constraint': [],
-            'Functional Constraint': [],
-            'Compatibility': []
-        };
-
-        var moduleName = 'Access Control';
-        for (var module in $scope.project.accessControlData) {
-            for (var actor in $scope.project.accessControlData[module]) {
-                var allowed = $scope.project.accessControlData[module][actor];
-                var boilerplate = $scope.project.boilerplateData.accessControl[allowed];
-                var values = {
-                    '<module>': module,
-                    '<actor>': actor
-                };
-
-                if (!$scope.hasRequirement(moduleName, values))
-                    $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
-            }
-        }
-
-        moduleName = 'Action Control';
-        for (var actor in $scope.project.actionControlData) {
-            for (var action in $scope.project.actionControlData[actor]) {
-                var allowed = $scope.project.actionControlData[actor][action];
-                var boilerplate = $scope.project.boilerplateData.actionControl[allowed];
-                var values = {
-                    '<actor>': actor,
-                    '<action>': action
-                };
-
-                if (!$scope.hasRequirement(moduleName, values))
-                    $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
-            }
-        }
-
-        moduleName = 'Performance Constraint';
-        for (var action in $scope.project.performanceConstraintData) {
-            for (var index in $scope.project.performanceConstraintData[action]) {
-                var item = $scope.project.performanceConstraintData[action][index];
-                var boilerplate = $scope.project.boilerplateData.performanceConstraint[item.option];
-                var values = {
-                    '<action>': action,
-                    '<constraint>': item.constraint,
-                    '<option>': item.option,
-                    '<value>': item.value
-                };
-
-                if (!$scope.hasRequirement(moduleName, values))
-                    $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
-            }
-        }
-
-        moduleName = 'Functional Constraint';
-        for (var index in $scope.project.functionalConstraintData.interfaces) {
-            var item = $scope.project.functionalConstraintData.interfaces[index];
-            var boilerplateNo = (item.dependency == '' ? 0 : 1) + (item.condition == '' ? 0 : 2);
-            var boilerplate = $scope.project.boilerplateData.functionalConstraint.interface[boilerplateNo];
-            var values = {
-                '<system>': $scope.project.projectName,
-                '<interface>': item.interfaceName,
-                '<dependency>': item.dependency,
-                '<condition>': item.condition
-            };
-
-            if (!$scope.hasRequirement(moduleName, values))
-                $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
-        }
-
-        for (var index in $scope.project.functionalConstraintData.actionDependencies) {
-            var item = $scope.project.functionalConstraintData.actionDependencies[index];
-            var boilerplate = $scope.project.boilerplateData.functionalConstraint.actionDependencies[item.relation];
-            var values = {
-                '<system>': $scope.project.projectName,
-                '<action>': item.action,
-                '<dependentAction>': item.dependentAction,
-            };
-
-            if (!$scope.hasRequirement(moduleName, values))
-                $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
-        }
-
-        for (var index in $scope.project.functionalConstraintData.actionRules) {
-            var item = $scope.project.functionalConstraintData.actionRules[index];
-            var boilerplate = $scope.project.boilerplateData.functionalConstraint.actionRules[item.relation];
-            var values = {
-                '<system>': $scope.project.projectName,
-                '<action>': item.action,
-                '<rule>': item.rule
-            };
-
-            if (!$scope.hasRequirement(moduleName, values))
-                $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
-        }
-
-        moduleName = 'Compatibility';
-        for (var index in $scope.project.compatibilityData.operatingSystem) {
-            var item = $scope.project.compatibilityData.operatingSystem[index];
-            var boilerplateNo = (item.version == '' ? 0 : 1) + (item.issue == '' ? 0 : 2);
-            var boilerplate = $scope.project.boilerplateData.compatibility.operatingSystem[boilerplateNo];
-            var values = {
-                '<system>': $scope.project.projectName,
-                '<operatingSystem>': item.operatingSystem,
-                '<version>': item.version,
-                '<issue>': item.issue
-            };
-
-            if (!$scope.hasRequirement(moduleName, values))
-                $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
-        }
-
-        for (var index in $scope.project.compatibilityData.executionEnvironment) {
-            var item = $scope.project.compatibilityData.executionEnvironment[index];
-            var boilerplateNo = (item.version == '' ? 0 : 1) + (item.issue == '' ? 0 : 2);
-            var boilerplate = $scope.project.boilerplateData.compatibility.executionEnvironment[boilerplateNo];
-            var values = {
-                '<system>': $scope.project.projectName,
-                '<software>': item.software,
-                '<version>': item.version,
-                '<issue>': item.issue
-            };
-
-            if (!$scope.hasRequirement(moduleName, values))
-                $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
-        }
-
-        for (var index in $scope.project.compatibilityData.outputCompatibility) {
-            var item = $scope.project.compatibilityData.outputCompatibility[index];
-            var boilerplate = $scope.project.boilerplateData.compatibility.outputCompatibility[item.compatibility];
-            var values = {
-                '<system>': $scope.project.projectName,
-                '<output>': item.output,
-                '<oldVersion>': item.oldVersion,
-                '<newVersion>': item.newVersion
-            };
-
-            if (!$scope.hasRequirement(moduleName, values))
-                $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
-        }
-
-        $scope.numberRequirements = _.flatten($scope.generatedRequirements).length;
-        $scope.numberModules = Object.keys($scope.generatedRequirements).length;
-        $scope.numberNewRequirements = 0;
-    };
-
-    $scope.hasRequirement = function (moduleName, values) {
-        var requirements = $scope.project.generatedRequirements[moduleName];
-        if (requirements == null)
-            return false;
-        for (var index in requirements) {
-            if (isSameObject(requirements[index].values, values))
-                return true;
-        }
-        return false;
-    };
-
-    $scope.addCheckedRequirements = function () {
-        var addedRequirements = [];
-
-        for (var moduleName in $scope.generatedRequirements) {
-            if ($scope.project.generatedRequirements[moduleName] == null)
-                $scope.project.generatedRequirements[moduleName] = [];
-
-            _.each($scope.generatedRequirements[moduleName], function (requirement) {
-                if (requirement.checked) {
-                    $scope.project.generatedRequirements[moduleName].push(requirement);
-                    delete requirement.checked;
-                    addedRequirements.push(requirement);
-                    $scope.change();
-                }
-            });
-
-            $scope.generatedRequirements[moduleName] = _.difference($scope.generatedRequirements[moduleName], addedRequirements);
-        }
-
-        $scope.numberNewRequirements += addedRequirements.length;
-    };
-
-    $scope.newRequirement = function (module, boilerplate, values) {
-        return {
-            module: module,
-            boilerplate: boilerplate,
-            values: values,
-            checked: false
-        };
-    };
-
-    $scope.saveProject = function () {
-        $http.patch('/api/v1/projects/' + projectID + '/generated-requirements', {
-            generatedRequirements: $scope.project.generatedRequirements
-        }).then(function (json) {
-            if (json.data.result) {
-                $scope.changed = false;
-                toast("Saved successfully");
-            }
-            else
-                console.log(json.data);
-        }, failCallBack);
-    };
-
-    $scope.change = function () {
-        $scope.changed = true;
-    };
-
-    $scope.back = function () {
-        if ($scope.changed && confirmBack())
-            $scope.saveProject();
-        $location.path('/projects/' + $scope.project._id);
-    };
-
-    setTimeout(function () {
-        $scope.$emit('GenerateRequirementController');
-    }, 0);
-};
-
-exports.AccessControlController = function ($scope, $routeParams, $http, $location, $formatter) {
-    var projectID = encodeURIComponent($routeParams.id);
-
-    $scope.$formatter = $formatter;
-    $scope.changed = false;
-
-    $http.get('/api/v1/projects/' + projectID + '/access-control-data')
-        .then(function (json) {
-            if (json.data.result) {
-                $scope.project = json.data.project;
-
-                if (!$scope.project.accessControlData)
-                    $scope.project.accessControlData = {};
-
-                _.each($scope.project.domainData.modules, function (module) {
-                    if (!$scope.project.accessControlData.hasOwnProperty(module))
-                        $scope.project.accessControlData[module] = {};
-
-                    _.each($scope.project.domainData.actors, function (actor) {
-                        if (!$scope.project.accessControlData[module].hasOwnProperty(actor))
-                            $scope.project.accessControlData[module][actor] = false;
-                    });
-
-                    _.each(
-                        _.difference(Object.keys($scope.project.accessControlData[module]), $scope.project.domainData.actors),
-                        function (key) {
-                            delete $scope.project.accessControlData[module][key];
-                        });
-                });
-                _.each(
-                    _.difference(Object.keys($scope.project.accessControlData), $scope.project.domainData.modules),
-                    function (key) {
-                        delete $scope.project.accessControlData[key];
-                    });
-            } else
-                $location.path('/projects/' + $scope.project._id);
-
-        }, failCallBack);
-
-    $scope.saveProject = function () {
-        $http.patch('/api/v1/projects/' + projectID + '/access-control-data', {
-            accessControlData: $scope.project.accessControlData
-        }).then(function (json) {
-            if (json.data.result) {
-                $scope.changed = false;
-                toast("Saved successfully");
-            }
-            else
-                console.log(json.data);
-        }, failCallBack);
-    };
-
-    $scope.back = function () {
-        if ($scope.changed && confirmBack())
-            $scope.saveProject();
-        $location.path('/projects/' + $scope.project._id);
-    };
-
-    $scope.change = function () {
-        $scope.changed = true;
-    };
-
-    $scope.getAllowedCount = function (arr) {
-        return 'Allowed: ' + countTrue(arr) + '/' + Object.keys(arr).length;
-    };
-
-    setTimeout(function () {
-        $scope.$emit('AccessControlController');
-    }, 0);
-};
-
 exports.ActionControlController = function ($scope, $routeParams, $http, $location) {
     var projectID = encodeURIComponent($routeParams.id);
 
@@ -734,42 +468,48 @@ exports.ActionControlController = function ($scope, $routeParams, $http, $locati
     }, 0);
 };
 
-exports.ConfigureBoilerplateController = function ($scope, $routeParams, $http, $location, $formatter, $template) {
+exports.AccessControlController = function ($scope, $routeParams, $http, $location, $formatter) {
     var projectID = encodeURIComponent($routeParams.id);
 
     $scope.$formatter = $formatter;
-    $scope.$boilerplateTemplates = $template.boilerplateTemplates;
-    $scope.$values = $template.boilerplateValues;
-    $scope.toast = toast;
     $scope.changed = false;
 
-    $http.get('/api/v1/projects/' + projectID + '/boilerplate-data')
+    $http.get('/api/v1/projects/' + projectID + '/access-control-data')
         .then(function (json) {
             if (json.data.result) {
                 $scope.project = json.data.project;
-                if ($scope.project.boilerplateData == null)
-                    $scope.project.boilerplateData = {};
 
-                for (var key in $scope.$boilerplateTemplates)
-                    if ($scope.project.boilerplateData[key] == null)
-                        $scope.project.boilerplateData[key] = _.clone($scope.$boilerplateTemplates[key]);
-            }
-            else
-                $location.path('/');
+                if (!$scope.project.accessControlData)
+                    $scope.project.accessControlData = {};
+
+                _.each($scope.project.domainData.modules, function (module) {
+                    if (!$scope.project.accessControlData.hasOwnProperty(module))
+                        $scope.project.accessControlData[module] = {};
+
+                    _.each($scope.project.domainData.actors, function (actor) {
+                        if (!$scope.project.accessControlData[module].hasOwnProperty(actor))
+                            $scope.project.accessControlData[module][actor] = false;
+                    });
+
+                    _.each(
+                        _.difference(Object.keys($scope.project.accessControlData[module]), $scope.project.domainData.actors),
+                        function (key) {
+                            delete $scope.project.accessControlData[module][key];
+                        });
+                });
+                _.each(
+                    _.difference(Object.keys($scope.project.accessControlData), $scope.project.domainData.modules),
+                    function (key) {
+                        delete $scope.project.accessControlData[key];
+                    });
+            } else
+                $location.path('/projects/' + $scope.project._id);
+
         }, failCallBack);
 
-    $scope.requirementToString = function (template, values) {
-        if (template == null || template == '')
-            return '';
-        return $formatter.requirementToString({
-            boilerplate: template,
-            values: values
-        });
-    };
-
     $scope.saveProject = function () {
-        $http.patch('/api/v1/projects/' + projectID + '/boilerplate-data', {
-            boilerplateData: $scope.project.boilerplateData
+        $http.patch('/api/v1/projects/' + projectID + '/access-control-data', {
+            accessControlData: $scope.project.accessControlData
         }).then(function (json) {
             if (json.data.result) {
                 $scope.changed = false;
@@ -783,21 +523,19 @@ exports.ConfigureBoilerplateController = function ($scope, $routeParams, $http, 
     $scope.back = function () {
         if ($scope.changed && confirmBack())
             $scope.saveProject();
-        $location.path('/projects/' + $scope.project._id);
+        $location.path('/projects/' + $scope.project._id + '/specify-nfr');
     };
 
     $scope.change = function () {
         $scope.changed = true;
     };
 
-    $scope.restore = function (key) {
-        $scope.project.boilerplateData[key] = JSON.parse(JSON.stringify($scope.$boilerplateTemplates[key]));
-        toast('Default boilerplate restored');
-        $scope.change();
+    $scope.getAllowedCount = function (arr) {
+        return 'Allowed: ' + countTrue(arr) + '/' + Object.keys(arr).length;
     };
 
     setTimeout(function () {
-        $scope.$emit('ConfigureBoilerplateController');
+        $scope.$emit('AccessControlController');
     }, 0);
 };
 
@@ -892,7 +630,7 @@ exports.PerformanceConstraintController = function ($scope, $routeParams, $http,
     $scope.back = function () {
         if ($scope.changed && confirmBack())
             $scope.saveProject();
-        $location.path('/projects/' + $scope.project._id);
+        $location.path('/projects/' + $scope.project._id + '/specify-nfr');
     };
 
     $scope.change = function () {
@@ -987,7 +725,7 @@ exports.FunctionalConstraintController = function ($scope, $routeParams, $http, 
         else if ($scope.hasActionDependency($scope.tbxActionDependency))
             toast('Action/Dependency pair already exist');
         else {
-            var newData = $scope.tbxActionDependency
+            var newData = $scope.tbxActionDependency;
             $scope.project.functionalConstraintData.actionDependencies.push(newData);
             $scope.tbxActionDependency = $scope.newActionDependency();
             $scope.tbxActionDependency.relation = newData.relation;
@@ -1077,7 +815,7 @@ exports.FunctionalConstraintController = function ($scope, $routeParams, $http, 
     $scope.back = function () {
         if ($scope.changed && confirmBack())
             $scope.saveProject();
-        $location.path('/projects/' + $scope.project._id);
+        $location.path('/projects/' + $scope.project._id + '/specify-nfr');
     };
 
     $scope.change = function () {
@@ -1260,7 +998,7 @@ exports.ConfigureCompatibilityController = function ($scope, $routeParams, $http
     $scope.back = function () {
         if ($scope.changed && confirmBack())
             $scope.saveProject();
-        $location.path('/projects/' + $scope.project._id);
+        $location.path('/projects/' + $scope.project._id + '/specify-nfr');
     };
 
     $scope.change = function () {
@@ -1273,6 +1011,1169 @@ exports.ConfigureCompatibilityController = function ($scope, $routeParams, $http
 
     setTimeout(function () {
         $scope.$emit('ConfigureCompatibilityController');
+    }, 0);
+};
+
+exports.ConfigureReliabilityController = function ($scope, $routeParams, $http, $location) {
+    var projectID = encodeURIComponent($routeParams.id);
+
+    $scope.changed = false;
+
+    $http.get('/api/v1/projects/' + projectID + '/reliability-data')
+        .then(function (json) {
+            if (json.data.result) {
+                $scope.project = json.data.project;
+
+                if (!$scope.project.reliabilityData)
+                    $scope.project.reliabilityData = {
+                        availability: {
+                            enabled: false,
+                            value: 99
+                        },
+                        maintenance: {
+                            enabled: false,
+                            value: '1 hour',
+                            period: 'week'
+                        },
+                        recoveryPeriod: [],
+                        redundancyOption: [],
+                        recoveryItem: []
+                    };
+
+            } else
+                $location.path('/projects/' + $scope.project._id);
+
+        }, failCallBack);
+
+    $scope.newRecoveryPeriod = function () {
+        return {
+            failure: '',
+            time: '',
+            action: ''
+        };
+    };
+
+    $scope.addRecoveryPeriod = function () {
+        if ($scope.tbxRecoveryPeriod.failure == '')
+            toast('Failure/case name is required');
+        else if ($scope.tbxRecoveryPeriod.time == '')
+            toast('Time taken for recovery is required');
+        else if ($scope.hasRecoveryPeriod($scope.tbxRecoveryPeriod))
+            toast('Failure/case or time or action already exist');
+        else {
+            $scope.project.reliabilityData.recoveryPeriod.push($scope.tbxRecoveryPeriod);
+            $scope.tbxRecoveryPeriod = $scope.newRecoveryPeriod();
+            $scope.changed = true;
+        }
+    };
+
+    $scope.hasRecoveryPeriod = function (newRecoveryPeriod) {
+        return arrayHasObject($scope.project.reliabilityData.recoveryPeriod, newRecoveryPeriod);
+    };
+
+    $scope.deleteRecoveryPeriod = function (index) {
+        $scope.project.reliabilityData.recoveryPeriod.splice(index, 1);
+        $scope.changed = true;
+    };
+
+    $scope.getRecoveryPeriodCount = function () {
+        var count = $scope.project ? $scope.project.reliabilityData.recoveryPeriod.length : 0;
+        switch (count) {
+            case 0:
+                return 'None';
+            default:
+                return count + ' defined';
+        }
+    };
+
+    $scope.newRedundancyOption = function () {
+        return {
+            name: '',
+            failure: ''
+        };
+    };
+
+    $scope.addRedundancyOption = function () {
+        if ($scope.tbxRedundancyOption.name == '')
+            toast('Redundancy name is required');
+        else if ($scope.hasRedundancyOption($scope.tbxRedundancyOption))
+            toast('Redundancy or failure already exist');
+        else {
+            $scope.project.reliabilityData.redundancyOption.push($scope.tbxRedundancyOption);
+            $scope.tbxRedundancyOption = $scope.newRedundancyOption();
+            $scope.changed = true;
+        }
+    };
+
+    $scope.hasRedundancyOption = function (newRedundancyOption) {
+        return arrayHasObject($scope.project.reliabilityData.redundancyOption, newRedundancyOption);
+    };
+
+    $scope.deleteRedundancyOption = function (index) {
+        $scope.project.reliabilityData.redundancyOption.splice(index, 1);
+        $scope.changed = true;
+    };
+
+    $scope.getRedundancyOptionCount = function () {
+        var count = $scope.project ? $scope.project.reliabilityData.redundancyOption.length : 0;
+        switch (count) {
+            case 0:
+                return 'None';
+            default:
+                return count + ' defined';
+        }
+    };
+
+    $scope.newRecoveryItem = function () {
+        return {
+            failure: '',
+            item: '',
+            source: ''
+        };
+    };
+
+    $scope.addRecoveryItem = function () {
+        if ($scope.tbxRecoveryItem.failure == '')
+            toast('Failure/Case name is required');
+        else if ($scope.tbxRecoveryItem.item == '')
+            toast('Item name is required');
+        else if ($scope.hasRecoveryItem($scope.tbxRecoveryItem))
+            toast('Failure/Case or item already exist');
+        else {
+            $scope.project.reliabilityData.recoveryItem.push($scope.tbxRecoveryItem);
+            $scope.tbxRecoveryItem = $scope.newRecoveryItem();
+            $scope.changed = true;
+        }
+    };
+
+    $scope.hasRecoveryItem = function (newRecoveryItem) {
+        return arrayHasObject($scope.project.reliabilityData.recoveryItem, newRecoveryItem);
+    };
+
+    $scope.deleteRecoveryItem = function (index) {
+        $scope.project.reliabilityData.recoveryItem.splice(index, 1);
+        $scope.changed = true;
+    };
+
+    $scope.getRecoveryItemCount = function () {
+        var count = $scope.project ? $scope.project.reliabilityData.recoveryItem.length : 0;
+        switch (count) {
+            case 0:
+                return 'None';
+            case 1:
+                return count + ' item';
+            default:
+                return count + ' items';
+        }
+    };
+
+    $scope.saveProject = function () {
+        $http.patch('/api/v1/projects/' + projectID + '/reliability-data', {
+            reliabilityData: $scope.project.reliabilityData
+        }).then(function (json) {
+            if (json.data.result) {
+                $scope.changed = false;
+                toast("Saved successfully");
+            }
+            else
+                console.log(json.data);
+        }, failCallBack);
+    };
+
+    $scope.back = function () {
+        if ($scope.changed && confirmBack())
+            $scope.saveProject();
+        $location.path('/projects/' + $scope.project._id + '/specify-nfr');
+    };
+
+    $scope.change = function () {
+        $scope.changed = true;
+    };
+
+    $scope.tbxRecoveryPeriod = $scope.newRecoveryPeriod();
+    $scope.tbxRedundancyOption = $scope.newRedundancyOption();
+    $scope.tbxRecoveryItem = $scope.newRecoveryItem();
+
+    setTimeout(function () {
+        $scope.$emit('ConfigureReliabilityController');
+    }, 0);
+};
+
+exports.ConfigureSecurityController = function ($scope, $routeParams, $http, $location, $template) {
+    var projectID = encodeURIComponent($routeParams.id);
+
+    $scope.$itemAccessOptions = $template.itemAccessOptions;
+    $scope.changed = false;
+
+    $http.get('/api/v1/projects/' + projectID + '/security-data')
+        .then(function (json) {
+            if (json.data.result) {
+                $scope.project = json.data.project;
+
+                if (!$scope.project.securityData)
+                    $scope.project.securityData = {
+                        itemAccess: [],
+                        validation: [],
+                        encryption: []
+                    };
+
+            } else
+                $location.path('/projects/' + $scope.project._id);
+
+        }, failCallBack);
+
+    $scope.newItemAccess = function () {
+        return {
+            item: '',
+            actor: '',
+            condition: '',
+            allowed: ''
+        };
+    };
+
+    $scope.addItemAccess = function () {
+        if ($scope.tbxItemAccess.item == '')
+            toast('Item name is required');
+        else if ($scope.tbxItemAccess.actor == '')
+            toast('Actor name is required');
+        else if ($scope.tbxItemAccess.allowed == '')
+            toast('Item accessible is required');
+        else if ($scope.hasItemAccess($scope.tbxItemAccess))
+            toast('Item or actor or item accessible already exist');
+        else {
+            var newData = $scope.tbxItemAccess;
+            $scope.project.securityData.itemAccess.push(newData);
+            $scope.tbxItemAccess = $scope.newItemAccess();
+            $scope.tbxItemAccess.allowed = newData.allowed;
+            $scope.change();
+        }
+    };
+
+    $scope.hasItemAccess = function (newItemAccess) {
+        return arrayHasObject($scope.project.securityData.itemAccess, newItemAccess);
+    };
+
+    $scope.deleteItemAccess = function (index) {
+        $scope.project.securityData.itemAccess.splice(index, 1);
+        $scope.changed = true;
+    };
+
+    $scope.getItemAccessCount = function () {
+        var count = $scope.project ? $scope.project.securityData.itemAccess.length : 0;
+        switch (count) {
+            case 0:
+                return 'None';
+            case 1:
+                return count + ' item';
+            default:
+                return count + ' items';
+        }
+    };
+
+    $scope.newValidation = function () {
+        return {
+            item: '',
+            algorithm: ''
+        };
+    };
+
+    $scope.addValidation = function () {
+        if ($scope.tbxValidation.item == '')
+            toast('Item name is required');
+        else if ($scope.tbxValidation.algorithm == '')
+            toast('Algorithm is required');
+        else if ($scope.hasValidation($scope.tbxValidation))
+            toast('Item or validation already exist');
+        else {
+            $scope.project.securityData.validation.push($scope.tbxValidation);
+            $scope.tbxValidation = $scope.newValidation();
+            $scope.changed = true;
+        }
+    };
+
+    $scope.hasValidation = function (newValidation) {
+        return arrayHasObject($scope.project.securityData.validation, newValidation);
+    };
+
+    $scope.deleteValidation = function (index) {
+        $scope.project.securityData.validation.splice(index, 1);
+        $scope.changed = true;
+    };
+
+    $scope.getValidationCount = function () {
+        var count = $scope.project ? $scope.project.securityData.validation.length : 0;
+        switch (count) {
+            case 0:
+                return 'None';
+            default:
+                return count + ' defined';
+        }
+    };
+
+    $scope.newEncryption = function () {
+        return {
+            encryption: '',
+            action: ''
+        };
+    };
+
+    $scope.addEncryption = function () {
+        if ($scope.tbxEncryption.encryption == '')
+            toast('Encryption name is required');
+        else if ($scope.tbxEncryption.action == '')
+            toast('Action is required');
+        else if ($scope.hasEncryption($scope.tbxEncryption))
+            toast('Encryption or action already exist');
+        else {
+            $scope.project.securityData.encryption.push($scope.tbxEncryption);
+            $scope.tbxEncryption = $scope.newEncryption();
+            $scope.changed = true;
+        }
+    };
+
+    $scope.hasEncryption = function (newEncryption) {
+        return arrayHasObject($scope.project.securityData.encryption, newEncryption);
+    };
+
+    $scope.deleteEncryption = function (index) {
+        $scope.project.securityData.encryption.splice(index, 1);
+        $scope.changed = true;
+    };
+
+    $scope.getEncryptionCount = function () {
+        var count = $scope.project ? $scope.project.securityData.encryption.length : 0;
+        switch (count) {
+            case 0:
+                return 'None';
+            default:
+                return count + ' defined';
+        }
+    };
+
+    $scope.saveProject = function () {
+        $http.patch('/api/v1/projects/' + projectID + '/security-data', {
+            securityData: $scope.project.securityData
+        }).then(function (json) {
+            if (json.data.result) {
+                $scope.changed = false;
+                toast("Saved successfully");
+            }
+            else
+                console.log(json.data);
+        }, failCallBack);
+    };
+
+    $scope.back = function () {
+        if ($scope.changed && confirmBack())
+            $scope.saveProject();
+        $location.path('/projects/' + $scope.project._id + '/specify-nfr');
+    };
+
+    $scope.change = function () {
+        $scope.changed = true;
+    };
+
+    $scope.tbxItemAccess = $scope.newItemAccess();
+    $scope.tbxValidation = $scope.newValidation();
+    $scope.tbxEncryption = $scope.newEncryption();
+
+    setTimeout(function () {
+        $scope.$emit('ConfigureSecurityController');
+    }, 0);
+};
+
+exports.ConfigureUsabilityController = function ($scope, $routeParams, $http, $location) {
+    var projectID = encodeURIComponent($routeParams.id);
+
+    $scope.changed = false;
+
+    $http.get('/api/v1/projects/' + projectID + '/usability-data')
+        .then(function (json) {
+            if (json.data.result) {
+                $scope.project = json.data.project;
+
+                if (!$scope.project.usabilityData)
+                    $scope.project.usabilityData = {
+                        userInterface: [],
+                        tutorial: [],
+                        inputValidation: [],
+                        errorPrevention: [],
+                        accessibility: []
+                    };
+
+            } else
+                $location.path('/projects/' + $scope.project._id);
+
+        }, failCallBack);
+
+    $scope.newUserInterface = function () {
+        return {
+            attribute: '',
+            reason: ''
+        };
+    };
+
+    $scope.addUserInterface = function () {
+        if ($scope.tbxUserInterface.attribute == '')
+            toast('Attribute name is required');
+        else if ($scope.hasUserInterface($scope.tbxUserInterface))
+            toast('Attribute name or reason already exist');
+        else {
+            $scope.project.usabilityData.userInterface.push($scope.tbxUserInterface);
+            $scope.tbxUserInterface = $scope.newUserInterface();
+            $scope.changed = true;
+        }
+    };
+
+    $scope.hasUserInterface = function (newData) {
+        return arrayHasObject($scope.project.usabilityData.userInterface, newData);
+    };
+
+    $scope.deleteUserInterface = function (index) {
+        $scope.project.usabilityData.userInterface.splice(index, 1);
+        $scope.changed = true;
+    };
+
+    $scope.getUserInterfaceCount = function () {
+        var count = $scope.project ? $scope.project.usabilityData.userInterface.length : 0;
+        switch (count) {
+            case 0:
+                return 'None';
+            case 1:
+                return count + ' attribute';
+            default:
+                return count + ' attributes';
+        }
+    };
+
+    $scope.newTutorial = function () {
+        return {
+            actor: '',
+            action: ''
+        };
+    };
+
+    $scope.addTutorial = function () {
+        if ($scope.tbxTutorial.action == '')
+            toast('Action name is required');
+        else if ($scope.hasTutorial($scope.tbxTutorial))
+            toast('Actor or action already exist');
+        else {
+            $scope.project.usabilityData.tutorial.push($scope.tbxTutorial);
+            $scope.tbxTutorial = $scope.newTutorial();
+            $scope.changed = true;
+        }
+    };
+
+    $scope.hasTutorial = function (newData) {
+        return arrayHasObject($scope.project.usabilityData.tutorial, newData);
+    };
+
+    $scope.deleteTutorial = function (index) {
+        $scope.project.usabilityData.tutorial.splice(index, 1);
+        $scope.changed = true;
+    };
+
+    $scope.getTutorialCount = function () {
+        var count = $scope.project ? $scope.project.usabilityData.tutorial.length : 0;
+        switch (count) {
+            case 0:
+                return 'None';
+            case 1:
+                return count + ' tutorial';
+            default:
+                return count + ' tutorials';
+        }
+    };
+
+    $scope.newInputValidation = function () {
+        return {
+            field: '',
+            error: ''
+        };
+    };
+
+    $scope.addInputValidation = function () {
+        if ($scope.tbxInputValidation.field == '')
+            toast('Input field is required');
+        else if ($scope.hasInputValidation($scope.tbxInputValidation))
+            toast('Input field or error already exist');
+        else {
+            $scope.project.usabilityData.inputValidation.push($scope.tbxInputValidation);
+            $scope.tbxInputValidation = $scope.newInputValidation();
+            $scope.changed = true;
+        }
+    };
+
+    $scope.hasInputValidation = function (newData) {
+        return arrayHasObject($scope.project.usabilityData.inputValidation, newData);
+    };
+
+    $scope.deleteInputValidation = function (index) {
+        $scope.project.usabilityData.inputValidation.splice(index, 1);
+        $scope.changed = true;
+    };
+
+    $scope.getInputValidationCount = function () {
+        var count = $scope.project ? $scope.project.usabilityData.inputValidation.length : 0;
+        switch (count) {
+            case 0:
+                return 'None';
+            case 1:
+                return count + ' input';
+            default:
+                return count + ' inputs';
+        }
+    };
+
+    $scope.newErrorPrevention = function () {
+        return {
+            action: '',
+            reason: ''
+        };
+    };
+
+    $scope.addErrorPrevention = function () {
+        if ($scope.tbxErrorPrevention.action == '')
+            toast('Action name is required');
+        else if ($scope.hasErrorPrevention($scope.tbxErrorPrevention))
+            toast('Action name or reason already exist');
+        else {
+            $scope.project.usabilityData.errorPrevention.push($scope.tbxErrorPrevention);
+            $scope.tbxErrorPrevention = $scope.newErrorPrevention();
+            $scope.changed = true;
+        }
+    };
+
+    $scope.hasErrorPrevention = function (newData) {
+        return arrayHasObject($scope.project.usabilityData.errorPrevention, newData);
+    };
+
+    $scope.deleteErrorPrevention = function (index) {
+        $scope.project.usabilityData.errorPrevention.splice(index, 1);
+        $scope.changed = true;
+    };
+
+    $scope.getErrorPreventionCount = function () {
+        var count = $scope.project ? $scope.project.usabilityData.errorPrevention.length : 0;
+        switch (count) {
+            case 0:
+                return 'None';
+            case 1:
+                return count + ' prevention';
+            default:
+                return count + ' preventions';
+        }
+    };
+
+    $scope.newAccessibility = function () {
+        return {
+            accessibilityOption: '',
+            target: ''
+        };
+    };
+
+    $scope.addAccessibility = function () {
+        if ($scope.tbxAccessibility.accessibilityOption == '')
+            toast('Accessibility option is required');
+        if ($scope.tbxAccessibility.target == '')
+            toast('Target name is required');
+        else if ($scope.hasAccessibility($scope.tbxAccessibility))
+            toast('Accessibility option or target name already exist');
+        else {
+            $scope.project.usabilityData.accessibility.push($scope.tbxAccessibility);
+            $scope.tbxAccessibility = $scope.newAccessibility();
+            $scope.changed = true;
+        }
+    };
+
+    $scope.hasAccessibility = function (newData) {
+        return arrayHasObject($scope.project.usabilityData.accessibility, newData);
+    };
+
+    $scope.deleteAccessibility = function (index) {
+        $scope.project.usabilityData.accessibility.splice(index, 1);
+        $scope.changed = true;
+    };
+
+    $scope.getAccessibilityCount = function () {
+        var count = $scope.project ? $scope.project.usabilityData.accessibility.length : 0;
+        switch (count) {
+            case 0:
+                return 'None';
+            default:
+                return count + ' defined';
+        }
+    };
+
+    $scope.saveProject = function () {
+        $http.patch('/api/v1/projects/' + projectID + '/usability-data', {
+            usabilityData: $scope.project.usabilityData
+        }).then(function (json) {
+            if (json.data.result) {
+                $scope.changed = false;
+                toast("Saved successfully");
+            }
+            else
+                console.log(json.data);
+        }, failCallBack);
+    };
+
+    $scope.back = function () {
+        if ($scope.changed && confirmBack())
+            $scope.saveProject();
+        $location.path('/projects/' + $scope.project._id + '/specify-nfr');
+    };
+
+    $scope.change = function () {
+        $scope.changed = true;
+    };
+
+    $scope.tbxUserInterface = $scope.newUserInterface();
+    $scope.tbxTutorial = $scope.newTutorial();
+    $scope.tbxInputValidation = $scope.newInputValidation();
+    $scope.tbxErrorPrevention = $scope.newErrorPrevention();
+    $scope.tbxAccessibility = $scope.newAccessibility();
+
+    setTimeout(function () {
+        $scope.$emit('ConfigureSecurityController');
+    }, 0);
+};
+
+exports.GenerateRequirementController = function ($scope, $routeParams, $http, $location, $formatter, $template) {
+    var projectID = encodeURIComponent($routeParams.id);
+
+    $scope.$formatter = $formatter;
+    $scope.$boilerplateTemplates = $template.boilerplateTemplates;
+    $scope.$modules = $template.modules;
+    $scope.generatedRequirements = [];
+    $scope.changed = false;
+
+    $http.get('/api/v1/projects/' + projectID)
+        .then(function (json) {
+            if (json.data.result) {
+                $scope.project = json.data.project;
+                if ($scope.project.boilerplateData == null)
+                    $scope.project.boilerplateData = {};
+
+                if ($scope.project.generatedRequirements == null)
+                    $scope.project.generatedRequirements = {};
+
+                if ($scope.project.accessControlData == null)
+                    $scope.project.accessControlData = {};
+
+                if ($scope.project.actionControlData == null)
+                    $scope.project.actionControlData = {};
+
+                if ($scope.project.performanceConstraintData == null)
+                    $scope.project.performanceConstraintData = {};
+
+                if ($scope.project.functionalConstraintData == null)
+                    $scope.project.functionalConstraintData = {
+                        interfaces: [],
+                        actionDependencies: [],
+                        actionRules: []
+                    };
+
+                if ($scope.project.compatibilityData == null)
+                    $scope.project.compatibilityData = {
+                        operatingSystem: [],
+                        executionEnvironment: [],
+                        outputCompatibility: []
+                    };
+
+                if ($scope.project.reliabilityData == null)
+                    $scope.project.reliabilityData = {
+                        availability: {
+                            enabled: false,
+                            value: 99
+                        },
+                        maintenance: {
+                            enabled: false,
+                            value: '1 hour',
+                            period: 'week'
+                        },
+                        recoveryPeriod: [],
+                        redundancyOption: [],
+                        recoveryItem: []
+                    }
+
+                if ($scope.project.usabilityData == null)
+                    $scope.project.usabilityData = {
+                        userInterface: [],
+                        tutorial: [],
+                        inputValidation: [],
+                        errorPrevention: [],
+                        accessibility: []
+                    };
+
+                for (var key in $scope.$boilerplateTemplates)
+                    if ($scope.project.boilerplateData[key] == null)
+                        $scope.project.boilerplateData[key] = $scope.$boilerplateTemplates[key];
+
+                $scope.generateRequirements();
+            }
+            else
+                $location.path('/');
+        }, failCallBack);
+
+    $scope.generateRequirements = function () {
+        $scope.generatedRequirements = {
+            'Access Control': [],
+            'Action Control': [],
+            'Performance Constraint': [],
+            'Functional Constraint': [],
+            'Compatibility': [],
+            'Reliability': [],
+            'Security': [],
+            'Usability': []
+        };
+
+        var moduleName = 'Access Control';
+        for (var module in $scope.project.accessControlData) {
+            for (var actor in $scope.project.accessControlData[module]) {
+                var allowed = $scope.project.accessControlData[module][actor];
+                var boilerplate = $scope.project.boilerplateData.accessControl[allowed];
+                var values = {
+                    '<module>': module,
+                    '<actor>': actor
+                };
+
+                if (!$scope.hasRequirement(moduleName, values))
+                    $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
+            }
+        }
+
+        moduleName = 'Action Control';
+        for (var actor in $scope.project.actionControlData) {
+            for (var action in $scope.project.actionControlData[actor]) {
+                var allowed = $scope.project.actionControlData[actor][action];
+                var boilerplate = $scope.project.boilerplateData.actionControl[allowed];
+                var values = {
+                    '<actor>': actor,
+                    '<action>': action
+                };
+
+                if (!$scope.hasRequirement(moduleName, values))
+                    $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
+            }
+        }
+
+        moduleName = 'Performance Constraint';
+        for (var action in $scope.project.performanceConstraintData) {
+            for (var index in $scope.project.performanceConstraintData[action]) {
+                var item = $scope.project.performanceConstraintData[action][index];
+                var boilerplate = $scope.project.boilerplateData.performanceConstraint[item.option];
+                var values = {
+                    '<action>': action,
+                    '<constraint>': item.constraint,
+                    '<option>': item.option,
+                    '<value>': item.value
+                };
+
+                if (!$scope.hasRequirement(moduleName, values))
+                    $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
+            }
+        }
+
+        moduleName = 'Functional Constraint';
+        for (var index in $scope.project.functionalConstraintData.interfaces) {
+            var item = $scope.project.functionalConstraintData.interfaces[index];
+            var boilerplateNo = (item.dependency == '' ? 0 : 1) + (item.condition == '' ? 0 : 2);
+            var boilerplate = $scope.project.boilerplateData.functionalConstraint.interface[boilerplateNo];
+            var values = {
+                '<system>': $scope.project.projectName,
+                '<interface>': item.interfaceName,
+                '<dependency>': item.dependency,
+                '<condition>': item.condition
+            };
+
+            if (!$scope.hasRequirement(moduleName, values))
+                $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
+        }
+
+        for (var index in $scope.project.functionalConstraintData.actionDependencies) {
+            var item = $scope.project.functionalConstraintData.actionDependencies[index];
+            var boilerplate = $scope.project.boilerplateData.functionalConstraint.actionDependencies[item.relation];
+            var values = {
+                '<system>': $scope.project.projectName,
+                '<action>': item.action,
+                '<dependentAction>': item.dependentAction,
+            };
+
+            if (!$scope.hasRequirement(moduleName, values))
+                $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
+        }
+
+        for (var index in $scope.project.functionalConstraintData.actionRules) {
+            var item = $scope.project.functionalConstraintData.actionRules[index];
+            var boilerplate = $scope.project.boilerplateData.functionalConstraint.actionRules[item.relation];
+            var values = {
+                '<system>': $scope.project.projectName,
+                '<action>': item.action,
+                '<rule>': item.rule
+            };
+
+            if (!$scope.hasRequirement(moduleName, values))
+                $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
+        }
+
+        moduleName = 'Compatibility';
+        for (var index in $scope.project.compatibilityData.operatingSystem) {
+            var item = $scope.project.compatibilityData.operatingSystem[index];
+            var boilerplateNo = (item.version == '' ? 0 : 1) + (item.issue == '' ? 0 : 2);
+            var boilerplate = $scope.project.boilerplateData.compatibility.operatingSystem[boilerplateNo];
+            var values = {
+                '<system>': $scope.project.projectName,
+                '<operatingSystem>': item.operatingSystem,
+                '<version>': item.version,
+                '<issue>': item.issue
+            };
+
+            if (!$scope.hasRequirement(moduleName, values))
+                $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
+        }
+
+        for (var index in $scope.project.compatibilityData.executionEnvironment) {
+            var item = $scope.project.compatibilityData.executionEnvironment[index];
+            var boilerplateNo = (item.version == '' ? 0 : 1) + (item.issue == '' ? 0 : 2);
+            var boilerplate = $scope.project.boilerplateData.compatibility.executionEnvironment[boilerplateNo];
+            var values = {
+                '<system>': $scope.project.projectName,
+                '<software>': item.software,
+                '<version>': item.version,
+                '<issue>': item.issue
+            };
+
+            if (!$scope.hasRequirement(moduleName, values))
+                $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
+        }
+
+        for (var index in $scope.project.compatibilityData.outputCompatibility) {
+            var item = $scope.project.compatibilityData.outputCompatibility[index];
+            var boilerplate = $scope.project.boilerplateData.compatibility.outputCompatibility[item.compatibility];
+            var values = {
+                '<system>': $scope.project.projectName,
+                '<output>': item.output,
+                '<oldVersion>': item.oldVersion,
+                '<newVersion>': item.newVersion
+            };
+
+            if (!$scope.hasRequirement(moduleName, values))
+                $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
+        }
+
+        moduleName = 'Reliability';
+        if ($scope.project.reliabilityData.availability.enabled) {
+            var boilerplate = $scope.project.boilerplateData.reliability.availability;
+            var values = {
+                '<system>': $scope.project.projectName,
+                '<value>': $scope.project.reliabilityData.availability.value
+            };
+
+            if (!$scope.hasRequirement(moduleName, values))
+                $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
+        }
+
+        if ($scope.project.reliabilityData.maintenance.enabled) {
+            var boilerplate = $scope.project.boilerplateData.reliability.maintenance;
+            var values = {
+                '<system>': $scope.project.projectName,
+                '<value>': $scope.project.reliabilityData.maintenance.value,
+                '<period>': $scope.project.reliabilityData.maintenance.period
+            };
+
+            if (!$scope.hasRequirement(moduleName, values))
+                $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
+        }
+
+        for (var index in $scope.project.reliabilityData.recoveryPeriod) {
+            var item = $scope.project.reliabilityData.recoveryPeriod[index];
+            var boilerplate = $scope.project.boilerplateData.reliability.recoveryPeriod[item.action != ''];
+            var values = {
+                '<system>': $scope.project.projectName,
+                '<time>': item.time,
+                '<failure>': item.failure,
+                '<action>': item.action
+            };
+
+            if (!$scope.hasRequirement(moduleName, values))
+                $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
+        }
+
+        for (var index in $scope.project.reliabilityData.redundancyOption) {
+            var item = $scope.project.reliabilityData.redundancyOption[index];
+            var boilerplate = $scope.project.boilerplateData.reliability.redundancyOption[item.failure != ''];
+            var values = {
+                '<system>': $scope.project.projectName,
+                '<name>': item.name,
+                '<failure>': item.failure
+            };
+
+            if (!$scope.hasRequirement(moduleName, values))
+                $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
+        }
+
+        for (var index in $scope.project.reliabilityData.recoveryItem) {
+            var item = $scope.project.reliabilityData.recoveryItem[index];
+            var boilerplate = $scope.project.boilerplateData.reliability.recoveryItem[item.source != ''];
+            var values = {
+                '<system>': $scope.project.projectName,
+                '<item>': item.item,
+                '<failure>': item.failure,
+                '<source>': item.source
+            };
+
+            if (!$scope.hasRequirement(moduleName, values))
+                $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
+        }
+
+        moduleName = 'Security';
+        for (var index in $scope.project.securityData.itemAccess) {
+            var item = $scope.project.securityData.itemAccess[index];
+            var boilerplateNo = (item.condition == '' ? 0 : item.actor == '' ? 1 : 2);
+            var boilerplate = $scope.project.boilerplateData.security.itemAccess[item.allowed][boilerplateNo];
+            var values = {
+                '<item>': item.item,
+                '<actor>': item.actor,
+                '<condition>': item.condition
+            };
+
+            if (!$scope.hasRequirement(moduleName, values))
+                $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
+        }
+
+        for (var index in $scope.project.securityData.validation) {
+            var item = $scope.project.securityData.validation[index];
+            var boilerplate = $scope.project.boilerplateData.security.validation;
+            var values = {
+                '<system>': $scope.project.projectName,
+                '<item>': item.item,
+                '<algorithm>': item.algorithm
+            };
+
+            if (!$scope.hasRequirement(moduleName, values))
+                $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
+        }
+
+        for (var index in $scope.project.securityData.encryption) {
+            var item = $scope.project.securityData.encryption[index];
+            var boilerplate = $scope.project.boilerplateData.security.encryption;
+            var values = {
+                '<system>': $scope.project.projectName,
+                '<encryption>': item.encryption,
+                '<action>': item.action
+            };
+
+            if (!$scope.hasRequirement(moduleName, values))
+                $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
+        }
+
+        moduleName = 'Usability';
+        for (var index in $scope.project.usabilityData.userInterface) {
+            var item = $scope.project.usabilityData.userInterface[index];
+            var boilerplate = $scope.project.boilerplateData.usability.userInterface[item.reason != ''];
+            var values = {
+                '<system>': $scope.project.projectName,
+                '<attribute>': item.attribute,
+                '<reason>': item.reason
+            };
+
+            if (!$scope.hasRequirement(moduleName, values))
+                $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
+        }
+
+        for (var index in $scope.project.usabilityData.tutorial) {
+            var item = $scope.project.usabilityData.tutorial[index];
+            var boilerplate = $scope.project.boilerplateData.usability.tutorial[item.actor != ''];
+            var values = {
+                '<system>': $scope.project.projectName,
+                '<actor>': item.actor,
+                '<action>': item.action
+            };
+
+            if (!$scope.hasRequirement(moduleName, values))
+                $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
+        }
+
+        for (var index in $scope.project.usabilityData.inputValidation) {
+            var item = $scope.project.usabilityData.inputValidation[index];
+            var boilerplate = $scope.project.boilerplateData.usability.inputValidation[item.error != ''];
+            var values = {
+                '<system>': $scope.project.projectName,
+                '<field>': item.field,
+                '<error>': item.error
+            };
+
+            if (!$scope.hasRequirement(moduleName, values))
+                $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
+        }
+
+        for (var index in $scope.project.usabilityData.errorPrevention) {
+            var item = $scope.project.usabilityData.errorPrevention[index];
+            var boilerplate = $scope.project.boilerplateData.usability.errorPrevention[item.reason != ''];
+            var values = {
+                '<system>': $scope.project.projectName,
+                '<action>': item.action,
+                '<reason>': item.reason
+            };
+
+            if (!$scope.hasRequirement(moduleName, values))
+                $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
+        }
+
+        for (var index in $scope.project.usabilityData.accessibility) {
+            var item = $scope.project.usabilityData.accessibility[index];
+            var boilerplate = $scope.project.boilerplateData.usability.accessibility;
+            var values = {
+                '<system>': $scope.project.projectName,
+                '<accessibilityOption>': item.accessibilityOption,
+                '<target>': item.target
+            };
+
+            if (!$scope.hasRequirement(moduleName, values))
+                $scope.generatedRequirements[moduleName].push($scope.newRequirement(moduleName, boilerplate, values));
+        }
+
+        $scope.numberRequirements = _.flatten($scope.generatedRequirements).length;
+        $scope.numberModules = Object.keys($scope.generatedRequirements).length;
+        $scope.numberNewRequirements = 0;
+    };
+
+    $scope.hasRequirement = function (moduleName, values) {
+        var requirements = $scope.project.generatedRequirements[moduleName];
+        if (requirements == null)
+            return false;
+        for (var index in requirements) {
+            if (isSameObject(requirements[index].values, values))
+                return true;
+        }
+        return false;
+    };
+
+    $scope.addCheckedRequirements = function () {
+        var addedRequirements = [];
+
+        for (var moduleName in $scope.generatedRequirements) {
+            if ($scope.project.generatedRequirements[moduleName] == null)
+                $scope.project.generatedRequirements[moduleName] = [];
+
+            _.each($scope.generatedRequirements[moduleName], function (requirement) {
+                if (requirement.checked) {
+                    $scope.project.generatedRequirements[moduleName].push(requirement);
+                    delete requirement.checked;
+                    addedRequirements.push(requirement);
+                    $scope.change();
+                }
+            });
+
+            $scope.generatedRequirements[moduleName] = _.difference($scope.generatedRequirements[moduleName], addedRequirements);
+        }
+
+        $scope.numberNewRequirements += addedRequirements.length;
+    };
+
+    $scope.newRequirement = function (module, boilerplate, values) {
+        return {
+            module: module,
+            boilerplate: boilerplate,
+            values: values,
+            checked: false
+        };
+    };
+
+    $scope.saveProject = function () {
+        $http.patch('/api/v1/projects/' + projectID + '/generated-requirements', {
+            generatedRequirements: $scope.project.generatedRequirements
+        }).then(function (json) {
+            if (json.data.result) {
+                $scope.changed = false;
+                toast("Saved successfully");
+            }
+            else
+                console.log(json.data);
+        }, failCallBack);
+    };
+
+    $scope.change = function () {
+        $scope.changed = true;
+    };
+
+    $scope.back = function () {
+        if ($scope.changed && confirmBack())
+            $scope.saveProject();
+        $location.path('/projects/' + $scope.project._id);
+    };
+
+    setTimeout(function () {
+        $scope.$emit('GenerateRequirementController');
+    }, 0);
+};
+
+exports.ConfigureBoilerplateController = function ($scope, $routeParams, $http, $location, $formatter, $template) {
+    var projectID = encodeURIComponent($routeParams.id);
+
+    $scope.$formatter = $formatter;
+    $scope.$boilerplateTemplates = $template.boilerplateTemplates;
+    $scope.$values = $template.boilerplateValues;
+    $scope.toast = toast;
+    $scope.changed = false;
+
+    $http.get('/api/v1/projects/' + projectID + '/boilerplate-data')
+        .then(function (json) {
+            if (json.data.result) {
+                $scope.project = json.data.project;
+                if ($scope.project.boilerplateData == null)
+                    $scope.project.boilerplateData = {};
+
+                for (var key in $scope.$boilerplateTemplates)
+                    if ($scope.project.boilerplateData[key] == null)
+                        $scope.project.boilerplateData[key] = JSON.parse(JSON.stringify($scope.$boilerplateTemplates[key]));
+            }
+            else
+                $location.path('/');
+        }, failCallBack);
+
+    $scope.requirementToString = function (template, values) {
+        if (template == null || template == '')
+            return '';
+        return $formatter.requirementToString({
+            boilerplate: template,
+            values: values
+        });
+    };
+
+    $scope.saveProject = function () {
+        $http.patch('/api/v1/projects/' + projectID + '/boilerplate-data', {
+            boilerplateData: $scope.project.boilerplateData
+        }).then(function (json) {
+            if (json.data.result) {
+                $scope.changed = false;
+                toast("Saved successfully");
+            }
+            else
+                console.log(json.data);
+        }, failCallBack);
+    };
+
+    $scope.back = function () {
+        if ($scope.changed && confirmBack())
+            $scope.saveProject();
+        $location.path('/projects/' + $scope.project._id);
+    };
+
+    $scope.change = function () {
+        $scope.changed = true;
+    };
+
+    $scope.restore = function (key) {
+        $scope.project.boilerplateData[key] = JSON.parse(JSON.stringify($scope.$boilerplateTemplates[key]));
+        toast('Default boilerplate restored');
+        $scope.change();
+    };
+
+    setTimeout(function () {
+        $scope.$emit('ConfigureBoilerplateController');
     }, 0);
 };
 

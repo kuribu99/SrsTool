@@ -28,19 +28,19 @@ var projectSchema = {
             default: []
         }]
     },
-    accessControlData: {
-        type: mongoose.Schema.Types.Mixed,
-        default: {}
-    },
-    actionControlData: {
-        type: mongoose.Schema.Types.Mixed,
-        default: {}
-    },
     generatedRequirements: {
         type: mongoose.Schema.Types.Mixed,
         default: {}
     },
     boilerplateData: {
+        type: mongoose.Schema.Types.Mixed,
+        default: {}
+    },
+    accessControlData: {
+        type: mongoose.Schema.Types.Mixed,
+        default: {}
+    },
+    actionControlData: {
         type: mongoose.Schema.Types.Mixed,
         default: {}
     },
@@ -50,11 +50,48 @@ var projectSchema = {
     },
     functionalConstraintData: {
         type: mongoose.Schema.Types.Mixed,
-        default: {}
+        default: {
+            interfaces: [],
+            actionDependencies: [],
+            actionRules: []
+        }
     },
     compatibilityData: {
         type: mongoose.Schema.Types.Mixed,
-        default: {}
+        default: {
+            operatingSystem: [],
+            executionEnvironment: [],
+            outputCompatibility: []
+        }
+    },
+    reliabilityData: {
+        type: mongoose.Schema.Types.Mixed,
+        default: {
+            availability: {
+                enabled: false,
+                value: 99
+            },
+            maintenance: {
+                enabled: false,
+                value: '1 hour',
+                period: 'week'
+            },
+            recoveryPeriod: [],
+            redundancyOption: [],
+            recoveryItem: []
+        }
+    },
+    securityData: {
+        itemAccess: [],
+        validation: [],
+        encryption: []
+    },
+    usabilityData: {
+        userInterface: [],
+        tutorial: [],
+        inputValidation: [],
+        errorPrevention: [],
+        accessibility: []
     }
 };
 

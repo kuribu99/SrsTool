@@ -31,6 +31,11 @@ app.config(function ($routeProvider) {
             template: '<project-view></project-view>'
         })
 
+        .when('/projects/:id/specify-nfr', {
+            title: 'Specify Non-Functional Requirement',
+            template: '<specify-nfr></specify-nfr>'
+        })
+
         .when('/projects/:id/edit', {
             title: 'Edit Project',
             template: '<edit-project></edit-project>'
@@ -41,14 +46,9 @@ app.config(function ($routeProvider) {
             template: '<edit-domain></edit-domain>'
         })
 
-        .when('/projects/:id/generate', {
-            title: 'Generate Requirements',
-            template: '<generate-requirement></generate-requirement>'
-        })
-
-        .when('/projects/:id/performance-constraint', {
-            title: 'Configure Performance Constraint',
-            template: '<performance-constraint></performance-constraint>'
+        .when('/projects/:id/action-control', {
+            title: 'Configure Action Control',
+            template: '<action-control></action-control>'
         })
 
         .when('/projects/:id/access-control', {
@@ -56,9 +56,9 @@ app.config(function ($routeProvider) {
             template: '<access-control></access-control>'
         })
 
-        .when('/projects/:id/action-control', {
-            title: 'Configure Action Control',
-            template: '<action-control></action-control>'
+        .when('/projects/:id/performance-constraint', {
+            title: 'Configure Performance Constraint',
+            template: '<performance-constraint></performance-constraint>'
         })
 
         .when('/projects/:id/functional-constraint', {
@@ -69,6 +69,26 @@ app.config(function ($routeProvider) {
         .when('/projects/:id/configure-compatibility', {
             title: 'Configure Compatibility',
             template: '<configure-compatibility></configure-compatibility>'
+        })
+
+        .when('/projects/:id/configure-reliability', {
+            title: 'Configure Reliability',
+            template: '<configure-reliability></configure-reliability>'
+        })
+
+        .when('/projects/:id/configure-security', {
+            title: 'Configure Security',
+            template: '<configure-security></configure-security>'
+        })
+
+        .when('/projects/:id/configure-usability', {
+            title: 'Configure Usability',
+            template: '<configure-usability></configure-usability>'
+        })
+
+        .when('/projects/:id/generate', {
+            title: 'Generate Requirements',
+            template: '<generate-requirement></generate-requirement>'
         })
 
         .when('/projects/:id/boilerplate', {
@@ -82,7 +102,7 @@ app.config(function ($routeProvider) {
         });
 });
 
-app.run(['$rootScope', function ($rootScope) {
+app.run(['$rootScope', function ($rootScope, $timeout) {
     $rootScope.$on('$routeChangeSuccess', function (event, current, previous) {
         try {
             $rootScope.title = current.$$route.title;

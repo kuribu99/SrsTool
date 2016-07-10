@@ -1,0 +1,218 @@
+<div class="row valign-wrapper">
+    <h4 class=" col s12 m8 valign">Configure Security</h4>
+    <div class="valign col s8 m4">
+        <div class="col s12 m6 input-field">
+            <a class="btn waves-effect waves-light green col s12 m12" ng-click="saveProject()">
+                <i class="material-icons left">done</i>Save
+            </a>
+        </div>
+        <div class="col s12 m6 input-field">
+            <a class="btn waves-effect waves-light red col s12 m12" ng-click="back()">
+                <i class="material-icons left">power_settings_new</i>Back
+            </a>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <ul class="collapsible collapsible-accordion" data-collapsible="accordion">
+        <li>
+            <div class="collapsible-header active blue white-text">
+                Instructions<i class="material-icons right">announcement</i>
+            </div>
+            <div class="collapsible-body">
+                <div class="row">
+                    <p>
+                        A good system should also look into the security aspect of the system, such as:
+                    </p>
+                    <ol>
+                        <li>
+                            1. Control whether an item is accessible to certain user at certain condition
+                        </li>
+                        <li>
+                            2. Validate an item to ensure the item's integrity and that it is safe with certain algorithm
+                        </li>
+                        <li>
+                            3. Use encryption method to secure certain risky action that may expose confidential information
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </li>
+        <li>
+            <div class="collapsible-header">
+                <h5>
+                    <span>Item access</span>
+                    <span class="badge white-text light-green" ng-bind="getItemAccessCount()"></span>
+                </h5>
+            </div>
+            <div class="collapsible-body">
+                <div class="row valign-wrapper">
+                    <div class="col s4 m3 input-field">
+                        <label for="tbxItemAccess.item">Item Name</label>
+                        <input id="tbxItemAccess.item" type="text"
+                               ng-model="tbxItemAccess.item"/>
+                    </div>
+                    <div class="col s4 m3 input-field">
+                        <label for="tbxItemAccess.actor">Actor</label>
+                        <input id="tbxItemAccess.actor" type="text"
+                               ng-model="tbxItemAccess.actor"/>
+                    </div>
+                    <div class="col s4 m3 input-field">
+                        <select id="tbxItemAccess.allowed" type="text"
+                                ng-options="key as value for (key, value) in $itemAccessOptions"
+                                ng-model="tbxItemAccess.allowed">
+                            <option value="" disabled>Choose an option</option>
+                        </select>
+                        <label>Item Accessibility</label>
+                    </div>
+                    <div class="col s4 m3 input-field">
+                        <label for="tbxItemAccess.condition">Condition (Optional)</label>
+                        <input id="tbxItemAccess.condition" type="text"
+                               ng-model="tbxItemAccess.condition"/>
+                    </div>
+                    <div class="col s4 m3 valign">
+                        <button class="btn waves-effect waves-light col s12 m12" ng-click="addItemAccess()">
+                            Add
+                        </button>
+                    </div>
+                </div>
+                <div class="row" ng-if="project.securityData.itemAccess.length > 0">
+                    <table class="highlight">
+                        <thead>
+                        <tr>
+                            <td>Item Name</td>
+                            <td>Actor</td>
+                            <td>Item Accessibility</td>
+                            <td>Condition</td>
+                            <td></td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="item in project.securityData.itemAccess track by $index">
+                            <td ng-bind="item.item"></td>
+                            <td ng-bind="item.actor"></td>
+                            <td ng-bind="$itemAccessOptions[item.allowed]"></td>
+                            <td ng-bind="item.condition"></td>
+                            <td>
+                                <a class="waves-effect waves-light btn red"
+                                   ng-click="deleteItemAccess($index)">
+                                    <i class="material-icons left">delete</i>Delete
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </li>
+        <li>
+            <div class="collapsible-header">
+                <h5>
+                    <span>Item Validation</span>
+                    <span class="badge white-text light-green" ng-bind="getValidationCount()"></span>
+                </h5>
+            </div>
+            <div class="collapsible-body">
+                <div class="row valign-wrapper">
+                    <div class="col s4 m4 input-field">
+                        <label for="tbxValidation.item">Item Name</label>
+                        <input id="tbxValidation.item" type="text"
+                               ng-model="tbxValidation.item"/>
+                    </div>
+                    <div class="col s4 m4 input-field">
+                        <label for="tbxValidation.algorithm">Validation Algorithm/Method</label>
+                        <input id="tbxValidation.algorithm" type="text"
+                               ng-model="tbxValidation.algorithm"/>
+                    </div>
+                    <div class="col s4 m4 valign">
+                        <button class="btn waves-effect waves-light col s12 m12" ng-click="addValidation()">
+                            Add
+                        </button>
+                    </div>
+                </div>
+                <div class="row" ng-if="project.securityData.validation.length > 0">
+                    <table class="highlight">
+                        <thead>
+                        <tr>
+                            <td>Item Name</td>
+                            <td>Validation Algorithm/Method</td>
+                            <td></td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="item in project.securityData.validation track by $index">
+                            <td ng-bind="item.item"></td>
+                            <td ng-bind="item.algorithm"></td>
+                            <td>
+                                <a class="waves-effect waves-light btn red"
+                                   ng-click="deleteValidation($index)">
+                                    <i class="material-icons left">delete</i>Delete
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </li>
+        <li>
+            <div class="collapsible-header">
+                <h5>
+                    <span>Encryption for action</span>
+                    <span class="badge white-text light-green" ng-bind="getEncryptionCount()"></span>
+                </h5>
+            </div>
+            <div class="collapsible-body">
+                <div class="row valign-wrapper">
+                    <div class="col s4 m4 input-field">
+                        <label for="tbxEncryption.encryption">Encryption method</label>
+                        <input id="tbxEncryption.encryption" type="text"
+                               ng-model="tbxEncryption.encryption"/>
+                    </div>
+                    <div class="col s4 m4 input-field">
+                        <label for="tbxEncryption.action">Action Name</label>
+                        <input id="tbxEncryption.action" type="text"
+                               ng-model="tbxEncryption.action"/>
+                    </div>
+                    <div class="col s4 m4 valign">
+                        <button class="btn waves-effect waves-light col s12 m12" ng-click="addEncryption()">
+                            Add
+                        </button>
+                    </div>
+                </div>
+                <div class="row" ng-if="project.securityData.encryption.length > 0">
+                    <table class="highlight">
+                        <thead>
+                        <tr>
+                            <td>Encryption Method</td>
+                            <td>Action Name</td>
+                            <td></td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="item in project.securityData.encryption track by $index">
+                            <td ng-bind="item.encryption"></td>
+                            <td ng-bind="item.action"></td>
+                            <td>
+                                <a class="waves-effect waves-light btn red"
+                                   ng-click="deleteEncryption($index)">
+                                    <i class="material-icons left">delete</i>Delete
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </li>
+    </ul>
+</div>
+<script>
+    setTimeout(function () {
+        $('.collapsible').collapsible({
+            accordion: false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
+        });
+        $('select').material_select();
+        Materialize.updateTextFields();
+    }, 500);
+</script>
