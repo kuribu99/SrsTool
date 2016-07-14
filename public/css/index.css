@@ -1,11 +1,3 @@
-.scrollable-x {
-    overflow-x: auto;
-}
-
-.scrollable-y {
-    overflow-y: auto;
-}
-
 .margin-top-10 {
     margin-top: 10px;
 }
@@ -20,10 +12,6 @@
 
 .padding-bot-5 {
     padding-bottom: 5px;
-}
-
-.center-vertical {
-    vertical-align: middle;
 }
 
 .blue.tabs .tab a {

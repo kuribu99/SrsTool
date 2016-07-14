@@ -1,17 +1,32 @@
 <div class="row valign-wrapper">
-    <div class="input-field col s4 m4">
+    <div class="input-field col s4 m3">
         <label for="projectName">Project Name</label>
         <input id="projectName" type="text" ng-model="projectName"/>
     </div>
-    <div class="col s4 m4 input-field">
+    <div class="col s4 m3 input-field">
         <label for="tbxDomainName" class="active">Domain Name</label>
         <input id="tbxDomainName" type="text" list="domains" ng-model="domainName"/>
         <datalist id="domains">
             <option ng-repeat="domain in domains" value="{{ domain }}" ng-bind="domain"></option>
         </datalist>
     </div>
+    <div class="col s4 m3 input-field">
+        <select type="text" ng-model="type">
+            <option value="" disabled selected>Choose an option</option>
+            <option value="public" selected>Public</option>
+            <option ng-if="$user.user" value="private" >Private</option>
+        </select>
+        <label>Project Type</label>
+    </div>
     <div class="col s4 m3 valign">
-        <a class="waves-effect waves-light btn" ng-click="newProject()"><i class="material-icons left">add</i>Create Project</a>
+        <a class="waves-effect waves-light btn" ng-click="newProject()"><i class="material-icons left">add</i>Create
+            Project</a>
     </div>
 </div>
 <project-list></project-list>
+<script>
+    setTimeout(function () {
+        $('select').material_select();
+        Materialize.updateTextFields();
+    }, 500);
+</script>

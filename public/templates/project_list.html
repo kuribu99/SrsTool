@@ -1,22 +1,54 @@
-<div class="row">
-    <h3 class="header" ng-if="projects.length == 0">No project found</h3>
-    <div class="row" ng-if="projects.length > 0">
+<div class="row" ng-if="$user.user">
+    <h3 class="header" ng-if="privateProjects.length == 0">No private project found</h3>
+    <div class="row" ng-if="privateProjects.length > 0">
         <ul class="collection with-header">
             <li class="collection-header">
-                <h4 ng-if="projects.length > 0">Projects:</h4>
+                <h4 ng-if="privateProjects.length > 0">Private Projects:</h4>
             </li>
             <li class="collection-item">
-                <div class="row card-panel hoverable" ng-repeat="project in projects track by $index">
+                <div class="row card-panel hoverable" ng-repeat="project in privateProjects track by $index">
                     <div class="col s1 m1" ng-bind="'#' + ($index + 1)"></div>
                     <div class="col s11 m8">{{ project.projectName }}</div>
                     <div class="col s12 m3">
                         <div class="col s6 m6">
-                            <a class="waves-effect waves-light btn green col s12 m12" ng-href="#/projects/{{ project._id }}">
+                            <a class="waves-effect waves-light btn green col s12 m12"
+                               ng-href="#/projects/{{ project._id }}">
                                 <i class="material-icons left">input</i>Open
                             </a>
                         </div>
                         <div class="col s6 m6">
-                            <a class="waves-effect waves-light btn red col s12 m12" ng-click="deleteProject(project, $index)">
+                            <a class="waves-effect waves-light btn red col s12 m12"
+                               ng-click="deletePrivateProject(project, $index)">
+                                <i class="material-icons left">delete</i>Delete
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="row">
+    <h3 class="header" ng-if="publicProjects.length == 0">No public project found</h3>
+    <div class="row" ng-if="publicProjects.length > 0">
+        <ul class="collection with-header">
+            <li class="collection-header">
+                <h4 ng-if="publicProjects.length > 0">Public Projects:</h4>
+            </li>
+            <li class="collection-item">
+                <div class="row card-panel hoverable" ng-repeat="project in publicProjects track by $index">
+                    <div class="col s1 m1" ng-bind="'#' + ($index + 1)"></div>
+                    <div class="col s11 m8">{{ project.projectName }}</div>
+                    <div class="col s12 m3">
+                        <div class="col s6 m6">
+                            <a class="waves-effect waves-light btn green col s12 m12"
+                               ng-href="#/projects/{{ project._id }}">
+                                <i class="material-icons left">input</i>Open
+                            </a>
+                        </div>
+                        <div class="col s6 m6">
+                            <a class="waves-effect waves-light btn red col s12 m12"
+                               ng-click="deletePublicProject(project, $index)">
                                 <i class="material-icons left">delete</i>Delete
                             </a>
                         </div>

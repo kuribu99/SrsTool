@@ -2,9 +2,8 @@ var mongoose = require('mongoose');
 
 var projectSchema = {
     userID: {
-        type: mongoose.Schema.ObjectId,
-        //required: true,
-        //ref: 'User'
+        type: String,
+        default: ""
     },
     projectName: {
         type: String,

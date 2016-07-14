@@ -1,3 +1,9 @@
+exports.landingPage = function () {
+    return {
+        templateUrl: './templates/landing_page.html'
+    };
+};
+
 exports.home = function () {
     return {
         controller: 'HomeController',
@@ -7,6 +13,7 @@ exports.home = function () {
 
 exports.navBar = function () {
     return {
+        controller: 'NavBarController',
         templateUrl: './templates/nav_bar.html'
     };
 };

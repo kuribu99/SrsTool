@@ -1,23 +1,17 @@
 var mongoose = require('mongoose');
 
 var userSchema = {
-    profile: {
-        username: {
-            type: String,
-            required: true,
-            lowercase: true
-        },
-        picture: {
-            type: String,
-            required: true,
-            match: /^http:\/\//i
-        }
+    _id: {
+        type: String,
+        required: true
     },
-    data: {
-        oauth: {
-            type: String,
-            required: true
-        }
+    name: {
+        type: String,
+        required: true
+    },
+    oauth: {
+        type: String,
+        required: true
     }
 };
 

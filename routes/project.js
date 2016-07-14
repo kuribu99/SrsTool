@@ -7,14 +7,44 @@ module.exports = function (wagner) {
     var api = express.Router();
     api.use(bodyparser.json());
 
+    api.get('/public', wagner.invoke(function (Project) {
+        return function (req, res) {
+            Project.find({
+                userID: ""
+            }).select({
+                _id: true,
+                projectName: true,
+            }).then(function (projects) {
+                return res.json({
+                    result: true,
+                    projects: projects
+                });
+            }, function (error) {
+                if (error) {
+                    return res.status(status.INTERNAL_SERVER_ERROR).json({
+                        result: false,
+                        projects: [],
+                        error: error.toString()
+                    });
+                }
+            });
+        }
+    }));
+
     api.get('/list', wagner.invoke(function (Project) {
         return function (req, res) {
-            Project.find()
-                .select({
+            if (req.session.passport.user == null)
+                return res.json({
+                    result: true,
+                    projects: []
+                });
+            else {
+                Project.find({
+                    userID: req.session.passport.user
+                }).select({
                     _id: true,
                     projectName: true,
-                })
-                .then(function (projects) {
+                }).then(function (projects) {
                     return res.json({
                         result: true,
                         projects: projects
@@ -28,22 +58,29 @@ module.exports = function (wagner) {
                         });
                     }
                 });
+            }
         }
     }));
 
     api.post('/', wagner.invoke(function (Project) {
         return function (req, res) {
             var project = null;
+            var isPublicProject = req.body.type != "private";
+            var userID = (isPublicProject || req.session.passport.user == null) ? "" : req.session.passport.user;
 
             if (req.body.projectName != null && req.body.domainName != null)
                 project = new Project({
+                    userID: userID,
                     projectName: req.body.projectName,
                     domainData: {
                         domainName: req.body.domainName
                     }
                 });
             else
-                project = new Project();
+                return res.json({
+                    result: false,
+                    error: 'Insufficient data'
+                });
 
             project.save()
                 .then(function (project) {

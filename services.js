@@ -4,13 +4,10 @@ exports.$user = function ($http) {
     var s = {};
 
     s.loadUser = function () {
-        return; // TODO: implemented
-        $http.get('/api/v1/me').success(function (data) {
-            s.user = data.user;
-        }).error(function (data, status) {
-            if (status === status.UNAUTHORIZED) {
-                s.user = null;
-            }
+        $http.get('/api/v1/me').then(function (data) {
+            s.user = data.data.user;
+        }, function (data, status) {
+            s.user = null;
         });
     };
 

@@ -23,6 +23,11 @@ app.config(function ($routeProvider) {
     $routeProvider
         .when('/', {
             title: 'Home',
+            template: '<landing-page></landing-page>'
+        })
+
+        .when('/home', {
+            title: 'Home',
             template: '<home></home>'
         })
 
@@ -102,7 +107,7 @@ app.config(function ($routeProvider) {
         });
 });
 
-app.run(['$rootScope', function ($rootScope, $timeout) {
+app.run(['$rootScope', function ($rootScope) {
     $rootScope.$on('$routeChangeSuccess', function (event, current, previous) {
         try {
             $rootScope.title = current.$$route.title;

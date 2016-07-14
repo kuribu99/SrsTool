@@ -12,8 +12,7 @@ module.exports = function (wagner) {
     var models = {
         Project: mongoose.model('Project', require('./models/project.js'), 'projects'),
         Domain: mongoose.model('Domain', require('./models/domain.js'), 'domains'),
-        User: mongoose.model('User', require('./models/user.js'), 'users'),
-        Boilerplate: mongoose.model('Boilerplate', require('./models/boilerplate.js'), 'boilerplates')
+        User: mongoose.model('User', require('./models/user.js'), 'users')
     };
 
     _.each(models, function (value, key) {
