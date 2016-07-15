@@ -40,6 +40,10 @@ var arrayHasObject = function (arr, obj) {
     return false;
 };
 
+var toastNotFound = function () {
+    toast('Project not found');
+};
+
 exports.NavBarController = function ($scope, $http, $location, $user) {
     $scope.$user = $user;
     $user.loadUser();
@@ -108,7 +112,7 @@ exports.ProjectListController = function ($scope, $routeParams, $http, $user) {
             $scope.publicProjects = json.data.projects;
         }, failCallBack);
 
-        $http.get('/api/v1/projects/list').then(function (json) {
+        $http.get('/api/v1/projects/private').then(function (json) {
             $scope.privateProjects = json.data.projects;
         }, failCallBack);
     };
@@ -119,8 +123,10 @@ exports.ProjectListController = function ($scope, $routeParams, $http, $user) {
                 .then(function (json) {
                     if (json.data.result)
                         $scope.publicProjects.splice(index, 1);
-                    else
-                        toast(json.data);
+                    else {
+                        console.log(json.data);
+                        toastNotFound();
+                    }
                 }, failCallBack);
         }
     };
@@ -131,8 +137,10 @@ exports.ProjectListController = function ($scope, $routeParams, $http, $user) {
                 .then(function (json) {
                     if (json.data.result)
                         $scope.privateProjects.splice(index, 1);
-                    else
-                        toast(json.data);
+                    else {
+                        console.log(json.data);
+                        toastNotFound();
+                    }
                 }, failCallBack);
         }
     };
@@ -167,8 +175,10 @@ exports.ProjectViewController = function ($scope, $routeParams, $http, $location
                         $scope.numberNonFunctionalRequirement += $scope.project.generatedRequirements[key].length;
                 }
             }
-            else
+            else {
                 $location.path('/');
+                toastNotFound();
+            }
         }, failCallBack);
 
     $scope.saveProject = function () {
@@ -187,7 +197,7 @@ exports.ProjectViewController = function ($scope, $routeParams, $http, $location
     $scope.back = function () {
         if ($scope.changed && confirmBack())
             $scope.saveProject();
-        $location.path('/');
+        $location.path('/home');
     };
 
     $scope.removeRequirement = function (moduleName, index) {
@@ -283,8 +293,10 @@ exports.EditProjectController = function ($scope, $routeParams, $http, $location
             if (json.data.result) {
                 $scope.project = json.data.project;
             }
-            else
-                $location.path('/');
+            else {
+                $location.path('/projects/' + projectID);
+                toastNotFound();
+            }
 
         }, failCallBack);
 
@@ -343,7 +355,7 @@ exports.EditDomainController = function ($scope, $routeParams, $http, $location)
 
     $scope.saveProject = function () {
         $http.patch('/api/v1/projects/' + projectID + '/domain-data/', {
-            project: $scope.project
+            domainData: $scope.project.domainData
         }).then(function (json) {
             if (json.data.result) {
                 $scope.changed = false;
