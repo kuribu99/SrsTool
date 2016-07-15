@@ -41,9 +41,22 @@ var arrayHasObject = function (arr, obj) {
     return false;
 };
 
+var toastNotFound = function () {
+    toast('Project not found');
+};
+
+exports.NavBarController = function ($scope, $http, $location, $user) {
+    $scope.$user = $user;
+    $user.loadUser();
+    setTimeout(function () {
+        $scope.$emit('NavBarController');
+    }, 0);
+};
+
 exports.HomeController = function ($scope, $http, $location) {
     $scope.projectName = "";
     $scope.domainName = "default";
+    $scope.type = "";
 
     $http.get('/api/v1/domains/names/')
         .then(function (json) {
@@ -51,19 +64,27 @@ exports.HomeController = function ($scope, $http, $location) {
         }, failCallBack());
 
     $scope.newProject = function () {
-        if ($scope.projectName.length > 0 && $scope.domainName.length > 0) {
+        if ($scope.projectName.length == 0)
+            toast('Project name is required');
+
+        else if ($scope.domainName.length == 0)
+            toast('Domain name is required');
+
+        else if ($scope.type.length == 0)
+            toast('Project type is required');
+
+        else {
             $http.post('/api/v1/projects/', {
                 projectName: $scope.projectName,
-                domainName: $scope.domainName
+                domainName: $scope.domainName,
+                type: $scope.type
             }).then(function (json) {
                 if (json.data.result)
                     $location.path('/projects/' + json.data.id);
                 else
-                    console.log(json.data);
+                    toast(json.data.error);
             }, failCallBack);
         }
-        else
-            toast('Project name and domain name must not be empty');
     };
 
     setTimeout(function () {
@@ -84,22 +105,43 @@ exports.LoadingController = function ($scope, $rootScope, $window) {
     }, 0);
 };
 
-exports.ProjectListController = function ($scope, $routeParams, $http) {
+exports.ProjectListController = function ($scope, $routeParams, $http, $user) {
+    $scope.$user = $user;
 
     $scope.refreshList = function () {
-        $http.get('/api/v1/projects/list').then(function (json) {
-            $scope.projects = json.data.projects;
+        $http.get('/api/v1/projects/public').then(function (json) {
+            $scope.publicProjects = json.data.projects;
+        }, failCallBack);
+
+        $http.get('/api/v1/projects/private').then(function (json) {
+            $scope.privateProjects = json.data.projects;
         }, failCallBack);
     };
 
-    $scope.deleteProject = function (project, index) {
+    $scope.deletePublicProject = function (project, index) {
         if (confirm('Are you sure to delete this project?')) {
             $http.delete('/api/v1/projects/' + project._id)
                 .then(function (json) {
                     if (json.data.result)
-                        $scope.projects.splice(index, 1);
-                    else
+                        $scope.publicProjects.splice(index, 1);
+                    else {
                         console.log(json.data);
+                        toastNotFound();
+                    }
+                }, failCallBack);
+        }
+    };
+
+    $scope.deletePrivateProject = function (project, index) {
+        if (confirm('Are you sure to delete this project?')) {
+            $http.delete('/api/v1/projects/' + project._id)
+                .then(function (json) {
+                    if (json.data.result)
+                        $scope.privateProjects.splice(index, 1);
+                    else {
+                        console.log(json.data);
+                        toastNotFound();
+                    }
                 }, failCallBack);
         }
     };
@@ -134,8 +176,10 @@ exports.ProjectViewController = function ($scope, $routeParams, $http, $location
                         $scope.numberNonFunctionalRequirement += $scope.project.generatedRequirements[key].length;
                 }
             }
-            else
+            else {
                 $location.path('/');
+                toastNotFound();
+            }
         }, failCallBack);
 
     $scope.saveProject = function () {
@@ -154,7 +198,7 @@ exports.ProjectViewController = function ($scope, $routeParams, $http, $location
     $scope.back = function () {
         if ($scope.changed && confirmBack())
             $scope.saveProject();
-        $location.path('/');
+        $location.path('/home');
     };
 
     $scope.removeRequirement = function (moduleName, index) {
@@ -250,8 +294,10 @@ exports.EditProjectController = function ($scope, $routeParams, $http, $location
             if (json.data.result) {
                 $scope.project = json.data.project;
             }
-            else
-                $location.path('/');
+            else {
+                $location.path('/projects/' + projectID);
+                toastNotFound();
+            }
 
         }, failCallBack);
 
@@ -310,7 +356,7 @@ exports.EditDomainController = function ($scope, $routeParams, $http, $location)
 
     $scope.saveProject = function () {
         $http.patch('/api/v1/projects/' + projectID + '/domain-data/', {
-            project: $scope.project
+            domainData: $scope.project.domainData
         }).then(function (json) {
             if (json.data.result) {
                 $scope.changed = false;
@@ -2210,6 +2256,12 @@ exports.PreviewExportController = function ($scope, $routeParams, $http, $locati
     }, 0);
 };
 },{"underscore":5}],2:[function(require,module,exports){
+exports.landingPage = function () {
+    return {
+        templateUrl: './templates/landing_page.html'
+    };
+};
+
 exports.home = function () {
     return {
         controller: 'HomeController',
@@ -2219,6 +2271,7 @@ exports.home = function () {
 
 exports.navBar = function () {
     return {
+        controller: 'NavBarController',
         templateUrl: './templates/nav_bar.html'
     };
 };
@@ -2368,6 +2421,11 @@ app.config(function ($routeProvider) {
     $routeProvider
         .when('/', {
             title: 'Home',
+            template: '<landing-page></landing-page>'
+        })
+
+        .when('/home', {
+            title: 'Home',
             template: '<home></home>'
         })
 
@@ -2447,7 +2505,7 @@ app.config(function ($routeProvider) {
         });
 });
 
-app.run(['$rootScope', function ($rootScope, $timeout) {
+app.run(['$rootScope', function ($rootScope) {
     $rootScope.$on('$routeChangeSuccess', function (event, current, previous) {
         try {
             $rootScope.title = current.$$route.title;
@@ -3836,13 +3894,10 @@ exports.$user = function ($http) {
     var s = {};
 
     s.loadUser = function () {
-        return; // TODO: implemented
-        $http.get('/api/v1/me').success(function (data) {
-            s.user = data.user;
-        }).error(function (data, status) {
-            if (status === status.UNAUTHORIZED) {
-                s.user = null;
-            }
+        $http.get('/api/v1/me').then(function (data) {
+            s.user = data.data.user;
+        }, function (data, status) {
+            s.user = null;
         });
     };
 

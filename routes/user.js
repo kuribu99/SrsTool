@@ -7,9 +7,9 @@ module.exports = function (wagner) {
     var api = express.Router();
     api.use(bodyparser.json());
 
-    api.use('/me/', require('./user')(wagner));
-    api.use('/projects/', require('./project')(wagner));
-    api.use('/domains/', require('./domain')(wagner));
+    api.get('/', function (req, res) {
+        return res.json({user: req.user? req.user: null});
+    });
 
-	return api;
+    return api;
 };

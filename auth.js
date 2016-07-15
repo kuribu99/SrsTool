@@ -1,4 +1,4 @@
-function setupAuth(User, Config, app) {
+module.exports = function (User, Config, app) {
     var passport = require('passport');
     var FacebookStrategy = require('passport-facebook').Strategy;
 
@@ -12,60 +12,53 @@ function setupAuth(User, Config, app) {
     });
 
     // Facebook-specific
-    passport.use(new FacebookStrategy(
-        {
-            clientID: Config.facebookClientId,
-            clientSecret: Config.facebookClientSecret,
-            callbackURL: 'http://localhost:3000/auth/facebook/callback'
-        },
-        function (accessToken, refreshToken, profile, done) {
-            if (!profile.emails || !profile.emails.length) {
-                return done('No emails associated with this account!');
-            }
-
-            User.findOneAndUpdate(
-                {'data.oauth': profile.id},
-                {
-                    $set: {
-                        'profile.username': profile.emails[0].value,
-                        'profile.picture': 'http://graph.facebook.com/' +
-                        profile.id.toString() + '/picture?type=large'
-                    }
-                },
-                {'new': true, upsert: true, runValidators: true},
-                function (error, user) {
-                    done(error, user);
-                });
-        }));
+    passport.use(new FacebookStrategy({
+        clientID: Config.FacebookAppID,
+        clientSecret: Config.FacebookAppSecret,
+        callbackURL: Config.WebsiteURL,
+        profileFields: ['id', 'displayName']
+    }, function (accessToken, refreshToken, profile, done) {
+        User.findOneAndUpdate(
+            {'_id': profile.id},
+            {
+                $set: {
+                    '_id': profile.id,
+                    'name': profile.displayName
+                }
+            },
+            {'new': true, upsert: true, runValidators: true},
+            function (error, user) {
+                done(error, user);
+            });
+    }));
 
     // Express middlewares
     app.use(require('express-session')({
-        secret: 'this is a secret'
+        secret: 'tH15_1s_@_*Ckrut'
     }));
     app.use(passport.initialize());
     app.use(passport.session());
 
     // Express routes for auth
-    app.get('/auth/facebook',
-        function (req, res, next) {
-            var redirect = encodeURIComponent(req.query.redirect || '/');
+    app.get('/auth/facebook', function (req, res, next) {
+        var redirect = encodeURIComponent(req.query.redirect || '/');
+        var url = Config.WebsiteURL + 'auth/facebook/callback?redirect=' + redirect;
 
-            passport.authenticate('facebook',
-                {
-                    scope: ['email'],
-                    callbackURL: 'http://localhost:3000/auth/facebook/callback?redirect=' + redirect
-                })(req, res, next);
-        });
+        passport.authenticate('facebook', {callbackURL: url})(req, res, next);
+    });
 
-    app.get('/auth/facebook/callback',
-        function (req, res, next) {
-            var url = 'http://localhost:3000/auth/facebook/callback?redirect=' +
-                encodeURIComponent(req.query.redirect);
-            passport.authenticate('facebook', {callbackURL: url})(req, res, next);
-        },
-        function (req, res) {
-            res.redirect(req.query.redirect);
-        });
-}
+    app.get('/auth/facebook/callback', function (req, res, next) {
+        var redirect = encodeURIComponent(req.query.redirect || '/');
+        var url = Config.WebsiteURL + 'auth/facebook/callback?redirect=' + redirect;
 
-module.exports = setupAuth;
+        passport.authenticate('facebook', {callbackURL: url})(req, res, next);
+    }, function (req, res) {
+        res.redirect(Config.WebsiteURL + '#/' + req.query.redirect || '/');
+    });
+
+    app.get('/auth/logout', function (req, res) {
+        req.logout();
+        res.redirect(Config.WebsiteURL);
+    })
+
+};
