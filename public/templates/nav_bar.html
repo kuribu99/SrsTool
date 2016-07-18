@@ -7,7 +7,7 @@
                     <a href="/#/home">Projects</a>
                 </li>
                 <li ng-if="$user.user">
-                    <a class="dropdown-button" data-activates="dropdown">
+                    <a class="dropdown-button" data-activates="navbar-dropdown">
                         <i class="material-icons right">arrow_drop_down</i><span ng-bind="$user.user.name"></span>
                     </a>
                 </li>
@@ -17,7 +17,7 @@
             </ul>
         </div>
     </nav>
-    <ul id="dropdown" class="dropdown-content" ng-if="$user.user">
+    <ul id="navbar-dropdown" class="dropdown-content" ng-if="$user.user">
         <li>
             <a href="/auth/logout">Log Out</a>
         </li>
