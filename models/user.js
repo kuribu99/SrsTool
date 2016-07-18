@@ -8,10 +8,6 @@ var userSchema = {
     name: {
         type: String,
         required: true
-    },
-    oauth: {
-        type: String,
-        required: true
     }
 };
 
