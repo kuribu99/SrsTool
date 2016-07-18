@@ -54,7 +54,8 @@
                                ng-model="performanceConstraintData[action].constraint"/>
                     </div>
                     <div class="col s4 m3 input-field">
-                        <select id="{{ action }}.option" ng-model="performanceConstraintData[action].option"
+                        <select id="{{ action }}.option"
+                                ng-model="performanceConstraintData[action].option"
                                 ng-options="option for option in $performanceConstraintOptions">
                             <option value="" disabled>Choose an option</option>
                         </select>
@@ -105,5 +106,5 @@
         });
         $('select').material_select();
         Materialize.updateTextFields();
-    }, 500);
+    }, 800);
 </script>
