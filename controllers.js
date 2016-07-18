@@ -649,7 +649,7 @@ exports.PerformanceConstraintController = function ($scope, $routeParams, $http,
     };
 
     $scope.getConstraintCount = function (action) {
-        var count = $scope.project.performanceConstraintData[action].length;
+        var count = $scope.project? $scope.project.performanceConstraintData[action].length: 0;
         switch (count) {
             case 0:
                 return 'No constraints';
@@ -742,7 +742,7 @@ exports.FunctionalConstraintController = function ($scope, $routeParams, $http, 
     };
 
     $scope.getInterfaceCount = function () {
-        var count = $scope.project.functionalConstraintData.interfaces.length;
+        var count = $scope.project? $scope.project.functionalConstraintData.interfaces.length: 0;
         switch (count) {
             case 0:
                 return 'No dependencies';
@@ -789,7 +789,7 @@ exports.FunctionalConstraintController = function ($scope, $routeParams, $http, 
     };
 
     $scope.getActionDependencyCount = function () {
-        var count = $scope.project.functionalConstraintData.actionDependencies.length;
+        var count = $scope.project ? $scope.project.functionalConstraintData.actionDependencies.length : 0;
         switch (count) {
             case 0:
                 return 'No dependencies';
@@ -834,7 +834,7 @@ exports.FunctionalConstraintController = function ($scope, $routeParams, $http, 
     };
 
     $scope.getActionRuleCount = function () {
-        var count = $scope.project.functionalConstraintData.actionRules.length;
+        var count = $scope.project ? $scope.project.functionalConstraintData.actionRules.length : 0;
         switch (count) {
             case 0:
                 return 'No rules';
