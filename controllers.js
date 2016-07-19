@@ -195,9 +195,12 @@ exports.ProjectViewController = function ($scope, $routeParams, $http, $location
     };
 
     $scope.back = function () {
-        if ($scope.changed && confirmBack())
+        if ($scope.changed && confirmBack()) {
             $scope.saveProject();
-        $location.path('/home');
+			$location.path('/home');
+		}
+		else
+			$location.path('/home');
     };
 
     $scope.removeRequirement = function (moduleName, index) {
@@ -367,9 +370,12 @@ exports.EditDomainController = function ($scope, $routeParams, $http, $location)
     };
 
     $scope.back = function () {
-        if ($scope.changed && confirmBack())
+        if ($scope.changed && confirmBack()) {
             $scope.saveProject();
-        $location.path('/projects/' + $scope.project._id);
+			$location.path('/projects/' + $scope.project._id);
+		}
+		else
+			$location.path('/projects/' + $scope.project._id);
     };
 
     $scope.change = function () {
@@ -498,7 +504,8 @@ exports.ActionControlController = function ($scope, $routeParams, $http, $locati
     $scope.back = function () {
         if ($scope.changed && confirmBack())
             $scope.saveProject();
-        $location.path('/projects/' + $scope.project._id);
+		else
+			$location.path('/projects/' + $scope.project._id);
     };
 
     $scope.change = function () {
@@ -569,7 +576,8 @@ exports.AccessControlController = function ($scope, $routeParams, $http, $locati
     $scope.back = function () {
         if ($scope.changed && confirmBack())
             $scope.saveProject();
-        $location.path('/projects/' + $scope.project._id + '/specify-nfr');
+		else
+			$location.path('/projects/' + $scope.project._id + '/specify-nfr');
     };
 
     $scope.change = function () {
@@ -676,7 +684,8 @@ exports.PerformanceConstraintController = function ($scope, $routeParams, $http,
     $scope.back = function () {
         if ($scope.changed && confirmBack())
             $scope.saveProject();
-        $location.path('/projects/' + $scope.project._id + '/specify-nfr');
+		else
+			$location.path('/projects/' + $scope.project._id + '/specify-nfr');
     };
 
     $scope.change = function () {
@@ -861,7 +870,8 @@ exports.FunctionalConstraintController = function ($scope, $routeParams, $http, 
     $scope.back = function () {
         if ($scope.changed && confirmBack())
             $scope.saveProject();
-        $location.path('/projects/' + $scope.project._id + '/specify-nfr');
+		else
+			$location.path('/projects/' + $scope.project._id + '/specify-nfr');
     };
 
     $scope.change = function () {
@@ -1044,7 +1054,8 @@ exports.ConfigureCompatibilityController = function ($scope, $routeParams, $http
     $scope.back = function () {
         if ($scope.changed && confirmBack())
             $scope.saveProject();
-        $location.path('/projects/' + $scope.project._id + '/specify-nfr');
+		else
+			$location.path('/projects/' + $scope.project._id + '/specify-nfr');
     };
 
     $scope.change = function () {
@@ -1229,7 +1240,8 @@ exports.ConfigureReliabilityController = function ($scope, $routeParams, $http, 
     $scope.back = function () {
         if ($scope.changed && confirmBack())
             $scope.saveProject();
-        $location.path('/projects/' + $scope.project._id + '/specify-nfr');
+		else
+			$location.path('/projects/' + $scope.project._id + '/specify-nfr');
     };
 
     $scope.change = function () {
@@ -1412,7 +1424,8 @@ exports.ConfigureSecurityController = function ($scope, $routeParams, $http, $lo
     $scope.back = function () {
         if ($scope.changed && confirmBack())
             $scope.saveProject();
-        $location.path('/projects/' + $scope.project._id + '/specify-nfr');
+		else
+			$location.path('/projects/' + $scope.project._id + '/specify-nfr');
     };
 
     $scope.change = function () {
@@ -1668,7 +1681,8 @@ exports.ConfigureUsabilityController = function ($scope, $routeParams, $http, $l
     $scope.back = function () {
         if ($scope.changed && confirmBack())
             $scope.saveProject();
-        $location.path('/projects/' + $scope.project._id + '/specify-nfr');
+		else
+			$location.path('/projects/' + $scope.project._id + '/specify-nfr');
     };
 
     $scope.change = function () {
@@ -2148,7 +2162,8 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
     $scope.back = function () {
         if ($scope.changed && confirmBack())
             $scope.saveProject();
-        $location.path('/projects/' + $scope.project._id);
+		else
+			$location.path('/projects/' + $scope.project._id);
     };
 
     setTimeout(function () {
@@ -2205,7 +2220,8 @@ exports.ConfigureBoilerplateController = function ($scope, $routeParams, $http, 
     $scope.back = function () {
         if ($scope.changed && confirmBack())
             $scope.saveProject();
-        $location.path('/projects/' + $scope.project._id);
+		else
+			$location.path('/projects/' + $scope.project._id);
     };
 
     $scope.change = function () {
