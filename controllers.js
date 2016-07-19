@@ -2258,6 +2258,12 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
         $scope.numberNewRequirements += addedRequirements.length;
     };
 
+    $scope.checkAll = function (moduleName) {
+        _.each($scope.generatedRequirements[moduleName], function (requirement) {
+            requirement.checked = true;
+        });
+    };
+
     $scope.newRequirement = function (module, boilerplate, values) {
         return {
             module: module,
