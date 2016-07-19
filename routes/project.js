@@ -248,7 +248,18 @@ module.exports = function (wagner) {
                     error: 'Insufficient data'
                 });
 
-            saveProject(project, req, res);
+            project
+                .save()
+                .then(function () {
+                    return res.json({
+                        id: project._id,
+                        result: true
+                    });
+                }, function (error) {
+                    return res.json({
+                        result: error
+                    });
+                });
         };
     }));
 

@@ -66,17 +66,25 @@
                         </h5>
                     </div>
                     <div class="collapsible-body">
-                        <div class="row" ng-if="requirements.length > 0">
-                            <ul>
-                                <li ng-repeat="requirement in requirements track by $index">
-                                    <div class="input-field">
-                                        <input type="checkbox" ng-model="requirement.checked"
-                                               id="fr.{{ moduleName }}.{{ $index }}"/>
-                                        <label for="fr.{{ moduleName }}.{{ $index }}"
-                                               ng-bind="$formatter.requirementToString(requirement)"></label>
-                                    </div>
-                                </li>
-                            </ul>
+                        <div class="row margin-top-10" ng-if="requirements.length > 0">
+                            <div class="col s4 m3 right">
+                                <button class="btn waves-effect waves-light col s12 m12"
+                                        ng-click="checkAll(moduleName)">
+                                    Check All Requirements
+                                </button>
+                            </div>
+                            <div class="col s12 m12">
+                                <ul>
+                                    <li ng-repeat="requirement in requirements track by $index">
+                                        <div class="input-field">
+                                            <input type="checkbox" ng-model="requirement.checked"
+                                                   id="fr.{{ moduleName }}.{{ $index }}"/>
+                                            <label for="fr.{{ moduleName }}.{{ $index }}"
+                                                   ng-bind="$formatter.requirementToString(requirement)"></label>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                         <div class="row" ng-if="requirements.length == 0">
                             <div class="center-align">
@@ -102,17 +110,25 @@
                         </h5>
                     </div>
                     <div class="collapsible-body">
-                        <div class="row" ng-if="requirements.length > 0">
-                            <ul>
-                                <li ng-repeat="requirement in requirements track by $index">
-                                    <div class="input-field">
-                                        <input type="checkbox" ng-model="requirement.checked"
-                                               id="nfr.{{ moduleName }}.{{ $index }}"/>
-                                        <label for="nfr.{{ moduleName }}.{{ $index }}"
-                                               ng-bind="$formatter.requirementToString(requirement)"></label>
-                                    </div>
-                                </li>
-                            </ul>
+                        <div class="row margin-top-10" ng-if="requirements.length > 0">
+                            <div class="col s4 m3 right">
+                                <button class="btn waves-effect waves-light col s12 m12"
+                                        ng-click="checkAll(moduleName)">
+                                    Check All Requirements
+                                </button>
+                            </div>
+                            <div class="col s12 m12">
+                                <ul>
+                                    <li ng-repeat="requirement in requirements track by $index">
+                                        <div class="input-field">
+                                            <input type="checkbox" ng-model="requirement.checked"
+                                                   id="nfr.{{ moduleName }}.{{ $index }}"/>
+                                            <label for="nfr.{{ moduleName }}.{{ $index }}"
+                                                   ng-bind="$formatter.requirementToString(requirement)"></label>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                         <div class="row" ng-if="requirements.length == 0">
                             <div class="center-align">
@@ -125,12 +141,3 @@
         </div>
     </div>
 </div>
-<script>
-    setTimeout(function () {
-        $('.collapsible').collapsible({
-            accordion: false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
-        });
-        $('ul.tabs').tabs();
-        $('.materialboxed').materialbox();
-    }, 500);
-</script>

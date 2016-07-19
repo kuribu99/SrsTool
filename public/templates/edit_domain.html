@@ -55,7 +55,7 @@
         <div class="row valign-wrapper">
             <div class="col s8 m9 input-field">
                 <label for="tbxModule">Module Name</label>
-                <input id="tbxModule" type="text" list="newModules" ng-model="tbxModule"/>
+                <input id="tbxModule" type="text" list="newModules" ng-model="tbxModule" ng-keypress="handleKeyPress($event, addModule)"/>
                 <datalist id="newModules">
                     <option ng-repeat="module in newModules" value="{{ module }}">{{ module }}</option>
                 </datalist>
@@ -93,7 +93,7 @@
         <div class="row valign-wrapper">
             <div class="col s8 m9 input-field">
                 <label for="tbxActor">Actor Name</label>
-                <input id="tbxActor" type="text" list="newActors" ng-model="tbxActor"/>
+                <input id="tbxActor" type="text" list="newActors" ng-model="tbxActor" ng-keypress="handleKeyPress($event, addActor)"/>
                 <datalist id="newActors">
                     <option ng-repeat="actor in newActors" value="{{ actor }}" ng-bind="actor"></option>
                 </datalist>
@@ -131,7 +131,7 @@
         <div class="row valign-wrapper">
             <div class="col s8 m9 input-field">
                 <label for="tbxAction">Action Name</label>
-                <input id="tbxAction" type="text" list="newActions" ng-model="tbxAction"/>
+                <input id="tbxAction" type="text" list="newActions" ng-model="tbxAction" ng-keypress="handleKeyPress($event, addAction)"/>
                 <datalist id="newActions">
                     <option ng-repeat="action in newActions" value="{{ action }}" ng-bind="action"></option>
                 </datalist>
@@ -166,10 +166,3 @@
         </div>
     </div>
 </div>
-<script>
-    setTimeout(function () {
-        $('ul.tabs').tabs();
-        Materialize.updateTextFields();
-        $('.materialboxed').materialbox();
-    }, 500);
-</script>

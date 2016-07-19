@@ -55,6 +55,10 @@ h5.col {
     height: auto !important;
 }
 
+.min-width-250 {
+    min-width: 250px
+}
+
 .max-width-25 {
     max-width: 25%;
 }
