@@ -107,7 +107,7 @@ app.config(function ($routeProvider) {
         });
 });
 
-app.run(['$rootScope', function ($rootScope) {
+app.run(['$rootScope', '$document', function ($rootScope, $document) {
     $rootScope.$on('$routeChangeSuccess', function (event, current, previous) {
         try {
             $rootScope.title = current.$$route.title;
@@ -121,4 +121,11 @@ app.run(['$rootScope', function ($rootScope) {
     $rootScope.$on('$routeChangeStart', function () {
         $rootScope.loading = true;
     });
+
+    $document.bind('keypress', function(e) {
+        $rootScope.$broadcast('keypress', e);
+        $rootScope.$broadcast('keypress:' + e.which, e);
+    });
+
+    $rootScope.$on('')
 }]);

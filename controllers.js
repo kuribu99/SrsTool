@@ -410,6 +410,11 @@ exports.EditDomainController = function ($scope, $routeParams, $http, $location,
 
         }, failCallBack);
 
+    $scope.handleKeyPress = function (event, fn) {
+        if (event.keyCode == 13)
+            fn();
+    };
+
     $scope.saveProject = function () {
         $http.patch('/api/v1/projects/' + projectID + '/domain-data/', {
             domainData: $scope.project.domainData
@@ -439,7 +444,11 @@ exports.EditDomainController = function ($scope, $routeParams, $http, $location,
     };
 
     $scope.addModule = function () {
-        if ($scope.tbxModule.length > 0 && $scope.project.domainData.modules.indexOf($scope.tbxModule) < 0) {
+        if ($scope.tbxModule.length == 0)
+            toast('Module name cannot be empty');
+        else if ($scope.project.domainData.modules.indexOf($scope.tbxModule) >= 0)
+            toast('Module name already exist');
+        else {
             $scope.project.domainData.modules.push($scope.tbxModule);
 
             var index = $scope.newModules.indexOf($scope.tbxModule);
@@ -459,7 +468,11 @@ exports.EditDomainController = function ($scope, $routeParams, $http, $location,
     };
 
     $scope.addActor = function () {
-        if ($scope.tbxActor.length > 0 && $scope.project.domainData.actors.indexOf($scope.tbxActor) < 0) {
+        if ($scope.tbxActor.length == 0)
+            toast('Actor name cannot be empty');
+        else if ($scope.project.domainData.actors.indexOf($scope.tbxActor) >= 0)
+            toast('Actor name already exist');
+        else {
             $scope.project.domainData.actors.push($scope.tbxActor);
 
             var index = $scope.newActors.indexOf($scope.tbxActor);
@@ -479,7 +492,11 @@ exports.EditDomainController = function ($scope, $routeParams, $http, $location,
     };
 
     $scope.addAction = function () {
-        if ($scope.tbxAction.length > 0 && $scope.project.domainData.actions.indexOf($scope.tbxAction) < 0) {
+        if ($scope.tbxAction.length == 0)
+            toast('Action name cannot be empty');
+        else if ($scope.project.domainData.actions.indexOf($scope.tbxAction) >= 0)
+            toast('Action name already exist');
+        else {
             $scope.project.domainData.actions.push($scope.tbxAction);
 
             var index = $scope.newActions.indexOf($scope.tbxAction);
