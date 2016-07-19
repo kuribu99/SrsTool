@@ -14,6 +14,39 @@ var toast = function (message, time) {
     Materialize.toast(message, time);
 };
 
+var updateUI = function () {
+    // Make all <select> to use materialize
+    $('select').material_select();
+
+    // Set collapsible to accordions
+    $('.collapsible').collapsible({
+        accordion: false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
+    });
+
+    // Set dropdown button to materialize dropdown button
+    $('.dropdown-button').dropdown();
+
+    // Set instant drop dropdown button
+    $('.dropdown-button.instant-drop').dropdown({
+        inDuration: 300,
+        outDuration: 225,
+        constrain_width: true, // Does not change width of dropdown to that of the activator
+        hover: true,
+        gutter: 0, // Spacing from edge
+        belowOrigin: false, // Displays dropdown below the button
+        alignment: 'left' // Displays dropdown with edge aligned to the left of button
+    });
+
+    // Set all tabs
+    $('ul.tabs').tabs();
+
+    // Set all lightbox
+    $('.materialboxed').materialbox();
+
+    // Update all text fields
+    Materialize.updateTextFields();
+};
+
 var confirmBack = function () {
     return confirm("You have not saved the project yet!\n" +
         "Do you want to save your project?");
@@ -45,15 +78,18 @@ var toastNotFound = function () {
     toast('Project not found');
 };
 
-exports.NavBarController = function ($scope, $http, $location, $user) {
+exports.NavBarController = function ($scope, $http, $location, $user, $timeout) {
     $scope.$user = $user;
-    $user.loadUser();
+    $user.loadUser().then(function () {
+        $timeout(updateUI);
+    });
+
     setTimeout(function () {
         $scope.$emit('NavBarController');
     }, 0);
 };
 
-exports.HomeController = function ($scope, $http, $location) {
+exports.HomeController = function ($scope, $http, $location, $timeout) {
     $scope.projectName = "";
     $scope.domainName = "default";
     $scope.type = "";
@@ -61,6 +97,7 @@ exports.HomeController = function ($scope, $http, $location) {
     $http.get('/api/v1/domains/names/')
         .then(function (json) {
             $scope.domains = json.data.domains;
+            $timeout(updateUI);
         }, failCallBack());
 
     $scope.newProject = function () {
@@ -93,7 +130,6 @@ exports.HomeController = function ($scope, $http, $location) {
 };
 
 exports.LoadingController = function ($scope, $rootScope, $window) {
-
     $rootScope.title = 'Loading...';
 
     $scope.back = function () {
@@ -114,7 +150,7 @@ exports.ProjectListController = function ($scope, $routeParams, $http, $user) {
         }, failCallBack);
 
         $http.get('/api/v1/projects/private').then(function (json) {
-            $scope.privateProjects = json.data.projects;
+            $scope.privateProjects = json.data.projects
         }, failCallBack);
     };
 
@@ -152,7 +188,7 @@ exports.ProjectListController = function ($scope, $routeParams, $http, $user) {
     }, 0);
 };
 
-exports.ProjectViewController = function ($scope, $routeParams, $http, $location, $formatter, $template) {
+exports.ProjectViewController = function ($scope, $routeParams, $http, $location, $formatter, $template, $timeout) {
     var projectID = encodeURIComponent($routeParams.id);
 
     $scope.$formatter = $formatter;
@@ -175,6 +211,8 @@ exports.ProjectViewController = function ($scope, $routeParams, $http, $location
                     else if ($scope.$modules.NonFunctional.indexOf(key) >= 0)
                         $scope.numberNonFunctionalRequirement += $scope.project.generatedRequirements[key].length;
                 }
+
+                $timeout(updateUI);
             }
             else {
                 $location.path('/');
@@ -196,9 +234,12 @@ exports.ProjectViewController = function ($scope, $routeParams, $http, $location
     };
 
     $scope.back = function () {
-        if ($scope.changed && confirmBack())
+        if ($scope.changed && confirmBack()) {
             $scope.saveProject();
-        $location.path('/home');
+            $location.path('/home');
+        }
+        else
+            $location.path('/home');
     };
 
     $scope.removeRequirement = function (moduleName, index) {
@@ -211,7 +252,7 @@ exports.ProjectViewController = function ($scope, $routeParams, $http, $location
     }, 0);
 };
 
-exports.SpecifyNonFunctionalRequirementController = function ($scope, $routeParams, $http, $location) {
+exports.SpecifyNonFunctionalRequirementController = function ($scope, $routeParams, $http, $location, $timeout) {
     var projectID = encodeURIComponent($routeParams.id);
 
     $scope.toast = toast;
@@ -268,6 +309,19 @@ exports.SpecifyNonFunctionalRequirementController = function ($scope, $routePara
                         show: true
                     }
                 ];
+
+                $timeout(function () {
+                    var moduleCards = $('.nfr-module-card').toArray();
+                    var maximumHeight = _.max(
+                        _.map(moduleCards,
+                            function (card) {
+                                return $(card).height();
+                            }));
+
+                    _.each(moduleCards, function (card) {
+                        $(card).height(maximumHeight);
+                    });
+                });
             }
             else
                 $location.path('/');
@@ -286,13 +340,14 @@ exports.SpecifyNonFunctionalRequirementController = function ($scope, $routePara
     }, 0);
 };
 
-exports.EditProjectController = function ($scope, $routeParams, $http, $location) {
+exports.EditProjectController = function ($scope, $routeParams, $http, $location, $timeout) {
     var projectID = encodeURIComponent($routeParams.id);
 
     $http.get('/api/v1/projects/' + projectID + '/project-data/')
         .then(function (json) {
             if (json.data.result) {
                 $scope.project = json.data.project;
+                $timeout(updateUI);
             }
             else {
                 $location.path('/projects/' + projectID);
@@ -327,7 +382,7 @@ exports.EditProjectController = function ($scope, $routeParams, $http, $location
     }, 0);
 };
 
-exports.EditDomainController = function ($scope, $routeParams, $http, $location) {
+exports.EditDomainController = function ($scope, $routeParams, $http, $location, $timeout) {
     var projectID = encodeURIComponent($routeParams.id);
 
     $scope.tbxModule = "";
@@ -348,11 +403,18 @@ exports.EditDomainController = function ($scope, $routeParams, $http, $location)
                             $scope.newActions = _.difference(json.data.domain.actions, $scope.project.domainData.actions);
                         }
                     }, failCallBack());
+
+                $timeout(updateUI);
             }
             else
                 $location.path('/');
 
         }, failCallBack);
+
+    $scope.handleKeyPress = function (event, fn) {
+        if (event.keyCode == 13)
+            fn();
+    };
 
     $scope.saveProject = function () {
         $http.patch('/api/v1/projects/' + projectID + '/domain-data/', {
@@ -368,9 +430,14 @@ exports.EditDomainController = function ($scope, $routeParams, $http, $location)
     };
 
     $scope.back = function () {
-        if ($scope.changed && confirmBack())
-            $scope.saveProject();
-        $location.path('/projects/' + $scope.project._id);
+        if ($scope.changed) {
+            if (confirmBack()) {
+                $scope.saveProject();
+                $location.path('/projects/' + $scope.project._id);
+            }
+        }
+        else
+            $location.path('/projects/' + $scope.project._id);
     };
 
     $scope.change = function () {
@@ -378,7 +445,11 @@ exports.EditDomainController = function ($scope, $routeParams, $http, $location)
     };
 
     $scope.addModule = function () {
-        if ($scope.tbxModule.length > 0 && $scope.project.domainData.modules.indexOf($scope.tbxModule) < 0) {
+        if ($scope.tbxModule.length == 0)
+            toast('Module name cannot be empty');
+        else if ($scope.project.domainData.modules.indexOf($scope.tbxModule) >= 0)
+            toast('Module name already exist');
+        else {
             $scope.project.domainData.modules.push($scope.tbxModule);
 
             var index = $scope.newModules.indexOf($scope.tbxModule);
@@ -398,7 +469,11 @@ exports.EditDomainController = function ($scope, $routeParams, $http, $location)
     };
 
     $scope.addActor = function () {
-        if ($scope.tbxActor.length > 0 && $scope.project.domainData.actors.indexOf($scope.tbxActor) < 0) {
+        if ($scope.tbxActor.length == 0)
+            toast('Actor name cannot be empty');
+        else if ($scope.project.domainData.actors.indexOf($scope.tbxActor) >= 0)
+            toast('Actor name already exist');
+        else {
             $scope.project.domainData.actors.push($scope.tbxActor);
 
             var index = $scope.newActors.indexOf($scope.tbxActor);
@@ -418,7 +493,11 @@ exports.EditDomainController = function ($scope, $routeParams, $http, $location)
     };
 
     $scope.addAction = function () {
-        if ($scope.tbxAction.length > 0 && $scope.project.domainData.actions.indexOf($scope.tbxAction) < 0) {
+        if ($scope.tbxAction.length == 0)
+            toast('Action name cannot be empty');
+        else if ($scope.project.domainData.actions.indexOf($scope.tbxAction) >= 0)
+            toast('Action name already exist');
+        else {
             $scope.project.domainData.actions.push($scope.tbxAction);
 
             var index = $scope.newActions.indexOf($scope.tbxAction);
@@ -442,7 +521,7 @@ exports.EditDomainController = function ($scope, $routeParams, $http, $location)
     }, 0);
 };
 
-exports.ActionControlController = function ($scope, $routeParams, $http, $location) {
+exports.ActionControlController = function ($scope, $routeParams, $http, $location, $timeout) {
     var projectID = encodeURIComponent($routeParams.id);
 
     $scope.changed = false;
@@ -478,6 +557,9 @@ exports.ActionControlController = function ($scope, $routeParams, $http, $locati
                     function (key) {
                         delete $scope.project.actionControlData[key];
                     });
+
+                $timeout(updateUI);
+
             } else
                 $location.path('/projects/' + $scope.project._id);
 
@@ -497,9 +579,14 @@ exports.ActionControlController = function ($scope, $routeParams, $http, $locati
     };
 
     $scope.back = function () {
-        if ($scope.changed && confirmBack())
-            $scope.saveProject();
-        $location.path('/projects/' + $scope.project._id);
+        if ($scope.changed) {
+            if (confirmBack()) {
+                $scope.saveProject();
+                $location.path('/projects/' + $scope.project._id);
+            }
+        }
+        else
+            $location.path('/projects/' + $scope.project._id);
     };
 
     $scope.change = function () {
@@ -515,7 +602,7 @@ exports.ActionControlController = function ($scope, $routeParams, $http, $locati
     }, 0);
 };
 
-exports.AccessControlController = function ($scope, $routeParams, $http, $location, $formatter) {
+exports.AccessControlController = function ($scope, $routeParams, $http, $location, $formatter, $timeout) {
     var projectID = encodeURIComponent($routeParams.id);
 
     $scope.$formatter = $formatter;
@@ -549,6 +636,9 @@ exports.AccessControlController = function ($scope, $routeParams, $http, $locati
                     function (key) {
                         delete $scope.project.accessControlData[key];
                     });
+
+                $timeout(updateUI);
+
             } else
                 $location.path('/projects/' + $scope.project._id);
 
@@ -568,9 +658,14 @@ exports.AccessControlController = function ($scope, $routeParams, $http, $locati
     };
 
     $scope.back = function () {
-        if ($scope.changed && confirmBack())
-            $scope.saveProject();
-        $location.path('/projects/' + $scope.project._id + '/specify-nfr');
+        if ($scope.changed) {
+            if (confirmBack()) {
+                $scope.saveProject();
+                $location.path('/projects/' + $scope.project._id);
+            }
+        }
+        else
+            $location.path('/projects/' + $scope.project._id + '/specify-nfr');
     };
 
     $scope.change = function () {
@@ -586,7 +681,7 @@ exports.AccessControlController = function ($scope, $routeParams, $http, $locati
     }, 0);
 };
 
-exports.PerformanceConstraintController = function ($scope, $routeParams, $http, $location, $template) {
+exports.PerformanceConstraintController = function ($scope, $routeParams, $http, $location, $template, $timeout) {
     var projectID = encodeURIComponent($routeParams.id);
 
     $scope.changed = false;
@@ -607,6 +702,8 @@ exports.PerformanceConstraintController = function ($scope, $routeParams, $http,
 
                     $scope.performanceConstraintData[action] = $scope.newConstraint();
                 });
+
+                $timeout(updateUI);
 
             } else
                 $location.path('/projects/' + $scope.project._id);
@@ -650,7 +747,7 @@ exports.PerformanceConstraintController = function ($scope, $routeParams, $http,
     };
 
     $scope.getConstraintCount = function (action) {
-        var count = $scope.project.performanceConstraintData[action].length;
+        var count = $scope.project ? $scope.project.performanceConstraintData[action].length : 0;
         switch (count) {
             case 0:
                 return 'No constraints';
@@ -675,9 +772,14 @@ exports.PerformanceConstraintController = function ($scope, $routeParams, $http,
     };
 
     $scope.back = function () {
-        if ($scope.changed && confirmBack())
-            $scope.saveProject();
-        $location.path('/projects/' + $scope.project._id + '/specify-nfr');
+        if ($scope.changed) {
+            if (confirmBack()) {
+                $scope.saveProject();
+                $location.path('/projects/' + $scope.project._id);
+            }
+        }
+        else
+            $location.path('/projects/' + $scope.project._id + '/specify-nfr');
     };
 
     $scope.change = function () {
@@ -689,7 +791,7 @@ exports.PerformanceConstraintController = function ($scope, $routeParams, $http,
     }, 0);
 };
 
-exports.FunctionalConstraintController = function ($scope, $routeParams, $http, $location, $template) {
+exports.FunctionalConstraintController = function ($scope, $routeParams, $http, $location, $template, $timeout) {
     var projectID = encodeURIComponent($routeParams.id);
 
     $scope.changed = false;
@@ -707,6 +809,8 @@ exports.FunctionalConstraintController = function ($scope, $routeParams, $http, 
                         actionDependencies: [],
                         actionRules: []
                     };
+
+                $timeout(updateUI);
 
             } else
                 $location.path('/projects/' + $scope.project._id);
@@ -743,7 +847,7 @@ exports.FunctionalConstraintController = function ($scope, $routeParams, $http, 
     };
 
     $scope.getInterfaceCount = function () {
-        var count = $scope.project.functionalConstraintData.interfaces.length;
+        var count = $scope.project ? $scope.project.functionalConstraintData.interfaces.length : 0;
         switch (count) {
             case 0:
                 return 'No dependencies';
@@ -790,7 +894,7 @@ exports.FunctionalConstraintController = function ($scope, $routeParams, $http, 
     };
 
     $scope.getActionDependencyCount = function () {
-        var count = $scope.project.functionalConstraintData.actionDependencies.length;
+        var count = $scope.project ? $scope.project.functionalConstraintData.actionDependencies.length : 0;
         switch (count) {
             case 0:
                 return 'No dependencies';
@@ -835,7 +939,7 @@ exports.FunctionalConstraintController = function ($scope, $routeParams, $http, 
     };
 
     $scope.getActionRuleCount = function () {
-        var count = $scope.project.functionalConstraintData.actionRules.length;
+        var count = $scope.project ? $scope.project.functionalConstraintData.actionRules.length : 0;
         switch (count) {
             case 0:
                 return 'No rules';
@@ -860,9 +964,14 @@ exports.FunctionalConstraintController = function ($scope, $routeParams, $http, 
     };
 
     $scope.back = function () {
-        if ($scope.changed && confirmBack())
-            $scope.saveProject();
-        $location.path('/projects/' + $scope.project._id + '/specify-nfr');
+        if ($scope.changed) {
+            if (confirmBack()) {
+                $scope.saveProject();
+                $location.path('/projects/' + $scope.project._id);
+            }
+        }
+        else
+            $location.path('/projects/' + $scope.project._id + '/specify-nfr');
     };
 
     $scope.change = function () {
@@ -878,7 +987,7 @@ exports.FunctionalConstraintController = function ($scope, $routeParams, $http, 
     }, 0);
 };
 
-exports.ConfigureCompatibilityController = function ($scope, $routeParams, $http, $location, $template) {
+exports.ConfigureCompatibilityController = function ($scope, $routeParams, $http, $location, $template, $timeout) {
     var projectID = encodeURIComponent($routeParams.id);
 
     $scope.$compatibilityOptions = $template.compatibilityOptions;
@@ -895,6 +1004,8 @@ exports.ConfigureCompatibilityController = function ($scope, $routeParams, $http
                         executionEnvironment: [],
                         outputCompatibility: []
                     };
+
+                $timeout(updateUI);
 
             } else
                 $location.path('/projects/' + $scope.project._id);
@@ -1043,9 +1154,14 @@ exports.ConfigureCompatibilityController = function ($scope, $routeParams, $http
     };
 
     $scope.back = function () {
-        if ($scope.changed && confirmBack())
-            $scope.saveProject();
-        $location.path('/projects/' + $scope.project._id + '/specify-nfr');
+        if ($scope.changed) {
+            if (confirmBack()) {
+                $scope.saveProject();
+                $location.path('/projects/' + $scope.project._id);
+            }
+        }
+        else
+            $location.path('/projects/' + $scope.project._id + '/specify-nfr');
     };
 
     $scope.change = function () {
@@ -1061,7 +1177,7 @@ exports.ConfigureCompatibilityController = function ($scope, $routeParams, $http
     }, 0);
 };
 
-exports.ConfigureReliabilityController = function ($scope, $routeParams, $http, $location) {
+exports.ConfigureReliabilityController = function ($scope, $routeParams, $http, $location, $timeout) {
     var projectID = encodeURIComponent($routeParams.id);
 
     $scope.changed = false;
@@ -1086,6 +1202,8 @@ exports.ConfigureReliabilityController = function ($scope, $routeParams, $http, 
                         redundancyOption: [],
                         recoveryItem: []
                     };
+
+                $timeout(updateUI);
 
             } else
                 $location.path('/projects/' + $scope.project._id);
@@ -1228,9 +1346,14 @@ exports.ConfigureReliabilityController = function ($scope, $routeParams, $http, 
     };
 
     $scope.back = function () {
-        if ($scope.changed && confirmBack())
-            $scope.saveProject();
-        $location.path('/projects/' + $scope.project._id + '/specify-nfr');
+        if ($scope.changed) {
+            if (confirmBack()) {
+                $scope.saveProject();
+                $location.path('/projects/' + $scope.project._id);
+            }
+        }
+        else
+            $location.path('/projects/' + $scope.project._id + '/specify-nfr');
     };
 
     $scope.change = function () {
@@ -1246,7 +1369,7 @@ exports.ConfigureReliabilityController = function ($scope, $routeParams, $http, 
     }, 0);
 };
 
-exports.ConfigureSecurityController = function ($scope, $routeParams, $http, $location, $template) {
+exports.ConfigureSecurityController = function ($scope, $routeParams, $http, $location, $template, $timeout) {
     var projectID = encodeURIComponent($routeParams.id);
 
     $scope.$itemAccessOptions = $template.itemAccessOptions;
@@ -1263,6 +1386,8 @@ exports.ConfigureSecurityController = function ($scope, $routeParams, $http, $lo
                         validation: [],
                         encryption: []
                     };
+
+                $timeout(updateUI);
 
             } else
                 $location.path('/projects/' + $scope.project._id);
@@ -1411,9 +1536,14 @@ exports.ConfigureSecurityController = function ($scope, $routeParams, $http, $lo
     };
 
     $scope.back = function () {
-        if ($scope.changed && confirmBack())
-            $scope.saveProject();
-        $location.path('/projects/' + $scope.project._id + '/specify-nfr');
+        if ($scope.changed) {
+            if (confirmBack()) {
+                $scope.saveProject();
+                $location.path('/projects/' + $scope.project._id);
+            }
+        }
+        else
+            $location.path('/projects/' + $scope.project._id + '/specify-nfr');
     };
 
     $scope.change = function () {
@@ -1429,7 +1559,7 @@ exports.ConfigureSecurityController = function ($scope, $routeParams, $http, $lo
     }, 0);
 };
 
-exports.ConfigureUsabilityController = function ($scope, $routeParams, $http, $location) {
+exports.ConfigureUsabilityController = function ($scope, $routeParams, $http, $location, $timeout) {
     var projectID = encodeURIComponent($routeParams.id);
 
     $scope.changed = false;
@@ -1447,6 +1577,8 @@ exports.ConfigureUsabilityController = function ($scope, $routeParams, $http, $l
                         errorPrevention: [],
                         accessibility: []
                     };
+
+                $timeout(updateUI);
 
             } else
                 $location.path('/projects/' + $scope.project._id);
@@ -1667,9 +1799,14 @@ exports.ConfigureUsabilityController = function ($scope, $routeParams, $http, $l
     };
 
     $scope.back = function () {
-        if ($scope.changed && confirmBack())
-            $scope.saveProject();
-        $location.path('/projects/' + $scope.project._id + '/specify-nfr');
+        if ($scope.changed) {
+            if (confirmBack()) {
+                $scope.saveProject();
+                $location.path('/projects/' + $scope.project._id);
+            }
+        }
+        else
+            $location.path('/projects/' + $scope.project._id + '/specify-nfr');
     };
 
     $scope.change = function () {
@@ -1687,7 +1824,7 @@ exports.ConfigureUsabilityController = function ($scope, $routeParams, $http, $l
     }, 0);
 };
 
-exports.GenerateRequirementController = function ($scope, $routeParams, $http, $location, $formatter, $template) {
+exports.GenerateRequirementController = function ($scope, $routeParams, $http, $location, $formatter, $template, $timeout) {
     var projectID = encodeURIComponent($routeParams.id);
 
     $scope.$formatter = $formatter;
@@ -1759,6 +1896,8 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
                         $scope.project.boilerplateData[key] = $scope.$boilerplateTemplates[key];
 
                 $scope.generateRequirements();
+                $timeout(updateUI);
+
             }
             else
                 $location.path('/');
@@ -2120,6 +2259,12 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
         $scope.numberNewRequirements += addedRequirements.length;
     };
 
+    $scope.checkAll = function (moduleName) {
+        _.each($scope.generatedRequirements[moduleName], function (requirement) {
+            requirement.checked = true;
+        });
+    };
+
     $scope.newRequirement = function (module, boilerplate, values) {
         return {
             module: module,
@@ -2147,9 +2292,14 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
     };
 
     $scope.back = function () {
-        if ($scope.changed && confirmBack())
-            $scope.saveProject();
-        $location.path('/projects/' + $scope.project._id);
+        if ($scope.changed) {
+            if (confirmBack()) {
+                $scope.saveProject();
+                $location.path('/projects/' + $scope.project._id);
+            }
+        }
+        else
+            $location.path('/projects/' + $scope.project._id);
     };
 
     setTimeout(function () {
@@ -2157,7 +2307,7 @@ exports.GenerateRequirementController = function ($scope, $routeParams, $http, $
     }, 0);
 };
 
-exports.ConfigureBoilerplateController = function ($scope, $routeParams, $http, $location, $formatter, $template) {
+exports.ConfigureBoilerplateController = function ($scope, $routeParams, $http, $location, $formatter, $template, $timeout) {
     var projectID = encodeURIComponent($routeParams.id);
 
     $scope.$formatter = $formatter;
@@ -2176,6 +2326,9 @@ exports.ConfigureBoilerplateController = function ($scope, $routeParams, $http, 
                 for (var key in $scope.$boilerplateTemplates)
                     if ($scope.project.boilerplateData[key] == null)
                         $scope.project.boilerplateData[key] = JSON.parse(JSON.stringify($scope.$boilerplateTemplates[key]));
+
+                $timeout(updateUI);
+
             }
             else
                 $location.path('/');
@@ -2204,9 +2357,14 @@ exports.ConfigureBoilerplateController = function ($scope, $routeParams, $http, 
     };
 
     $scope.back = function () {
-        if ($scope.changed && confirmBack())
-            $scope.saveProject();
-        $location.path('/projects/' + $scope.project._id);
+        if ($scope.changed) {
+            if (confirmBack()) {
+                $scope.saveProject();
+                $location.path('/projects/' + $scope.project._id);
+            }
+        }
+        else
+            $location.path('/projects/' + $scope.project._id);
     };
 
     $scope.change = function () {
@@ -2224,7 +2382,7 @@ exports.ConfigureBoilerplateController = function ($scope, $routeParams, $http, 
     }, 0);
 };
 
-exports.PreviewExportController = function ($scope, $routeParams, $http, $location, $formatter, $template) {
+exports.PreviewExportController = function ($scope, $routeParams, $http, $location, $formatter, $template, $timeout) {
     var projectID = encodeURIComponent($routeParams.id);
 
     $scope.$formatter = $formatter;
@@ -2246,6 +2404,49 @@ exports.PreviewExportController = function ($scope, $routeParams, $http, $locati
                     else if ($scope.$modules.NonFunctional.indexOf(key) >= 0)
                         $scope.numberNonFunctionalRequirement += $scope.project.generatedRequirements[key].length;
                 }
+
+                $timeout(function () {
+                    updateUI();
+
+                    $('#exportDocx').click(function () {
+                        var projectName = $('#projectName').text();
+                        $('#content').wordExport(projectName);
+                    });
+                    $('#exportPDF').click(function () {
+                        var projectName = $('#projectName').text();
+                        var doc = new jsPDF('p', 'mm', [297, 210]);
+
+                        // We'll make our own renderer to skip this editor
+                        var specialElementHandlers = {
+                            '#editor': function (element, renderer) {
+                                return true;
+                            }
+                        };
+
+                        // All units are in the set measurement for the document
+                        // This can be changed to "pt" (points), "mm" (Default), "cm", "in"
+                        doc.fromHTML($('#content').get(0), 15, 15, {
+                            'height': 297,
+                            'width': 210,
+                            'elementHandlers': specialElementHandlers
+                        });
+
+                        doc.save(projectName + '.pdf');
+                    });
+                    $('#exportHTML').click(function () {
+                        var projectName = $('#projectName').text();
+                        var print = window.open();
+
+                        print.document.write('<html><head><title>' + projectName + '</title>');
+                        print.document.write('<title>' + projectName + '</title>');
+                        print.document.write('</head><body >');
+                        print.document.write($('div#content').html());
+                        print.document.write('</body></html>');
+
+                        print.document.close(); // necessary for IE >= 10
+                        print.focus(); // necessary for IE >= 10
+                    });
+                });
             }
             else
                 $location.path('/');
@@ -2505,7 +2706,7 @@ app.config(function ($routeProvider) {
         });
 });
 
-app.run(['$rootScope', function ($rootScope) {
+app.run(['$rootScope', '$document', function ($rootScope, $document) {
     $rootScope.$on('$routeChangeSuccess', function (event, current, previous) {
         try {
             $rootScope.title = current.$$route.title;
@@ -2519,6 +2720,13 @@ app.run(['$rootScope', function ($rootScope) {
     $rootScope.$on('$routeChangeStart', function () {
         $rootScope.loading = true;
     });
+
+    $document.bind('keypress', function(e) {
+        $rootScope.$broadcast('keypress', e);
+        $rootScope.$broadcast('keypress:' + e.which, e);
+    });
+
+    $rootScope.$on('')
 }]);
 },{"./controllers":1,"./directives":2,"./services":6,"underscore":5}],4:[function(require,module,exports){
 // Generated by CoffeeScript 1.7.1
@@ -3890,56 +4098,6 @@ module.exports = {
 },{}],6:[function(require,module,exports){
 var status = require('http-status');
 
-exports.$user = function ($http) {
-    var s = {};
-
-    s.loadUser = function () {
-        $http.get('/api/v1/me').then(function (data) {
-            s.user = data.data.user;
-        }, function (data, status) {
-            s.user = null;
-        });
-    };
-
-    s.loadUser();
-
-    setInterval(s.loadUser, 60 * 60 * 1000);
-
-    return s;
-};
-
-exports.$projectService = function ($http) {
-
-    // Service variables
-    this.project = null;
-
-    // Service methods
-    this.loadProject = function (projectID) {
-        return $http.get('/api/v1/projects/' + projectID)
-            .then(
-                function (json) {
-                    if (json.data.result) {
-                        this.project = json.data.project;
-                    } else
-                        this.project = null;
-                }.bind(this),
-                function (error) {
-                    console.log(error);
-                    this.project = null;
-                }.bind(this));
-    };
-
-    this.setProject = function (project) {
-        this.project = project;
-    };
-
-    this.getProject = function (project) {
-        return this.project;
-    };
-
-    return this;
-};
-
 exports.$formatter = function () {
     this.asSentence = function (str) {
         str = str[0].toUpperCase() + str.substring(1);
@@ -4218,7 +4376,16 @@ exports.$template = function () {
         }
     };
 
-    this.performanceConstraintOptions = Object.keys(this.boilerplateTemplates.performanceConstraint);
+    this.performanceConstraintOptions = [
+        'exactly',
+        'less than',
+        'more than',
+        'at least',
+        'at most',
+        'minimum',
+        'maximum',
+        'within'
+    ];
     this.actionDependenciesOptions = {
         true: 'shall perform dependent action',
         false: 'shall not perform dependent action'
@@ -4237,5 +4404,23 @@ exports.$template = function () {
     };
 
     return this;
+};
+
+exports.$user = function ($http) {
+    var s = {};
+
+    s.loadUser = function () {
+        return $http.get('/api/v1/me').then(function (data) {
+            s.user = data.data.user;
+        }, function (data, status) {
+            s.user = null;
+        });
+    };
+
+    s.loadUser();
+
+    setInterval(s.loadUser, 60 * 60 * 1000);
+
+    return s;
 };
 },{"http-status":4}]},{},[3])
