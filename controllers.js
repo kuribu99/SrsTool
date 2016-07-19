@@ -195,8 +195,10 @@ exports.ProjectViewController = function ($scope, $routeParams, $http, $location
     };
 
     $scope.back = function () {
-        if ($scope.changed && confirmBack())
+        if ($scope.changed && confirmBack()) {
             $scope.saveProject();
+			$location.path('/home');
+		}
 		else
 			$location.path('/home');
     };
@@ -368,8 +370,10 @@ exports.EditDomainController = function ($scope, $routeParams, $http, $location)
     };
 
     $scope.back = function () {
-        if ($scope.changed && confirmBack())
+        if ($scope.changed && confirmBack()) {
             $scope.saveProject();
+			$location.path('/projects/' + $scope.project._id);
+		}
 		else
 			$location.path('/projects/' + $scope.project._id);
     };
