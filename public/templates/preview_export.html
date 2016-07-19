@@ -1,6 +1,6 @@
 <div class="row no-print">
     <div class="col s8 m9 input-field">
-        <a class="col s12 m12 dropdown-button btn blue" data-activates="dropdown">
+        <a class="col s12 m12 dropdown-button btn blue instant-drop" data-activates="dropdown">
             <i class="material-icons left">play_for_work</i>Export as
         </a>
         <ul id="dropdown" class="dropdown-content">
@@ -71,57 +71,3 @@
         </p>
     </div>
 </div>
-<script>
-    setTimeout(function () {
-        $('.dropdown-button').dropdown({
-            inDuration: 300,
-            outDuration: 225,
-            constrain_width: true, // Does not change width of dropdown to that of the activator
-            hover: true,
-            gutter: 0, // Spacing from edge
-            belowOrigin: false, // Displays dropdown below the button
-            alignment: 'left' // Displays dropdown with edge aligned to the left of button
-        });
-
-        $('#exportDocx').click(function () {
-            var projectName = $('#projectName').text();
-            $('#content').wordExport(projectName);
-        });
-
-        $('#exportPDF').click(function () {
-            var projectName = $('#projectName').text();
-            var doc = new jsPDF('p', 'mm', [297, 210]);
-
-            // We'll make our own renderer to skip this editor
-            var specialElementHandlers = {
-                '#editor': function (element, renderer) {
-                    return true;
-                }
-            };
-
-            // All units are in the set measurement for the document
-            // This can be changed to "pt" (points), "mm" (Default), "cm", "in"
-            doc.fromHTML($('#content').get(0), 15, 15, {
-                'height': 297,
-                'width': 210,
-                'elementHandlers': specialElementHandlers
-            });
-
-            doc.save(projectName + '.pdf');
-        });
-
-        $('#exportHTML').click(function () {
-            var projectName = $('#projectName').text();
-            var print = window.open();
-
-            print.document.write('<html><head><title>' + projectName + '</title>');
-            print.document.write('<title>' + projectName + '</title>');
-            print.document.write('</head><body >');
-            print.document.write($('div#content').html());
-            print.document.write('</body></html>');
-
-            print.document.close(); // necessary for IE >= 10
-            print.focus(); // necessary for IE >= 10
-        });
-    }, 500);
-</script>

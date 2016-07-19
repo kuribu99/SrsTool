@@ -9,17 +9,12 @@
     </div>
 </div>
 <div class="row">
-    <div class="col max-width-25" ng-repeat="module in modules">
+    <div class="col min-width-250 max-width-25" ng-repeat="module in modules">
         <div class="card hoverable waves-effect" ng-click="module.show? goto(module.path): toast(module.errorMessage)">
-            <div class="card-content">
+            <div class="card-content nfr-module-card">
                 <div class="card-title" ng-bind="module.name"></div>
                 <div ng-bind="module.description"></div>
             </div>
         </div>
     </div>
 </div>
-<script>
-    setTimeout(function () {
-        $('.materialboxed').materialbox();
-    }, 500);
-</script>

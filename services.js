@@ -312,7 +312,7 @@ exports.$user = function ($http) {
     var s = {};
 
     s.loadUser = function () {
-        $http.get('/api/v1/me').then(function (data) {
+        return $http.get('/api/v1/me').then(function (data) {
             s.user = data.data.user;
         }, function (data, status) {
             s.user = null;
