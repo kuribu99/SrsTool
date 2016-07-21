@@ -37,10 +37,20 @@
             <div ng-repeat="(moduleName, requirements) in project.generatedRequirements"
                  ng-if="$modules.Functional.indexOf(moduleName) >= 0">
                 <h3 ng-bind="moduleName"></h3>
-                <ol ng-if="requirements.length > 0">
-                    <li ng-repeat="requirement in requirements"
-                        ng-bind="$formatter.requirementToString(requirement)"></li>
-                </ol>
+                <div ng-if="requirements.length > 0">
+                    <ol ng-if="moduleName != 'Action Control'">
+                        <li ng-repeat="requirement in requirements"
+                            ng-bind="$formatter.requirementToString(requirement)"></li>
+                    </ol>
+                    <div ng-if="moduleName == 'Action Control'"
+                         ng-repeat="(actor, actions) in actionControlRequirements track by $index">
+                        <h4 ng-bind="'Actor ' + ($index + 1) + ': ' + actor"></h4>
+                        <ol>
+                            <li ng-repeat="requirement in actions"
+                                ng-bind="$formatter.requirementToString(requirement)"></li>
+                        </ol>
+                    </div>
+                </div>
                 <p ng-if="requirements.length == 0">
                     No requirements specified for this module.
                 </p>
@@ -57,10 +67,20 @@
             <div ng-repeat="(moduleName, requirements) in project.generatedRequirements"
                  ng-if="$modules.NonFunctional.indexOf(moduleName) >= 0">
                 <h3 ng-bind="moduleName"></h3>
-                <ol ng-if="requirements.length > 0">
-                    <li ng-repeat="requirement in requirements"
-                        ng-bind="$formatter.requirementToString(requirement)"></li>
-                </ol>
+                <div ng-if="requirements.length > 0">
+                    <ol ng-if="moduleName != 'Access Control'">
+                        <li ng-repeat="requirement in requirements"
+                            ng-bind="$formatter.requirementToString(requirement)"></li>
+                    </ol>
+                    <div ng-if="moduleName == 'Access Control'"
+                         ng-repeat="(module, actors) in accessControlRequirements track by $index">
+                        <h4 ng-bind="'Module ' + ($index + 1) + ': ' + module"></h4>
+                        <ol>
+                            <li ng-repeat="requirement in actors"
+                                ng-bind="$formatter.requirementToString(requirement)"></li>
+                        </ol>
+                    </div>
+                </div>
                 <p ng-if="requirements.length == 0">
                     No requirements specified for this module.
                 </p>
