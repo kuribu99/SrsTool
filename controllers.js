@@ -2404,6 +2404,24 @@ exports.PreviewExportController = function ($scope, $routeParams, $http, $locati
                         $scope.numberNonFunctionalRequirement += $scope.project.generatedRequirements[key].length;
                 }
 
+                $scope.actionControlRequirements = {};
+                var data = $scope.project.generatedRequirements['Action Control'];
+                for (var index in data) {
+                    var actorName = data[index].values['<actor>'];
+                    if (!$scope.actionControlRequirements.hasOwnProperty(actorName))
+                        $scope.actionControlRequirements[actorName] = [];
+                    $scope.actionControlRequirements[actorName].push(data[index]);
+                }
+
+                $scope.accessControlRequirements = {};
+                var data = $scope.project.generatedRequirements['Access Control'];
+                for (var index in data) {
+                    var moduleName = data[index].values['<module>'];
+                    if (!$scope.accessControlRequirements.hasOwnProperty(moduleName))
+                        $scope.accessControlRequirements[moduleName] = [];
+                    $scope.accessControlRequirements[moduleName].push(data[index]);
+                }
+
                 $timeout(function () {
                     updateUI();
 
