@@ -21,27 +21,42 @@
             </div>
             <div class="collapsible-body">
                 <div class="row">
-                    <p>
-                        Other than explicitly written actions (which are functional requirements),
-                        <wbr/>
-                        the system should also provide certain interface or functionality for user
-                        <br/>
-                        For example, certain system will provide RESTful API which is not an action that user could
-                        perform,
-                        <wbr/>
-                        however, it is needed for the system to perform its normal functionalities
-                        <br/>
-                        These functional constraint will describe how actions are performed by the system
-                        <br/>
-                        <br/>
-                        For example, the most commonly introduced functional constraints are:
-                        <br/>
-                        - System API or console commands
-                        <br/>
-                        - Linked action (which one action triggers another)
-                        <br/>
-                        - Dependencies (such as dependency on other framework)
-                    </p>
+                    <div class="col s12 m6">
+                        <p>
+                            Other than explicitly written actions (which are functional requirements),
+                            <wbr/>
+                            the system should also provide certain interface or functionality for user perform.
+                            <br/>
+                            <br/>
+                            These functional constraint will describe how actions are performed by the system
+                            <br/>
+                            For example, the most commonly introduced functional constraints are:
+                            <br/>
+                            - System API or console commands
+                            <br/>
+                            - Linked action (which one action triggers another)
+                            <br/>
+                            - Dependencies (such as dependency on other framework)
+                        </p>
+                    </div>
+                    <div class="col s12 m6">
+                        <h5 class="row">Examples</h5>
+                        <div class="col">
+                            <img class="materialboxed margin-top-10 margin-bottom-10 bordered" width="300px"
+                                 src="./images/functional_constraint_1.png"
+                                 data-caption="Example of providing an interface for console commands">
+                        </div>
+                        <div class="col">
+                            <img class="materialboxed margin-top-10 margin-bottom-10 bordered" width="300px"
+                                 src="./images/functional_constraint_2.png"
+                                 data-caption="Example of action dependency where pushing to GitHub triggers Build action">
+                        </div>
+                        <div class="col">
+                            <img class="materialboxed margin-top-10 margin-bottom-10 bordered" width="300px"
+                                 src="./images/functional_constraint_3.png"
+                                 data-caption="Example of action rule to perform Zip action based on different compression methods">
+                        </div>
+                    </div>
                 </div>
             </div>
         </li>

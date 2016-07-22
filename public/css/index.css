@@ -63,6 +63,10 @@ h5.col {
     max-width: 25%;
 }
 
+.bordered {
+    border: 1px groove #555555;
+}
+
 @media print {
     .no-print, .no-print * {
         display: none !important;
