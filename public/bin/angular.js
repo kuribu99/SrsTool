@@ -2639,12 +2639,12 @@ var app = angular.module('srs-tool', ['srs-tool.components', 'ngRoute']);
 app.config(function ($routeProvider) {
     $routeProvider
         .when('/', {
-            title: 'Home',
+            title: 'SRS Tool',
             template: '<landing-page></landing-page>'
         })
 
         .when('/home', {
-            title: 'Home',
+            title: 'My Projects',
             template: '<home></home>'
         })
 
