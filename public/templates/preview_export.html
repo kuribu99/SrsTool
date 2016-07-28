@@ -16,7 +16,7 @@
             </li>
             <li id="exportPDF">
                 <a>
-                    <i class="material-icons left">play_for_work</i>Portable Document Format (.pdf)
+                    <i class="material-icons left">play_for_work</i>Portable Document Format (.pdf) (beta)
                 </a>
             </li>
         </ul>
@@ -29,8 +29,6 @@
 </div>
 <div id="content" class="row">
     <h1 id="projectName" ng-bind="project.projectName"></h1>
-    <br/>
-    <h2>Project Domain: <span ng-bind="project.domainData.domainName"></span></h2>
     <h2>Functional Requirements</h2>
     <div id="fr" class="row">
         <div class="row" ng-if="numberFunctionalRequirement > 0">
@@ -51,14 +49,14 @@
                         </ol>
                     </div>
                 </div>
-                <p ng-if="requirements.length == 0">
+                <div ng-if="requirements.length == 0">
                     No requirements specified for this module.
-                </p>
+                </div>
             </div>
         </div>
-        <p ng-if="numberFunctionalRequirement == 0">
+        <div ng-if="numberFunctionalRequirement == 0">
             No functional requirements specified.
-        </p>
+        </div>
     </div>
     <br/>
     <h2>Non-Functional Requirements</h2>
@@ -81,13 +79,13 @@
                         </ol>
                     </div>
                 </div>
-                <p ng-if="requirements.length == 0">
+                <div ng-if="requirements.length == 0">
                     No requirements specified for this module.
-                </p>
+                </div>
             </div>
         </div>
-        <p ng-if="numberNonFunctionalRequirement == 0">
+        <div ng-if="numberNonFunctionalRequirement == 0">
             No non-functional requirements specified.
-        </p>
+        </div>
     </div>
 </div>
