@@ -268,14 +268,14 @@ exports.SpecifyNonFunctionalRequirementController = function ($scope, $routePara
                         description: 'Decide who can access to which module',
                         path: 'access-control',
                         show: $scope.project.domainData.modules.length > 0 && $scope.project.domainData.actors.length > 0,
-                        errorMessage: 'Please add at least one module and one actor to do so'
+                        errorMessage: 'Please add at least one module and one actor to do so (at Edit -> Edit Domain)'
                     },
                     {
                         name: 'Performance Constraint',
                         description: 'Take into consideration of performance, time behaviour or resource usage',
                         path: 'performance-constraint',
                         show: $scope.project.domainData.actions.length > 0,
-                        errorMessage: 'Please add at least one action to do so'
+                        errorMessage: 'Please add at least one action to do so (at Edit -> Edit Domain)'
                     },
                     {
                         name: 'Functional Constraint',
@@ -2431,9 +2431,8 @@ exports.PreviewExportController = function ($scope, $routeParams, $http, $locati
                     });
                     $('#exportPDF').click(function () {
                         var projectName = $('#projectName').text();
-                        var doc = new jsPDF('p', 'mm', [297, 210]);
+                        var doc = new jsPDF();
 
-                        // We'll make our own renderer to skip this editor
                         var specialElementHandlers = {
                             '#editor': function (element, renderer) {
                                 return true;
@@ -2443,9 +2442,9 @@ exports.PreviewExportController = function ($scope, $routeParams, $http, $locati
                         // All units are in the set measurement for the document
                         // This can be changed to "pt" (points), "mm" (Default), "cm", "in"
                         doc.fromHTML($('#content').get(0), 15, 15, {
-                            'height': 297,
-                            'width': 210,
-                            'elementHandlers': specialElementHandlers
+                            width: 170,
+                            pagesplit: true,
+                            elementHandlers: specialElementHandlers
                         });
 
                         doc.save(projectName + '.pdf');
@@ -2454,9 +2453,10 @@ exports.PreviewExportController = function ($scope, $routeParams, $http, $locati
                         var projectName = $('#projectName').text();
                         var print = window.open();
 
-                        print.document.write('<html><head><title>' + projectName + '</title>');
+                        print.document.write('<html><head>');
                         print.document.write('<title>' + projectName + '</title>');
-                        print.document.write('</head><body >');
+                        print.document.write('<link rel="stylesheet" href="./css/index.css"/>');
+                        print.document.write('</head><body id="content">');
                         print.document.write($('div#content').html());
                         print.document.write('</body></html>');
 

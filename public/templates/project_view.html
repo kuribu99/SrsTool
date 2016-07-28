@@ -23,12 +23,12 @@
         <ul id="dropdown-edit" class="dropdown-content">
             <li>
                 <a class="waves-effect waves-light" ng-href="/#/projects/{{ project._id }}/edit">
-                    Edit Project Name and Domain
+                    Edit Project Name and Domain Name
                 </a>
             </li>
             <li>
                 <a class="waves-effect waves-light" ng-href="/#/projects/{{ project._id }}/domain">
-                    Edit Domain Attributes
+                    Edit Domain
                 </a>
             </li>
             <li>
@@ -50,7 +50,7 @@
             </li>
             <li ng-if="project.domainData.actions.length == 0 || project.domainData.actors.length == 0">
                 <a class="waves-effect waves-light"
-                   ng-click="toast('Please add at least one actor and one action to do so', 2000)">
+                   ng-click="toast('Please add at least one actor and one action to do so (at Edit -> Edit Domain)', 2000)">
                     Specify Functional Requirement
                 </a>
             </li>
@@ -96,13 +96,29 @@
                 <div>
                     <p>A: The answer is simple. Simply follow the following steps</p>
                     <ol>
-                        <li>Create your project</li>
-                        <li>Edit your domain to add in modules, actors and actions</li>
-                        <li>Specify your requirements using our custom built forms</li>
-                        <li>Generate your requirements automatically</li>
-                        <li>Lastly, export your requirements to your desired format</li>
                         <li>
-                            Optionally, configure your boilerplates, a.k.a. requirement templates to suit your needs
+                            Create your project
+                        </li>
+                        <li>
+                            Edit your domain to add in modules, actors and actions
+                            (Edit -> Edit Domain)
+                        </li>
+                        <li>
+                            Specify your requirements using our custom built forms
+                            (Specify Requirements -> Specify Functional/Non-Functional Requirements)
+                        </li>
+                        <li>
+                            Generate your requirements automatically
+                            (Specify Requirements -> Generate Requirements)
+                        </li>
+                        <li>
+                            Lastly, export your requirements to your desired format
+                            (Export Requirements -> Preview Export)
+                        </li>
+                        <li>
+                            Optionally, configure your requirement boilerplates, a.k.a. requirement templates to suit
+                            your needs
+                            (Edit -> Edit Boilerplates)
                         </li>
                     </ol>
                     <img class="materialboxed"
