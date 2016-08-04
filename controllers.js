@@ -922,8 +922,10 @@ exports.FunctionalConstraintController = function ($scope, $routeParams, $http, 
         else if ($scope.hasActionRule($scope.tbxActionRule))
             toast('Action/Rule pair already exist');
         else {
-            $scope.project.functionalConstraintData.actionRules.push($scope.tbxActionRule);
+            var newData = $scope.tbxActionRule;
+            $scope.project.functionalConstraintData.actionRules.push(newData);
             $scope.tbxActionRule = $scope.newActionRule();
+            $scope.tbxActionRule.relation = newData.relation;
             $scope.changed = true;
         }
     };
