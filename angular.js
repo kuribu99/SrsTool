@@ -122,7 +122,7 @@ app.run(['$rootScope', '$document', function ($rootScope, $document) {
         $rootScope.loading = true;
     });
 
-    $document.bind('keypress', function(e) {
+    $document.bind('keypress', function (e) {
         $rootScope.$broadcast('keypress', e);
         $rootScope.$broadcast('keypress:' + e.which, e);
     });
