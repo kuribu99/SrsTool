@@ -22,10 +22,10 @@ wagner.invoke(require('./auth'), {app: app});
 app.use('/api/v1', require('./routes/api')(wagner));
 
 // Serve client files in public folder
-app.use(express.static('./public', { maxAge: 4 * 60 * 60 * 1000 }));
+app.use(express.static('./public', {maxAge: 4 * 60 * 60 * 1000}));
 
 // Start server
 wagner.invoke(function (Config) {
-    console.log('Server listening on port '+ Config.ServerPort + '!');
+    console.log('Server listening on port ' + Config.ServerPort + '!');
     app.listen(Config.ServerPort);
 });
