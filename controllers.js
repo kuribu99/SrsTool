@@ -660,7 +660,7 @@ exports.AccessControlController = function ($scope, $routeParams, $http, $locati
         if ($scope.changed) {
             if (confirmBack()) {
                 $scope.saveProject();
-                $location.path('/projects/' + $scope.project._id);
+                $location.path('/projects/' + $scope.project._id + '/specify-nfr');
             }
         }
         else
@@ -774,7 +774,7 @@ exports.PerformanceConstraintController = function ($scope, $routeParams, $http,
         if ($scope.changed) {
             if (confirmBack()) {
                 $scope.saveProject();
-                $location.path('/projects/' + $scope.project._id);
+                $location.path('/projects/' + $scope.project._id + '/specify-nfr');
             }
         }
         else
@@ -922,8 +922,10 @@ exports.FunctionalConstraintController = function ($scope, $routeParams, $http, 
         else if ($scope.hasActionRule($scope.tbxActionRule))
             toast('Action/Rule pair already exist');
         else {
-            $scope.project.functionalConstraintData.actionRules.push($scope.tbxActionRule);
+            var newData = $scope.tbxActionRule;
+            $scope.project.functionalConstraintData.actionRules.push(newData);
             $scope.tbxActionRule = $scope.newActionRule();
+            $scope.tbxActionRule.relation = newData.relation;
             $scope.changed = true;
         }
     };
@@ -966,7 +968,7 @@ exports.FunctionalConstraintController = function ($scope, $routeParams, $http, 
         if ($scope.changed) {
             if (confirmBack()) {
                 $scope.saveProject();
-                $location.path('/projects/' + $scope.project._id);
+                $location.path('/projects/' + $scope.project._id + '/specify-nfr');
             }
         }
         else
@@ -1156,7 +1158,7 @@ exports.ConfigureCompatibilityController = function ($scope, $routeParams, $http
         if ($scope.changed) {
             if (confirmBack()) {
                 $scope.saveProject();
-                $location.path('/projects/' + $scope.project._id);
+                $location.path('/projects/' + $scope.project._id + '/specify-nfr');
             }
         }
         else
@@ -1348,7 +1350,7 @@ exports.ConfigureReliabilityController = function ($scope, $routeParams, $http, 
         if ($scope.changed) {
             if (confirmBack()) {
                 $scope.saveProject();
-                $location.path('/projects/' + $scope.project._id);
+                $location.path('/projects/' + $scope.project._id + '/specify-nfr');
             }
         }
         else
@@ -1538,7 +1540,7 @@ exports.ConfigureSecurityController = function ($scope, $routeParams, $http, $lo
         if ($scope.changed) {
             if (confirmBack()) {
                 $scope.saveProject();
-                $location.path('/projects/' + $scope.project._id);
+                $location.path('/projects/' + $scope.project._id + '/specify-nfr');
             }
         }
         else
@@ -1801,7 +1803,7 @@ exports.ConfigureUsabilityController = function ($scope, $routeParams, $http, $l
         if ($scope.changed) {
             if (confirmBack()) {
                 $scope.saveProject();
-                $location.path('/projects/' + $scope.project._id);
+                $location.path('/projects/' + $scope.project._id + '/specify-nfr');
             }
         }
         else
