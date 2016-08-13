@@ -311,7 +311,7 @@ module.exports = function (wagner) {
         return handleGetRequest(wagner, findCriteria, selectCriteria)(req, res);
     });
 
-    // PATCH endpoint for projectDat with different action
+    // PATCH endpoint for projectData with different action
     api.patch('/:id/project-data', wagner.invoke(function (Project) {
         return function (req, res) {
             try {
@@ -370,7 +370,7 @@ module.exports = function (wagner) {
     }));
 
     // PATCH endpoints
-    api.patch('/:id/:subroute', wagner.invoke(function (Project, Domain) {
+    api.patch('/:id/:subroute', wagner.invoke(function () {
         return function (req, res) {
             try {
                 var subroute = req.params.subroute;

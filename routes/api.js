@@ -19,5 +19,5 @@ module.exports = function (wagner) {
     api.use('/projects/', require('./project')(wagner));
     api.use('/domains/', require('./domain')(wagner));
 
-	return api;
+    return api;
 };
